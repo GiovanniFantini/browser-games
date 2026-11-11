@@ -1,5 +1,13 @@
 # Distribuzione di Night Circuit
 
+## Revisione grafica caricata su GitHub
+
+L'11 novembre 2026 la revisione grafica con texture originali, edifici modulari, lightmap e 51 auto Blender è stata caricata su `main`, commit `c1589d91e84311663388deda5b3b9bfba9963e01`. La build per `/BrowserGames/` è stata aggiornata su `gh-pages`, commit `11179e3`. Nel browser locale sono stati verificati guida reale, font, GLB, lightmap, assenza di richieste fallite e API QA assente. Lint e 90 test sono passati. I percorsi dei nuovi asset seguono la base di Vite.
+
+Il nuovo tentativo di attivazione di Pages ha ricevuto HTTP 422: `Your current plan does not support GitHub Pages for this repository.` Il repository resta privato e Pages non è attivo. Il push non equivale quindi alla disponibilità del gioco su un indirizzo GitHub. Il sito Sites conserva la versione precedente descritta sotto.
+
+È stata preparata una variante statica per un eventuale repository pubblico separato `night-circuit`, con base `/night-circuit/`, in `artifacts/release/public-pages-candidate`. La sua creazione e l'attivazione di Pages richiedono la scelta di Giovanni sull'accesso pubblico. Tale copia conterrebbe il gioco compilato e gli asset, mentre i sorgenti e gli script Blender resterebbero nel repository privato `BrowserGames`. Nessuna pipeline o configurazione CI/CD è stata modificata.
+
 Stato al 11 novembre 2026: gioco pubblicato su Sites, versione 1. URL verificato dal servizio di pubblicazione: https://night-circuit-neon-streets.weproject-6682.chatgpt.site.
 
 Il sito è privato, accessibile al proprietario con il proprio account ChatGPT anche da altri PC. Il repository https://github.com/GiovanniFantini/BrowserGames resta privato. I sorgenti sono in games/night-circuit/ sul ramo main. Dragon Ball rimane separato e non fa parte di questa consegna.
