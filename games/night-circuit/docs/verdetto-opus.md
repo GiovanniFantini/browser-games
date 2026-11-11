@@ -18,3 +18,17 @@ Sulle immagini:
 Tutte le categorie restano al livello approvato nella review 9, cioè a 1 punto dal benchmark. Le note non bloccanti sono le stesse.
 
 Regressioni bloccanti: nessuna.
+
+## Conferma sulla guida in tempo reale
+
+raggiunto
+
+Ho letto round-10.md, il riferimento, il rapporto JSON e le tre catture reali della build di produzione.
+
+- Città a 91 km/h in terza: l'auto occupa circa il 28% della larghezza e un terzo dell'altezza, ben ancorata nel terzo inferiore. Il riferimento sta intorno al 34%, quindi l'inquadratura è di nuovo vicina come nelle catture approvate. Il ritardo della telecamera non si vede più. Fanali posteriori, targa, riflessi viola sulla carrozzeria e lampioni sull'asfalto bagnato tengono il confronto col riferimento come prima.
+- Derapata a 51 km/h in seconda: l'auto è grande e leggibile di tre quarti posteriore, con fumo, segni rossi sull'asfalto e ruota posteriore definita. La striscia chiara sulla fiancata è la stessa luce radente già descritta nel round 10, non è un difetto nuovo.
+- Garage: modello, cerchi, pinze e fari sono uguali a quelli approvati. Non vedo faccette, strappi o artefatti nuovi.
+
+Il rapporto dice qaAbsent true, nessun errore e nessuna richiesta esterna, quindi le catture sono coerenti con una guida reale. C'è una piccola incongruenza: il campo speed vale 79, mentre gli HUD mostrano 91 e 51. Probabilmente è un campione preso in un altro momento. Non è bloccante per la resa, però il rapporto non contiene la telemetria di ogni singolo scatto.
+
+Regressioni bloccanti: nessuna. Il livello resta quello approvato, a 1 punto dal benchmark.
