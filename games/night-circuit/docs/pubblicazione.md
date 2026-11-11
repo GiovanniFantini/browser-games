@@ -4,7 +4,7 @@ Repository: https://github.com/GiovanniFantini/BrowserGames. Il repository resta
 
 La candidata è stata approvata da Codex e Opus. La build per GitHub Pages usa il prefisso /BrowserGames/ ed è verificata nel browser su quel percorso. Il ramo gh-pages contiene soltanto i file statici compilati e le licenze. Non contiene salvataggi, sorgenti TypeScript o strumenti QA.
 
-Stato: file pronti per GitHub Pages. Il sito non è ancora attivo; l’attivazione resta in attesa dell’autorizzazione specifica alla configurazione di pubblicazione prevista da AGENTS.md. La disponibilità di Pages per il repository privato dipende dal piano GitHub dell’account. Non cambiare la visibilità del repository senza autorizzazione.
+Stato al 11 novembre 2026: sorgenti caricati su main e build caricata su gh-pages. Giovanni ha autorizzato l’attivazione di GitHub Pages. La richiesta di attivazione è stata rifiutata da GitHub con HTTP 422: il piano attuale non supporta Pages per questo repository privato. Il sito non è attivo. Per proseguire occorre scegliere un hosting alternativo, un piano GitHub compatibile oppure autorizzare esplicitamente la visibilità pubblica del repository. La visibilità non è stata cambiata e nessun acquisto è stato effettuato.
 
 Indirizzo previsto dopo l’attivazione: https://GiovanniFantini.github.io/BrowserGames/. La pubblicazione usa il ramo gh-pages, cartella radice. Non è prevista una pipeline personalizzata e nessun workflow è stato aggiunto.
 
