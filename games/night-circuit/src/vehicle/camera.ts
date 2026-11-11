@@ -8,6 +8,8 @@ export class ChaseCamera {
   private readonly look = new THREE.Vector3();
   private readonly direction = new THREE.Quaternion();
   private readonly forward = new THREE.Vector3();
+  private readonly previousPosition = new THREE.Vector3();
+  private readonly displacement = new THREE.Vector3();
   private initialized = false;
   private vibrationTime = 0;
   readonly names = ['VICINA', 'LONTANA', 'COFANO', 'PARAURTI'];
@@ -21,6 +23,12 @@ export class ChaseCamera {
   }
   update(car: Vehicle, dt: number) {
     const root = car.model.root;
+    if (this.initialized) {
+      this.displacement.subVectors(root.position, this.previousPosition);
+      this.camera.position.add(this.displacement);
+      this.look.add(this.displacement);
+    }
+    this.previousPosition.copy(root.position);
     const forward = this.forward.set(0, 0, 1).applyQuaternion(root.quaternion);
     const yaw = Math.atan2(forward.x, forward.z);
     const drift = Math.min(

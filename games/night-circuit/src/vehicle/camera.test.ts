@@ -26,3 +26,24 @@ describe('visuali frontali', () => {
     }
   });
 });
+
+it('mantiene vicina la visuale durante una traslazione veloce dell’auto', () => {
+  const root = new Group();
+  const car = {
+    model: { root, spec: { roof: 1, length: 4.25 } },
+    speed: 30,
+    slip: 0,
+    power: { boosting: false },
+  } as unknown as Vehicle;
+  const camera = new PerspectiveCamera(59, 1.6, 0.1, 2000);
+  const chase = new ChaseCamera(camera);
+  chase.update(car, 1 / 60);
+  const initialDistance = camera.position.z - root.position.z;
+  for (let frame = 0; frame < 180; frame++) {
+    root.position.x += 0.1;
+    root.position.z += car.speed / 60;
+    chase.update(car, 1 / 60);
+  }
+  expect(camera.position.z - root.position.z).toBeCloseTo(initialDistance, 3);
+  expect(Math.abs(camera.position.x - root.position.x)).toBeLessThan(0.01);
+});
