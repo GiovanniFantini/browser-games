@@ -1,0 +1,72 @@
+#career-phone {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  background: #07111af5;
+  overflow: auto;
+  padding: 30px;
+}
+.phone-shell {
+  width: min(960px, 100%);
+  margin: auto;
+  padding-bottom: 30px;
+}
+.phone-shell header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.phone-shell h2 {
+  font-size: 46px;
+  margin: 6px 0;
+}
+.phone-shell h3 {
+  font-size: 26px;
+  margin: 8px 0;
+}
+.phone-shell p {
+  font-size: 17px;
+  color: #a7c0ce;
+  line-height: 1.5;
+}
+.phone-shell article {
+  padding: 20px;
+  border: 1px solid #62879a66;
+  background: #0f2030;
+  margin: 18px 0;
+}
+.phone-shell nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0;
+}
+.phone-shell nav [aria-pressed='true'] {
+  background: #d3ec7b;
+  color: #11202d;
+}
+.phone-shell button {
+  font-size: 15px;
+  margin: 4px 4px 4px 0;
+}
+#career-wallet span {
+  color: #d3ec7b;
+}
+@media (max-width: 800px) {
+  #career-phone {
+    padding: 18px;
+  }
+  .phone-shell header {
+    align-items: flex-start;
+  }
+  .phone-shell h2 {
+    font-size: 32px;
+  }
+  .phone-shell button {
+    font-size: 13px;
+  }
+  .location {
+    display: none;
+  }
+}

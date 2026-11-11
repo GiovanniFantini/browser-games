@@ -1,0 +1,203 @@
+{
+  "collectibles": [
+    {
+      "id": "fragment-0-0",
+      "district": 0,
+      "x": -420,
+      "z": 60,
+      "name": "Frammento 1.1"
+    },
+    {
+      "id": "fragment-0-1",
+      "district": 0,
+      "x": 0,
+      "z": -120,
+      "name": "Frammento 1.2"
+    },
+    {
+      "id": "fragment-0-2",
+      "district": 0,
+      "x": 120,
+      "z": 360,
+      "name": "Frammento 1.3"
+    },
+    {
+      "id": "fragment-1-0",
+      "district": 1,
+      "x": 660,
+      "z": 60,
+      "name": "Frammento 2.1"
+    },
+    {
+      "id": "fragment-1-1",
+      "district": 1,
+      "x": 1080,
+      "z": -120,
+      "name": "Frammento 2.2"
+    },
+    {
+      "id": "fragment-1-2",
+      "district": 1,
+      "x": 1200,
+      "z": 360,
+      "name": "Frammento 2.3"
+    },
+    {
+      "id": "fragment-2-0",
+      "district": 2,
+      "x": 660,
+      "z": 1140,
+      "name": "Frammento 3.1"
+    },
+    {
+      "id": "fragment-2-1",
+      "district": 2,
+      "x": 1080,
+      "z": 960,
+      "name": "Frammento 3.2"
+    },
+    {
+      "id": "fragment-2-2",
+      "district": 2,
+      "x": 1200,
+      "z": 1440,
+      "name": "Frammento 3.3"
+    },
+    {
+      "id": "fragment-3-0",
+      "district": 3,
+      "x": -420,
+      "z": 1140,
+      "name": "Frammento 4.1"
+    },
+    {
+      "id": "fragment-3-1",
+      "district": 3,
+      "x": 0,
+      "z": 960,
+      "name": "Frammento 4.2"
+    },
+    {
+      "id": "fragment-3-2",
+      "district": 3,
+      "x": 120,
+      "z": 1440,
+      "name": "Frammento 4.3"
+    }
+  ],
+  "shortcuts": [
+    {
+      "id": "passage-0",
+      "district": 0,
+      "name": "Vicolo delle Lanterne",
+      "a": {
+        "x": -480,
+        "z": 60
+      },
+      "b": {
+        "x": -360,
+        "z": 60
+      }
+    },
+    {
+      "id": "passage-1",
+      "district": 1,
+      "name": "Taglio dei Tessitori",
+      "a": {
+        "x": 600,
+        "z": 60
+      },
+      "b": {
+        "x": 720,
+        "z": 60
+      }
+    },
+    {
+      "id": "passage-2",
+      "district": 2,
+      "name": "Passaggio delle Serre",
+      "a": {
+        "x": 600,
+        "z": 1140
+      },
+      "b": {
+        "x": 720,
+        "z": 1140
+      }
+    },
+    {
+      "id": "passage-3",
+      "district": 3,
+      "name": "Corsia dei Corrieri",
+      "a": {
+        "x": -480,
+        "z": 1140
+      },
+      "b": {
+        "x": -360,
+        "z": 1140
+      }
+    }
+  ],
+  "reward": 250,
+  "passLinks": [
+    {
+      "id": "vetracava-access",
+      "name": "Salita delle Serre",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Accesso al passo di Vetracava.",
+      "meeting": {
+        "x": 1560,
+        "z": 1080
+      },
+      "points": [
+        [1560, 1080, 0],
+        [1620, 1080, 10],
+        [1660, 1000, 24],
+        [1690, 830, 36],
+        [1750, 780, 36],
+        [1750, 820, 36]
+      ],
+      "turnRadius": 18
+    },
+    {
+      "id": "vetracava-return",
+      "name": "Rientro delle Serre",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Rientro dal passo verso Hillcrest.",
+      "meeting": {
+        "x": 1820,
+        "z": 1340
+      },
+      "points": [
+        [1820, 1340, 0],
+        [1820, 1410, 0],
+        [1700, 1440, 0],
+        [1560, 1440, 0]
+      ],
+      "turnRadius": 18
+    }
+  ],
+  "airportInterchange": {
+    "id": "nacelle-interchange",
+    "name": "Svincolo di Nacelle",
+    "mode": "sprint",
+    "laps": 1,
+    "points": [
+      [-240, 1560, 0],
+      [-240, 1620, 3],
+      [-180, 1680, 12],
+      [0, 1720, 18],
+      [180, 1680, 12],
+      [240, 1620, 3],
+      [240, 1560, 0]
+    ],
+    "description": "Rampa panoramica di Nacelle, collegata alla superstrada.",
+    "meeting": {
+      "x": -240,
+      "z": 1560
+    }
+  }
+}

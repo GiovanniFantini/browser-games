@@ -1,0 +1,573 @@
+{
+  "countdown": 3,
+  "checkpointSpacing": 85,
+  "gateHalfWidth": 11,
+  "resetPenalty": 3,
+  "finishGrace": 45,
+  "runout": {
+    "distance": 18,
+    "spacing": 4.8,
+    "side": 10,
+    "speed": 7
+  },
+  "defaults": {
+    "speedScale": 1,
+    "rubberBand": 0.5
+  },
+  "difficulties": [
+    {
+      "name": "Apprendista",
+      "speedScale": 0.85
+    },
+    {
+      "name": "Strada",
+      "speedScale": 1
+    },
+    {
+      "name": "Esperto",
+      "speedScale": 1.1
+    }
+  ],
+  "recoveryOptions": [
+    {
+      "name": "Disattivato",
+      "value": 0
+    },
+    {
+      "name": "Leggero",
+      "value": 0.5
+    },
+    {
+      "name": "Normale",
+      "value": 1
+    }
+  ],
+  "ai": {
+    "straightSpeed": 24,
+    "cornerSpeed": 7.5,
+    "lookAhead": 6,
+    "speedLookAhead": 0.55,
+    "recoverySeconds": 6,
+    "straightFraction": 0.94,
+    "lateralAcceleration": 3.0,
+    "brakingAcceleration": 4.0,
+    "brakeLookAheadMax": 280
+  },
+  "drivers": [
+    {
+      "id": "nemi",
+      "name": "Nemi",
+      "color": "#e67b9a",
+      "skill": 0.94,
+      "lane": -2.8
+    },
+    {
+      "id": "ozra",
+      "name": "Ozra",
+      "color": "#72cdd5",
+      "skill": 0.88,
+      "lane": 2.8
+    },
+    {
+      "id": "iven",
+      "name": "Iven",
+      "color": "#bd9ce7",
+      "skill": 0.83,
+      "lane": -2.8
+    },
+    {
+      "id": "selki",
+      "name": "Selki",
+      "color": "#edbe73",
+      "skill": 0.8,
+      "lane": 2.8
+    }
+  ],
+  "events": [
+    {
+      "id": "circuit-foundry",
+      "name": "Anello dei Fonditori",
+      "mode": "circuit",
+      "laps": 2,
+      "description": "Due giri fra magazzini e corti industriali. Quattro avversari, partenza sul posto.",
+      "meeting": {
+        "x": 0,
+        "z": -300
+      },
+      "points": [
+        [0, -300],
+        [0, -240],
+        [0, -120],
+        [0, 0],
+        [120, 0],
+        [240, 0],
+        [240, -120],
+        [240, -240],
+        [240, -360],
+        [120, -360],
+        [0, -360]
+      ]
+    },
+    {
+      "id": "sprint-quays",
+      "name": "Rotta del Levante",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Dal bacino alle gru del Levante. Una corsa da punto a punto lungo le banchine.",
+      "meeting": {
+        "x": 360,
+        "z": -120
+      },
+      "points": [
+        [360, -120],
+        [360, 0],
+        [360, 120],
+        [360, 240],
+        [240, 240],
+        [120, 240],
+        [120, 360],
+        [240, 360],
+        [360, 360],
+        [450, 360]
+      ]
+    },
+    {
+      "id": "drift-foundry",
+      "name": "Trame dei Fonditori",
+      "mode": "drift",
+      "laps": 1,
+      "description": "Un giro in derapata: angolo, velocità e continuità. Un urto annulla la catena aperta.",
+      "meeting": {
+        "x": 240,
+        "z": -300
+      },
+      "points": [
+        [240, -300],
+        [240, -360],
+        [120, -360],
+        [0, -360],
+        [0, -240],
+        [0, -120],
+        [0, 0],
+        [120, 0],
+        [240, 0],
+        [240, -120],
+        [240, -240]
+      ],
+      "closed": true,
+      "opponents": 0,
+      "targetScore": 350,
+      "timeLimit": 200
+    },
+    {
+      "id": "drift-hills",
+      "name": "Pendio di Vetracava",
+      "mode": "downhill",
+      "laps": 1,
+      "opponents": 0,
+      "targetScore": 200,
+      "timeLimit": 160,
+      "hill": true,
+      "description": "Discesa di Vetracava: tornanti, pendenza e barriere sul versante orientale di Hillcrest.",
+      "meeting": {
+        "x": 480,
+        "z": 120
+      },
+      "points": [
+        [1750, 820, 36],
+        [1750, 880, 34],
+        [1840, 950, 29],
+        [1740, 1030, 23],
+        [1840, 1120, 16],
+        [1740, 1205, 9],
+        [1820, 1280, 2],
+        [1820, 1340, 0]
+      ],
+      "turnRadius": 36
+    },
+    {
+      "id": "drag-channel",
+      "name": "Rettilineo del Canale",
+      "mode": "drag",
+      "laps": 1,
+      "opponents": 1,
+      "timeLimit": 100,
+      "description": "Cambio manuale obbligatorio, partenza a giri controllati e traffico. X/Z cambiano marcia. Insistere al limitatore rompe il motore.",
+      "meeting": {
+        "x": 0,
+        "z": -420
+      },
+      "points": [
+        [0, -420],
+        [0, -240],
+        [0, 0],
+        [0, 240],
+        [0, 420]
+      ]
+    },
+    {
+      "id": "checkpoint-lanterns",
+      "name": "Battito delle Lanterne",
+      "mode": "checkpoint",
+      "laps": 1,
+      "description": "Sprint a checkpoint: ogni cancello attraversato in tempo aggiunge otto secondi.",
+      "meeting": {
+        "x": 360,
+        "z": -80
+      },
+      "points": [
+        [360, -80],
+        [360, 0],
+        [360, 120],
+        [360, 240],
+        [240, 240],
+        [120, 240],
+        [120, 360],
+        [240, 360],
+        [360, 360],
+        [450, 360]
+      ],
+      "opponents": 0,
+      "timeLimit": 35
+    },
+    {
+      "id": "duel-docks",
+      "name": "Distacco ai Moli",
+      "mode": "challenge",
+      "laps": 99,
+      "description": "Stacca il pilota di 80 metri per tre secondi. In guida libera puoi sfidare il pilota incontrato con F.",
+      "meeting": {
+        "x": 0,
+        "z": -260
+      },
+      "points": [
+        [0, -260],
+        [0, -240],
+        [0, -120],
+        [0, 0],
+        [120, 0],
+        [240, 0],
+        [240, -120],
+        [240, -240],
+        [240, -360],
+        [120, -360],
+        [0, -360]
+      ],
+      "closed": true,
+      "opponents": 1,
+      "timeLimit": 100
+    },
+    {
+      "id": "ghost-foundry",
+      "name": "Eco dei Fonditori",
+      "mode": "timeTrial",
+      "laps": 1,
+      "description": "Un giro contro il tuo miglior fantasma pulito, salvato localmente. I ripristini invalidano la registrazione.",
+      "meeting": {
+        "x": 0,
+        "z": -340
+      },
+      "points": [
+        [0, -340],
+        [0, -240],
+        [0, -120],
+        [0, 0],
+        [120, 0],
+        [240, 0],
+        [240, -120],
+        [240, -240],
+        [240, -360],
+        [120, -360],
+        [0, -360]
+      ],
+      "closed": true,
+      "opponents": 0,
+      "timeLimit": 360
+    },
+    {
+      "id": "cup-docks",
+      "name": "Coppa dei Tre Bacini",
+      "mode": "tournament",
+      "laps": 1,
+      "description": "Tre gare, classifica a punti e premio finale. Le tappe concluse restano salvate.",
+      "meeting": {
+        "x": 240,
+        "z": -340
+      },
+      "points": [
+        [0, -300],
+        [0, -240],
+        [0, -120],
+        [0, 0],
+        [120, 0],
+        [240, 0],
+        [240, -120],
+        [240, -240],
+        [240, -360],
+        [120, -360],
+        [0, -360]
+      ]
+    },
+    {
+      "id": "cup-foundry",
+      "name": "Coppa / Fonditori",
+      "mode": "circuit",
+      "laps": 1,
+      "description": "Due giri fra magazzini e corti industriali. Quattro avversari, partenza sul posto.",
+      "meeting": {
+        "x": 0,
+        "z": -300
+      },
+      "points": [
+        [240, -340],
+        [240, -360],
+        [120, -360],
+        [0, -360],
+        [0, -240],
+        [0, -120],
+        [0, 0],
+        [120, 0],
+        [240, 0],
+        [240, -120],
+        [240, -240]
+      ],
+      "hidden": true
+    },
+    {
+      "id": "cup-quays",
+      "name": "Coppa / Levante",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Dal bacino alle gru del Levante. Una corsa da punto a punto lungo le banchine.",
+      "meeting": {
+        "x": 360,
+        "z": -120
+      },
+      "points": [
+        [360, -120],
+        [360, 0],
+        [360, 120],
+        [360, 240],
+        [240, 240],
+        [120, 240],
+        [120, 360],
+        [240, 360],
+        [360, 360],
+        [450, 360]
+      ],
+      "hidden": true
+    },
+    {
+      "id": "cup-return",
+      "name": "Coppa / Ritorno",
+      "mode": "circuit",
+      "laps": 1,
+      "description": "Due giri fra magazzini e corti industriali. Quattro avversari, partenza sul posto.",
+      "meeting": {
+        "x": 0,
+        "z": -300
+      },
+      "points": [
+        [0, -360],
+        [120, -360],
+        [240, -360],
+        [240, -240],
+        [240, -120],
+        [240, 0],
+        [120, 0],
+        [0, 0],
+        [0, -120],
+        [0, -240],
+        [0, -300]
+      ],
+      "hidden": true
+    },
+    {
+      "id": "rival-nemi",
+      "name": "Sfida a Nemi",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Disegna le traiettorie fra i magazzini. Per lei una gara si decide prima della prima curva.",
+      "meeting": {
+        "x": 360,
+        "z": -120
+      },
+      "points": [
+        [360, -120],
+        [360, 0],
+        [360, 120],
+        [360, 240],
+        [240, 240],
+        [120, 240],
+        [120, 360],
+        [240, 360],
+        [360, 360],
+        [450, 360]
+      ],
+      "hidden": true,
+      "district": "old-docks",
+      "opponents": 1,
+      "rival": "nemi",
+      "rivalPace": 0.85
+    },
+    {
+      "id": "career-neon-district",
+      "name": "Rotta delle Torri",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Gara del quartiere in carriera.",
+      "meeting": {
+        "x": 1440,
+        "z": -120
+      },
+      "points": [
+        [1440, -120, 0],
+        [1440, 0, 0],
+        [1440, 120, 0],
+        [1440, 240, 0],
+        [1320, 240, 0],
+        [1200, 240, 0],
+        [1200, 360, 0],
+        [1320, 360, 0],
+        [1440, 360, 0],
+        [1530, 360, 0]
+      ],
+      "hidden": true,
+      "district": "neon-district"
+    },
+    {
+      "id": "rival-ozra",
+      "name": "Sfida a Ozra",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Conosce ogni riflesso delle Torri. La sua precisione vale più di una partenza aggressiva.",
+      "meeting": {
+        "x": 1440,
+        "z": -120
+      },
+      "points": [
+        [1440, -120, 0],
+        [1440, 0, 0],
+        [1440, 120, 0],
+        [1440, 240, 0],
+        [1320, 240, 0],
+        [1200, 240, 0],
+        [1200, 360, 0],
+        [1320, 360, 0],
+        [1440, 360, 0],
+        [1530, 360, 0]
+      ],
+      "hidden": true,
+      "district": "neon-district",
+      "opponents": 1,
+      "rival": "ozra",
+      "rivalPace": 0.88
+    },
+    {
+      "id": "career-hillcrest",
+      "name": "Terrazza di Vetracava",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Gara del quartiere in carriera.",
+      "meeting": {
+        "x": 1440,
+        "z": 960
+      },
+      "points": [
+        [1440, 960, 19.4454],
+        [1440, 1080, 21.0476],
+        [1440, 1200, 19.4454],
+        [1440, 1320, 14.8829],
+        [1320, 1320, 27.5],
+        [1200, 1320, 35.9305],
+        [1200, 1440, 19.4454],
+        [1320, 1440, 14.8829],
+        [1440, 1440, 8.0546],
+        [1530, 1440, 2.063]
+      ],
+      "hidden": true,
+      "district": "hillcrest"
+    },
+    {
+      "id": "rival-iven",
+      "name": "Sfida a Iven",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Custodisce i passaggi di Vetracava. Non forza il ritmo: aspetta il tuo errore.",
+      "meeting": {
+        "x": 1440,
+        "z": 960
+      },
+      "points": [
+        [1440, 960, 19.4454],
+        [1440, 1080, 21.0476],
+        [1440, 1200, 19.4454],
+        [1440, 1320, 14.8829],
+        [1320, 1320, 27.5],
+        [1200, 1320, 35.9305],
+        [1200, 1440, 19.4454],
+        [1320, 1440, 14.8829],
+        [1440, 1440, 8.0546],
+        [1530, 1440, 2.063]
+      ],
+      "hidden": true,
+      "district": "hillcrest",
+      "opponents": 1,
+      "rival": "iven",
+      "rivalPace": 0.91
+    },
+    {
+      "id": "career-airport-belt",
+      "name": "Rotta degli Hangar",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Gara del quartiere in carriera.",
+      "meeting": {
+        "x": 360,
+        "z": 960
+      },
+      "points": [
+        [360, 960, 0],
+        [360, 1080, 0],
+        [360, 1200, 0],
+        [360, 1320, 0],
+        [240, 1320, 0],
+        [120, 1320, 0],
+        [120, 1440, 0],
+        [240, 1440, 0],
+        [360, 1440, 0],
+        [450, 1440, 0]
+      ],
+      "hidden": true,
+      "district": "airport-belt"
+    },
+    {
+      "id": "rival-selki",
+      "name": "Sfida a Selki",
+      "mode": "sprint",
+      "laps": 1,
+      "description": "Fra gli hangar corre da quando le luci erano ancora spente. Ora cerca una nuova firma per la città.",
+      "meeting": {
+        "x": 360,
+        "z": 960
+      },
+      "points": [
+        [360, 960, 0],
+        [360, 1080, 0],
+        [360, 1200, 0],
+        [360, 1320, 0],
+        [240, 1320, 0],
+        [120, 1320, 0],
+        [120, 1440, 0],
+        [240, 1440, 0],
+        [360, 1440, 0],
+        [450, 1440, 0]
+      ],
+      "hidden": true,
+      "district": "airport-belt",
+      "opponents": 1,
+      "rival": "selki",
+      "rivalPace": 0.94
+    }
+  ]
+}

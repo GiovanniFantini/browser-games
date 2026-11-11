@@ -1,0 +1,398 @@
+{
+  "initialCredits": 12000,
+  "capacity": 3,
+  "model": {
+    "id": "silex-c1",
+    "name": "Orvane Silex C1",
+    "price": 9000
+  },
+  "rewards": {
+    "circuit-foundry": [3500, 2400, 1500, 900, 600],
+    "sprint-quays": [2200, 1500, 900, 600, 350],
+    "drift-foundry": [2600, 0, 0, 0, 0],
+    "drift-hills": [2800, 0, 0, 0, 0],
+    "drag-channel": [2400, 900, 0, 0, 0],
+    "checkpoint-lanterns": [2300, 0, 0, 0, 0],
+    "duel-docks": [2200, 0, 0, 0, 0],
+    "ghost-foundry": [1600, 0, 0, 0, 0],
+    "cup-docks": [7000, 4800, 3200, 2000, 1200],
+    "cup-foundry": [0, 0, 0, 0, 0],
+    "cup-quays": [0, 0, 0, 0, 0],
+    "cup-return": [0, 0, 0, 0, 0],
+    "rival-nemi": [3500, 0, 0, 0, 0],
+    "career-neon-district": [2600, 1700, 1000, 600, 400],
+    "rival-ozra": [3500, 0, 0, 0, 0],
+    "career-hillcrest": [2600, 1700, 1000, 600, 400],
+    "rival-iven": [3500, 0, 0, 0, 0],
+    "career-airport-belt": [2600, 1700, 1000, 600, 400],
+    "rival-selki": [3500, 0, 0, 0, 0]
+  },
+  "difficultyRewards": {
+    "0.85": 0.8,
+    "1": 1,
+    "1.1": 1.2
+  },
+  "categories": [
+    {
+      "id": "engine",
+      "name": "Motore",
+      "brand": "Velrune",
+      "description": "Coppia e risposta del motore.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 1800,
+          "effects": {
+            "engineForce": 1.08,
+            "sound": 0.1
+          }
+        },
+        {
+          "level": 2,
+          "price": 3400,
+          "effects": {
+            "engineForce": 1.18,
+            "sound": 0.2
+          }
+        },
+        {
+          "level": 3,
+          "price": 6200,
+          "effects": {
+            "engineForce": 1.32,
+            "sound": 0.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "boost",
+      "name": "Sovralimentazione",
+      "brand": "Aervik",
+      "description": "Più spinta e un sibilo più presente.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 1600,
+          "effects": {
+            "engineForce": 1.07,
+            "maxSpeed": 1.015,
+            "turbo": 0.2
+          }
+        },
+        {
+          "level": 2,
+          "price": 3200,
+          "effects": {
+            "engineForce": 1.16,
+            "maxSpeed": 1.035,
+            "turbo": 0.4
+          }
+        },
+        {
+          "level": 3,
+          "price": 5800,
+          "effects": {
+            "engineForce": 1.28,
+            "maxSpeed": 1.06,
+            "turbo": 0.6
+          }
+        }
+      ]
+    },
+    {
+      "id": "exhaust",
+      "name": "Scarico",
+      "brand": "Vornex",
+      "description": "Flusso e timbro più aperti.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 650,
+          "effects": {
+            "engineForce": 1.03,
+            "sound": 0.15
+          }
+        },
+        {
+          "level": 2,
+          "price": 1400,
+          "effects": {
+            "engineForce": 1.06,
+            "sound": 0.3
+          }
+        },
+        {
+          "level": 3,
+          "price": 2600,
+          "effects": {
+            "engineForce": 1.09,
+            "sound": 0.45
+          }
+        }
+      ]
+    },
+    {
+      "id": "transmission",
+      "name": "Cambio",
+      "brand": "Temvra",
+      "description": "Rapporti più lunghi e trasmissione efficiente.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 1200,
+          "effects": {
+            "maxSpeed": 1.04,
+            "gearStep": 1.04,
+            "engineForce": 1.02
+          }
+        },
+        {
+          "level": 2,
+          "price": 2600,
+          "effects": {
+            "maxSpeed": 1.08,
+            "gearStep": 1.08,
+            "engineForce": 1.04
+          }
+        },
+        {
+          "level": 3,
+          "price": 4800,
+          "effects": {
+            "maxSpeed": 1.13,
+            "gearStep": 1.13,
+            "engineForce": 1.06
+          }
+        }
+      ]
+    },
+    {
+      "id": "clutch",
+      "name": "Frizione",
+      "brand": "Kelvix",
+      "description": "Riduce le perdite nella trasmissione.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 600,
+          "effects": {
+            "engineForce": 1.025
+          }
+        },
+        {
+          "level": 2,
+          "price": 1300,
+          "effects": {
+            "engineForce": 1.05
+          }
+        },
+        {
+          "level": 3,
+          "price": 2400,
+          "effects": {
+            "engineForce": 1.075
+          }
+        }
+      ]
+    },
+    {
+      "id": "suspension",
+      "name": "Sospensioni",
+      "brand": "Ulvane",
+      "description": "Molle, smorzatori e tenuta laterale.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 1000,
+          "effects": {
+            "grip": 1.03,
+            "suspensionStiffness": 1.08,
+            "suspensionCompression": 1.05,
+            "suspensionRelaxation": 1.05
+          }
+        },
+        {
+          "level": 2,
+          "price": 2100,
+          "effects": {
+            "grip": 1.065,
+            "suspensionStiffness": 1.16,
+            "suspensionCompression": 1.1,
+            "suspensionRelaxation": 1.1
+          }
+        },
+        {
+          "level": 3,
+          "price": 3900,
+          "effects": {
+            "grip": 1.1,
+            "suspensionStiffness": 1.25,
+            "suspensionCompression": 1.18,
+            "suspensionRelaxation": 1.18
+          }
+        }
+      ]
+    },
+    {
+      "id": "brakes",
+      "name": "Freni",
+      "brand": "Bravik",
+      "description": "Maggiore forza frenante alle quattro ruote.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 800,
+          "effects": {
+            "brake": 1.12
+          }
+        },
+        {
+          "level": 2,
+          "price": 1700,
+          "effects": {
+            "brake": 1.26
+          }
+        },
+        {
+          "level": 3,
+          "price": 3100,
+          "effects": {
+            "brake": 1.44
+          }
+        }
+      ]
+    },
+    {
+      "id": "tires",
+      "name": "Pneumatici",
+      "brand": "Tenvik",
+      "description": "Mescole con più aderenza e frenata.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 900,
+          "effects": {
+            "grip": 1.08,
+            "brake": 1.02
+          }
+        },
+        {
+          "level": 2,
+          "price": 1900,
+          "effects": {
+            "grip": 1.17,
+            "brake": 1.05
+          }
+        },
+        {
+          "level": 3,
+          "price": 3500,
+          "effects": {
+            "grip": 1.28,
+            "brake": 1.09
+          }
+        }
+      ]
+    },
+    {
+      "id": "weight",
+      "name": "Alleggerimento",
+      "brand": "Ravex",
+      "description": "Riduce la massa fisica del veicolo.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 1100,
+          "effects": {
+            "mass": 0.95
+          }
+        },
+        {
+          "level": 2,
+          "price": 2400,
+          "effects": {
+            "mass": 0.9
+          }
+        },
+        {
+          "level": 3,
+          "price": 4500,
+          "effects": {
+            "mass": 0.84
+          }
+        }
+      ]
+    },
+    {
+      "id": "ecu",
+      "name": "ECU",
+      "brand": "Nexori",
+      "description": "Gestione motore e limitatore rivisti.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 750,
+          "effects": {
+            "engineForce": 1.035,
+            "maxSpeed": 1.02,
+            "rpmLimit": 1.03
+          }
+        },
+        {
+          "level": 2,
+          "price": 1600,
+          "effects": {
+            "engineForce": 1.075,
+            "maxSpeed": 1.04,
+            "rpmLimit": 1.06
+          }
+        },
+        {
+          "level": 3,
+          "price": 2900,
+          "effects": {
+            "engineForce": 1.12,
+            "maxSpeed": 1.065,
+            "rpmLimit": 1.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "nitro",
+      "name": "Nitro",
+      "brand": "Lymora",
+      "description": "Serbatoio, erogazione e ricarica maggiorati.",
+      "tiers": [
+        {
+          "level": 1,
+          "price": 850,
+          "effects": {
+            "nitroDuration": 1.3,
+            "nitroMultiplier": 1.06,
+            "nitroRecharge": 1.1
+          }
+        },
+        {
+          "level": 2,
+          "price": 1800,
+          "effects": {
+            "nitroDuration": 1.65,
+            "nitroMultiplier": 1.15,
+            "nitroRecharge": 1.2
+          }
+        },
+        {
+          "level": 3,
+          "price": 3300,
+          "effects": {
+            "nitroDuration": 2,
+            "nitroMultiplier": 1.24,
+            "nitroRecharge": 1.3
+          }
+        }
+      ]
+    }
+  ]
+}

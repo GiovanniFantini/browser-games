@@ -1,0 +1,171 @@
+{
+  "id": "old-docks",
+  "name": "Old Docks",
+  "seed": 9173,
+  "coordinates": [-480, -360, -240, -120, 0, 120, 240, 360, 480],
+  "roadWidth": 24,
+  "sidewalkWidth": 4,
+  "laneOffset": 4.5,
+  "spawn": [-4.5, 1.15, -310],
+  "traffic": {
+    "maximum": 32,
+    "default": 16,
+    "speed": 11,
+    "signalCycle": 24
+  },
+  "zones": [
+    {
+      "name": "Bacini del Levante",
+      "description": "Gru, banchine e depositi sul canale.",
+      "color": "#74d4de"
+    },
+    {
+      "name": "Corte dei Fonditori",
+      "description": "Magazzini in mattoni e cortili industriali.",
+      "color": "#e9b879"
+    },
+    {
+      "name": "Vicolo delle Lanterne",
+      "description": "Portici e lanterne geometriche sopra le officine.",
+      "color": "#dd86b7"
+    }
+  ],
+  "pois": [
+    {
+      "id": "circuit",
+      "name": "Anello dei Fonditori",
+      "type": "event",
+      "x": 0,
+      "z": -300,
+      "description": "Circuito disponibile: raggiungi il ritrovo e premi E per gareggiare."
+    },
+    {
+      "id": "home",
+      "name": "Garage del bacino",
+      "type": "garage",
+      "x": 0,
+      "z": -240,
+      "description": "Garage aperto: premi E nelle vicinanze oppure H. Configurazioni e salvataggi."
+    },
+    {
+      "id": "workshop",
+      "name": "Officina Torqen",
+      "type": "shop",
+      "x": -240,
+      "z": 0,
+      "description": "Officina aperta: premi E nelle vicinanze oppure H. Componenti prestazioni su tre livelli."
+    },
+    {
+      "id": "paint",
+      "name": "Cromia Notturna",
+      "type": "shop",
+      "x": 120,
+      "z": 240,
+      "description": "Colori e vinili disponibili: premi E nelle vicinanze oppure apri Estetica dal garage."
+    },
+    {
+      "id": "meet",
+      "name": "Ritrovo dei moli",
+      "type": "event",
+      "x": 360,
+      "z": -120,
+      "description": "Sprint disponibile: raggiungi il ritrovo e premi E per gareggiare."
+    },
+    {
+      "id": "crane",
+      "name": "Gru del Levante",
+      "type": "landmark",
+      "x": 480,
+      "z": 240,
+      "description": "Panorama sulle gru e sul canale."
+    },
+    {
+      "id": "lanterns",
+      "name": "Vicolo delle Lanterne",
+      "type": "landmark",
+      "x": -360,
+      "z": 360,
+      "description": "Neon rosa e lanterne sopra i portici."
+    },
+    {
+      "id": "body",
+      "name": "Atelier Velyra",
+      "type": "shop",
+      "x": -120,
+      "z": 120,
+      "description": "Carrozzeria aperta. Premi E nelle vicinanze per kit, cerchi, colori e foto."
+    },
+    {
+      "id": "drift-foundry",
+      "name": "Trame dei Fonditori",
+      "type": "event",
+      "x": 240,
+      "z": -300,
+      "description": "Un giro in derapata: angolo, velocità e continuità. Un urto annulla la catena aperta. Premi E al ritrovo per avviare."
+    },
+    {
+      "id": "drift-hills",
+      "name": "Pendio di Vetracava",
+      "type": "event",
+      "x": 480,
+      "z": 120,
+      "description": "Discesa di Vetracava: tornanti, pendenza e barriere sul versante orientale di Hillcrest. Premi E al ritrovo per avviare."
+    },
+    {
+      "id": "drag-channel",
+      "name": "Rettilineo del Canale",
+      "type": "event",
+      "x": 0,
+      "z": -420,
+      "description": "Cambio manuale obbligatorio, partenza a giri controllati e traffico. X/Z cambiano marcia. Insistere al limitatore rompe il motore. Premi E al ritrovo per avviare."
+    },
+    {
+      "id": "checkpoint-lanterns",
+      "name": "Battito delle Lanterne",
+      "type": "event",
+      "x": 360,
+      "z": -80,
+      "description": "Sprint a checkpoint: ogni cancello attraversato in tempo aggiunge otto secondi. Premi E al ritrovo per avviare."
+    },
+    {
+      "id": "duel-docks",
+      "name": "Distacco ai Moli",
+      "type": "event",
+      "x": 0,
+      "z": -260,
+      "description": "Stacca il pilota di 80 metri per tre secondi. In guida libera puoi sfidare il pilota incontrato con F. Premi E al ritrovo per avviare."
+    },
+    {
+      "id": "ghost-foundry",
+      "name": "Eco dei Fonditori",
+      "type": "event",
+      "x": 0,
+      "z": -340,
+      "description": "Un giro contro il tuo miglior fantasma pulito, salvato localmente. I ripristini invalidano la registrazione. Premi E al ritrovo per avviare."
+    },
+    {
+      "id": "cup-docks",
+      "name": "Coppa dei Tre Bacini",
+      "type": "event",
+      "x": 240,
+      "z": -340,
+      "description": "Tre gare, classifica a punti e premio finale. Le tappe concluse restano salvate. Premi E al ritrovo per avviare."
+    },
+    {
+      "id": "dealer",
+      "name": "Salone Orvane",
+      "type": "shop",
+      "x": -120,
+      "z": -240,
+      "description": "Concessionario: premi E per scegliere, confrontare e acquistare i modelli originali."
+    }
+  ],
+  "theme": {
+    "heightMin": 9,
+    "heightRange": 35,
+    "lanternRange": 18,
+    "water": true,
+    "lanterns": false,
+    "scenery": "none"
+  }
+}

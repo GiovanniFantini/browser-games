@@ -1,0 +1,230 @@
+#garage {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  background: #080f1a;
+  overflow: auto;
+  pointer-events: auto;
+  color: #dbe5ec;
+}
+#garage[hidden] {
+  display: none;
+}
+.garage-shell {
+  max-width: 1450px;
+  margin: auto;
+  padding: 30px 4vw 70px;
+}
+.garage-shell header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.garage-shell h2 {
+  margin: 6px 0;
+  font-size: clamp(26px, 3vw, 44px);
+}
+.garage-shell h3 {
+  font-size: 24px;
+  margin: 16px 0 8px;
+}
+.garage-shell h4 {
+  font-size: 21px;
+  margin: 10px 0;
+}
+.garage-shell p {
+  color: #a6bac9;
+  line-height: 1.5;
+  font-size: 15px;
+}
+#garage-wallet {
+  display: inline-block;
+  color: #b5e873;
+  font-size: 25px;
+  margin-right: 20px;
+  white-space: nowrap;
+}
+#garage-status {
+  padding: 10px 14px;
+  border-left: 3px solid #b5e873;
+  background: #13212e;
+  min-height: 42px;
+  color: #d9efbf;
+}
+.garage-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.6fr);
+  gap: 28px;
+}
+#garage-preview {
+  height: 260px;
+  background: radial-gradient(ellipse, #223f4b, #101c29 70%);
+  border-radius: 4px;
+  position: relative;
+}
+#garage-preview canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+#garage-preview[data-error]::after {
+  content: attr(data-error);
+  position: absolute;
+  inset: 15px;
+}
+.garage-car > .eyebrow {
+  display: block;
+  margin-top: 16px;
+}
+.garage-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 15px 0;
+  font-size: 11px;
+  color: #8ea7b8;
+}
+.garage-stats b {
+  display: block;
+  color: #e5f0f4;
+  font-size: 19px;
+  font-weight: 600;
+}
+.garage-car .garage-stats b {
+  font-size: 24px;
+}
+.garage-parts nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.garage-parts nav button {
+  padding: 7px 10px;
+  font-size: 13px;
+}
+.garage-parts nav button[aria-pressed='true'] {
+  color: #122011;
+  background: #b5e873;
+}
+.garage-parts nav span {
+  opacity: 0.7;
+  padding-left: 4px;
+}
+.part-cards,
+.garage-cars > div,
+.manual-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.garage-shell article {
+  padding: 15px;
+  background: #12212e;
+  border: 1px solid #2a3c49;
+  border-top: 2px solid #628653;
+}
+.garage-shell article button {
+  width: 100%;
+  padding: 10px 6px;
+  font-size: 12px;
+  margin-top: 5px;
+}
+.garage-shell button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.garage-shell button:focus-visible,
+.garage-shell summary:focus-visible,
+.garage-shell input:focus-visible {
+  outline: 2px solid #75d9ee;
+  outline-offset: 3px;
+}
+.garage-shell details {
+  border-top: 1px solid #344754;
+  padding-top: 12px;
+}
+.garage-shell summary {
+  cursor: pointer;
+  font-size: 14px;
+  color: #b5e873;
+}
+.garage-shell svg {
+  width: 100%;
+  max-height: 180px;
+}
+.garage-cars,
+.garage-saves {
+  border-top: 1px solid #344754;
+  margin-top: 30px;
+  padding-top: 8px;
+}
+.save-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.file-label {
+  font-size: 14px;
+  padding: 10px;
+  background: #233747;
+}
+.file-label input {
+  display: block;
+  width: 210px;
+  margin-top: 5px;
+}
+#import-preview {
+  padding: 16px;
+  margin: 16px 0;
+  background: #1d353d;
+}
+#garage-interact {
+  position: fixed;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  pointer-events: auto;
+  font-size: 14px;
+  border-color: #b5e873;
+}
+@media (max-width: 1000px) {
+  .garage-layout {
+    grid-template-columns: 1fr;
+  }
+  .garage-car {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  #garage-preview {
+    grid-row: span 3;
+  }
+  .garage-car > p {
+    display: none;
+  }
+  .garage-car details {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 600px) {
+  .garage-shell header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .garage-car {
+    display: block;
+  }
+  .part-cards,
+  .garage-cars > div,
+  .manual-slots {
+    grid-template-columns: 1fr;
+  }
+  .garage-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

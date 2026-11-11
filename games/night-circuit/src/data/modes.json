@@ -1,0 +1,47 @@
+{
+  "drift": {
+    "minSpeed": 6,
+    "minAngle": 10,
+    "maxAngle": 75,
+    "rate": 30,
+    "chainSeconds": 3,
+    "maxMultiplier": 5,
+    "bankDelay": 1.1,
+    "wallLock": 0.8,
+    "nitroGain": 0.035
+  },
+  "drag": {
+    "perfectMin": 0.78,
+    "perfectMax": 0.92,
+    "launchMin": 0.55,
+    "launchMax": 0.8,
+    "failureSeconds": 4,
+    "shiftDuration": 0.45,
+    "trafficCount": 6,
+    "trafficSpeed": 9
+  },
+  "checkpoint": {
+    "bonus": 8
+  },
+  "challenge": {
+    "gap": 80,
+    "holdSeconds": 3,
+    "encounterDistance": 35,
+    "rivalPace": 0.8
+  },
+  "ghost": {
+    "sampleInterval": 0.2,
+    "maxFrames": 1802,
+    "maxDuration": 360,
+    "version": 1
+  },
+  "cup": {
+    "rounds": ["cup-foundry", "cup-quays", "cup-return"],
+    "points": [10, 7, 5, 3, 1],
+    "dnfPenalty": 180
+  },
+  "hill": {
+    "width": 24,
+    "startHeight": 36
+  }
+}

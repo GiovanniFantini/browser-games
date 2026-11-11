@@ -1,0 +1,704 @@
+{
+  "slots": {
+    "kit": {
+      "name": "Kit completo",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0,
+          "width": 1,
+          "depth": 1
+        },
+        {
+          "id": 1,
+          "name": "Velyra Prisma",
+          "price": 1700,
+          "width": 1.04,
+          "depth": 1.03
+        },
+        {
+          "id": 2,
+          "name": "Velyra Cuspide",
+          "price": 2300,
+          "width": 1.08,
+          "depth": 1.04
+        },
+        {
+          "id": 3,
+          "name": "Velyra Frangente",
+          "price": 2900,
+          "width": 1.1,
+          "depth": 1.05
+        },
+        {
+          "id": 4,
+          "name": "Velyra Asteria",
+          "price": 3600,
+          "width": 1.06,
+          "depth": 1.07
+        },
+        {
+          "id": 5,
+          "name": "Velyra Nembora",
+          "price": 4400,
+          "width": 1.12,
+          "depth": 1.06
+        }
+      ]
+    },
+    "front": {
+      "name": "Paraurti anteriore",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Lama",
+          "price": 700
+        },
+        {
+          "id": 2,
+          "name": "Doppio canale",
+          "price": 1100
+        }
+      ]
+    },
+    "rear": {
+      "name": "Paraurti posteriore",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Estrattore",
+          "price": 650
+        },
+        {
+          "id": 2,
+          "name": "Pinne",
+          "price": 1050
+        }
+      ]
+    },
+    "skirts": {
+      "name": "Minigonne",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Profilo",
+          "price": 500
+        },
+        {
+          "id": 2,
+          "name": "Fibra larga",
+          "price": 850
+        }
+      ]
+    },
+    "spoiler": {
+      "name": "Spoiler",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Ponte",
+          "price": 800
+        },
+        {
+          "id": 2,
+          "name": "Doppia ala",
+          "price": 1300
+        }
+      ]
+    },
+    "hood": {
+      "name": "Cofano",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Presa centrale",
+          "price": 650
+        },
+        {
+          "id": 2,
+          "name": "Fibra e sfoghi",
+          "price": 1200
+        }
+      ]
+    },
+    "roof": {
+      "name": "Tetto",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Presa sul tetto",
+          "price": 450
+        },
+        {
+          "id": 2,
+          "name": "Fibra",
+          "price": 900
+        }
+      ]
+    },
+    "mirrors": {
+      "name": "Specchietti",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Stelo",
+          "price": 300
+        },
+        {
+          "id": 2,
+          "name": "Faccette",
+          "price": 550
+        }
+      ]
+    },
+    "fuel": {
+      "name": "Bocchettone",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Anello",
+          "price": 200
+        },
+        {
+          "id": 2,
+          "name": "Doppio incavo",
+          "price": 400
+        }
+      ]
+    },
+    "exhaust": {
+      "name": "Scarichi visibili",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Gemelli",
+          "price": 550
+        },
+        {
+          "id": 2,
+          "name": "Tripla uscita",
+          "price": 950
+        }
+      ]
+    },
+    "finish": {
+      "name": "Finitura",
+      "options": [
+        {
+          "id": 0,
+          "name": "Lucida",
+          "price": 0,
+          "metalness": 0.2,
+          "roughness": 0.22,
+          "clearcoat": 1
+        },
+        {
+          "id": 1,
+          "name": "Metallizzata",
+          "price": 500,
+          "metalness": 0.85,
+          "roughness": 0.25,
+          "clearcoat": 1
+        },
+        {
+          "id": 2,
+          "name": "Perlata",
+          "price": 900,
+          "metalness": 0.45,
+          "roughness": 0.23,
+          "clearcoat": 1,
+          "shift": 0.4
+        },
+        {
+          "id": 3,
+          "name": "Opaca",
+          "price": 450,
+          "metalness": 0.1,
+          "roughness": 0.85,
+          "clearcoat": 0
+        },
+        {
+          "id": 4,
+          "name": "Cangiante",
+          "price": 1400,
+          "metalness": 0.55,
+          "roughness": 0.2,
+          "clearcoat": 1,
+          "shift": 1
+        }
+      ]
+    },
+    "neon": {
+      "name": "Neon sottoscocca",
+      "options": [
+        {
+          "id": 0,
+          "name": "Spento",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Fisso",
+          "price": 500
+        },
+        {
+          "id": 2,
+          "name": "Pulsazione",
+          "price": 750
+        },
+        {
+          "id": 3,
+          "name": "Inseguimento",
+          "price": 1000
+        }
+      ]
+    },
+    "lights": {
+      "name": "Disegno fari",
+      "options": [
+        {
+          "id": 0,
+          "name": "Lama",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Tre elementi",
+          "price": 450
+        },
+        {
+          "id": 2,
+          "name": "Anelli",
+          "price": 750
+        }
+      ]
+    },
+    "audio": {
+      "name": "Impianto bagagliaio",
+      "options": [
+        {
+          "id": 0,
+          "name": "Serie",
+          "price": 0
+        },
+        {
+          "id": 1,
+          "name": "Doppio cono",
+          "price": 750
+        },
+        {
+          "id": 2,
+          "name": "Parete sonora",
+          "price": 1400
+        }
+      ]
+    }
+  },
+  "wheels": [
+    {
+      "id": 0,
+      "name": "Velyra Raggio 01",
+      "price": 0,
+      "spokes": 4,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 1,
+      "name": "Velyra Raggio 02",
+      "price": 665,
+      "spokes": 5,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 2,
+      "name": "Velyra Raggio 03",
+      "price": 730,
+      "spokes": 6,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 3,
+      "name": "Velyra Raggio 04",
+      "price": 795,
+      "spokes": 7,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 4,
+      "name": "Velyra Raggio 05",
+      "price": 860,
+      "spokes": 8,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 5,
+      "name": "Velyra Raggio 06",
+      "price": 925,
+      "spokes": 9,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 6,
+      "name": "Velyra Raggio 07",
+      "price": 990,
+      "spokes": 10,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 7,
+      "name": "Velyra Raggio 08",
+      "price": 1055,
+      "spokes": 11,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 8,
+      "name": "Velyra Raggio 09",
+      "price": 1120,
+      "spokes": 12,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 9,
+      "name": "Velyra Raggio 10",
+      "price": 1185,
+      "spokes": 13,
+      "twist": 0,
+      "double": false,
+      "ring": false
+    },
+    {
+      "id": 10,
+      "name": "Velyra Trama 01",
+      "price": 1250,
+      "spokes": 4,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 11,
+      "name": "Velyra Trama 02",
+      "price": 1315,
+      "spokes": 5,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 12,
+      "name": "Velyra Trama 03",
+      "price": 1380,
+      "spokes": 6,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 13,
+      "name": "Velyra Trama 04",
+      "price": 1445,
+      "spokes": 7,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 14,
+      "name": "Velyra Trama 05",
+      "price": 1510,
+      "spokes": 8,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 15,
+      "name": "Velyra Trama 06",
+      "price": 1575,
+      "spokes": 9,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 16,
+      "name": "Velyra Trama 07",
+      "price": 1640,
+      "spokes": 10,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 17,
+      "name": "Velyra Trama 08",
+      "price": 1705,
+      "spokes": 11,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 18,
+      "name": "Velyra Trama 09",
+      "price": 1770,
+      "spokes": 12,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 19,
+      "name": "Velyra Trama 10",
+      "price": 1835,
+      "spokes": 13,
+      "twist": 0.2,
+      "double": true,
+      "ring": false
+    },
+    {
+      "id": 20,
+      "name": "Velyra Vortice 01",
+      "price": 1900,
+      "spokes": 4,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 21,
+      "name": "Velyra Vortice 02",
+      "price": 1965,
+      "spokes": 5,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 22,
+      "name": "Velyra Vortice 03",
+      "price": 2030,
+      "spokes": 6,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 23,
+      "name": "Velyra Vortice 04",
+      "price": 2095,
+      "spokes": 7,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 24,
+      "name": "Velyra Vortice 05",
+      "price": 2160,
+      "spokes": 8,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 25,
+      "name": "Velyra Vortice 06",
+      "price": 2225,
+      "spokes": 9,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 26,
+      "name": "Velyra Vortice 07",
+      "price": 2290,
+      "spokes": 10,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 27,
+      "name": "Velyra Vortice 08",
+      "price": 2355,
+      "spokes": 11,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 28,
+      "name": "Velyra Vortice 09",
+      "price": 2420,
+      "spokes": 12,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    },
+    {
+      "id": 29,
+      "name": "Velyra Vortice 10",
+      "price": 2485,
+      "spokes": 13,
+      "twist": 0.45,
+      "double": false,
+      "ring": true
+    }
+  ],
+  "vinylUnlockPrice": 500,
+  "spinnerPrice": 600,
+  "filters": [
+    {
+      "id": "natural",
+      "name": "Naturale",
+      "css": "none"
+    },
+    {
+      "id": "noir",
+      "name": "Notte monocroma",
+      "css": "grayscale(1) contrast(1.15)"
+    },
+    {
+      "id": "ice",
+      "name": "Gelo",
+      "css": "hue-rotate(25deg) saturate(1.3) contrast(1.05)"
+    },
+    {
+      "id": "ember",
+      "name": "Ambra",
+      "css": "sepia(0.35) saturate(1.4) contrast(1.1)"
+    }
+  ],
+  "shapes": [
+    {
+      "id": "stripe",
+      "name": "Striscia",
+      "path": "M0 35H100V65H0Z"
+    },
+    {
+      "id": "arrow",
+      "name": "Freccia",
+      "path": "M0 25H60V0L100 50 60 100V75H0Z"
+    },
+    {
+      "id": "flame",
+      "name": "Fiamma",
+      "path": "M0 90Q15 50 38 65Q20 30 62 0Q46 40 76 50Q95 65 100 100H0Z"
+    },
+    {
+      "id": "tribal",
+      "name": "Ramificazione",
+      "path": "M0 85 35 52 15 10 53 37 95 0 72 48 100 80 59 64 42 100 43 68Z"
+    },
+    {
+      "id": "orbit",
+      "name": "Orbita",
+      "path": "M0 40 40 0 100 60 60 100ZM24 42 59 76 76 59 41 24Z",
+      "rule": "evenodd"
+    },
+    {
+      "id": "sigil",
+      "name": "Sigillo Velyra",
+      "path": "M0 0H30L50 65 70 0H100L65 100H35ZM40 5H60V35H40Z"
+    }
+  ],
+  "defaults": {
+    "parts": {
+      "kit": 0,
+      "front": 0,
+      "rear": 0,
+      "skirts": 0,
+      "spoiler": 0,
+      "hood": 0,
+      "roof": 0,
+      "mirrors": 0,
+      "fuel": 0,
+      "exhaust": 0,
+      "finish": 0,
+      "neon": 0,
+      "lights": 0,
+      "audio": 0
+    },
+    "wheel": 0,
+    "diameter": 17,
+    "spinner": false,
+    "paint": "#bccb44",
+    "secondary": "#75d9ee",
+    "rims": "#b3c3cb",
+    "calipers": "#c44652",
+    "neonColor": "#b5e873",
+    "headColor": "#c6f9ff",
+    "tailColor": "#f94861",
+    "hudColor": "#d3ec7b",
+    "nitroColor": "#75d9ee",
+    "tint": 0.25,
+    "vinyls": []
+  }
+}
