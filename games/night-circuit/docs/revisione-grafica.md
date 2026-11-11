@@ -42,4 +42,4 @@ Acquisizioni locali:
 - `artifacts/visual-workshop-photo-final.png`: studio fotografico dalla build distribuibile.
 - `artifacts/production-visual-report.json`: richieste e dimensioni misurate nel controllo della build.
 
-Gli screenshot sono acquisizioni del gioco nel browser, con fisica Rapier e modelli effettivamente caricati. Le misure software non certificano 60 fps su GPU integrata. Nessun push, modifica CI/CD o aggiornamento del sito online è incluso in questa revisione locale.
+Gli screenshot sono acquisizioni del gioco nel browser, con fisica Rapier e modelli effettivamente caricati. Le misure software non certificano 60 fps su GPU integrata. La revisione è stata successivamente caricata su GitHub e pubblicata su GitHub Pages con autorizzazione di Giovanni; lo stato corrente è descritto in [pubblicazione](pubblicazione.md). Non sono stati aggiunti workflow personalizzati.
