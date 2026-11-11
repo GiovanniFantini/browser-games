@@ -1,0 +1,155 @@
+{
+  "id": "tyvoro-selvor",
+  "name": "Tyvoro Selvor",
+  "family": "prototype",
+  "seed": 270500,
+  "length": 5.179,
+  "width": 2.07,
+  "wheelbase": 3.263,
+  "track": 1.95,
+  "roof": 0.74,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.289562
+    ],
+    [
+      -0.22,
+      0.3182
+    ],
+    [
+      0.05,
+      0.311836
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.64
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.73
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.5895,
+      "half_width": 0.6624,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.7038
+    },
+    {
+      "z": -1.942125,
+      "half_width": 1.0143,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7038
+    },
+    {
+      "z": -1.29475,
+      "half_width": 1.035,
+      "top": 0.289562,
+      "belt": 0.16,
+      "roof_half_width": 0.7038
+    },
+    {
+      "z": -0.56969,
+      "half_width": 1.0143,
+      "top": 0.3182,
+      "belt": 0.16,
+      "roof_half_width": 0.7038
+    },
+    {
+      "z": 0.129475,
+      "half_width": 1.0246499999999998,
+      "top": 0.311836,
+      "belt": 0.16,
+      "roof_half_width": 0.7038
+    },
+    {
+      "z": 0.8804300000000002,
+      "half_width": 1.035,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7038
+    },
+    {
+      "z": 1.86444,
+      "half_width": 0.9935999999999999,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.7038
+    },
+    {
+      "z": 2.5895,
+      "half_width": 0.7555499999999999,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.7038
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.98,
+    "rearScale": 1.08,
+    "noseHeight": 0.4,
+    "frontTaper": 0.73,
+    "rearTaper": 0.64,
+    "deckOffset": 0.16,
+    "screenAngle": -0.695,
+    "rearAngle": 0.63,
+    "roofWidth": 0.94,
+    "lampSegments": 2,
+    "waist": 0.217
+  }
+}

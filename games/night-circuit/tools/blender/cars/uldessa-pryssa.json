@@ -1,0 +1,155 @@
+{
+  "id": "uldessa-pryssa",
+  "name": "Uldessa Pryssa",
+  "family": "suv",
+  "seed": 397204,
+  "length": 4.957,
+  "width": 2.13,
+  "wheelbase": 3.123,
+  "track": 2.01,
+  "roof": 1.49,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.8,
+      0.9118800000000001
+    ],
+    [
+      -0.55,
+      1.0132
+    ],
+    [
+      -0.22,
+      1.0132
+    ],
+    [
+      0.05,
+      0.992936
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.74
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.8
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.4785,
+      "half_width": 0.7880999999999999,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.7242000000000001
+    },
+    {
+      "z": -1.9828000000000001,
+      "half_width": 1.0436999999999999,
+      "top": 0.9118800000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.7242000000000001
+    },
+    {
+      "z": -1.363175,
+      "half_width": 1.065,
+      "top": 1.0132,
+      "belt": 0.16,
+      "roof_half_width": 0.7242000000000001
+    },
+    {
+      "z": -0.54527,
+      "half_width": 1.0436999999999999,
+      "top": 1.0132,
+      "belt": 0.16,
+      "roof_half_width": 0.7242000000000001
+    },
+    {
+      "z": 0.12392500000000001,
+      "half_width": 1.05435,
+      "top": 0.992936,
+      "belt": 0.16,
+      "roof_half_width": 0.7242000000000001
+    },
+    {
+      "z": 0.84269,
+      "half_width": 1.065,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7242000000000001
+    },
+    {
+      "z": 1.7845199999999999,
+      "half_width": 1.0224,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.7242000000000001
+    },
+    {
+      "z": 2.4785,
+      "half_width": 0.852,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.7242000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.09,
+    "rearScale": 1.25,
+    "noseHeight": 0.29,
+    "frontTaper": 0.8,
+    "rearTaper": 0.74,
+    "deckOffset": 0.22,
+    "screenAngle": -0.32,
+    "rearAngle": 0.39,
+    "roofWidth": 1.0,
+    "lampSegments": 2,
+    "waist": 0.217
+  }
+}

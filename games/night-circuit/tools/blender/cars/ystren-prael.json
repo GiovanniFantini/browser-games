@@ -1,0 +1,155 @@
+{
+  "id": "ystren-prael",
+  "name": "Ystren Prael",
+  "family": "coupe",
+  "seed": 159634,
+  "length": 4.478,
+  "width": 1.89,
+  "wheelbase": 2.821,
+  "track": 1.77,
+  "roof": 0.82,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.507416
+    ],
+    [
+      -0.22,
+      0.5576
+    ],
+    [
+      0.05,
+      0.5464479999999999
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.82
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.94
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.239,
+      "half_width": 0.7748999999999999,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6426000000000001
+    },
+    {
+      "z": -1.67925,
+      "half_width": 0.9260999999999999,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6426000000000001
+    },
+    {
+      "z": -1.1195,
+      "half_width": 0.945,
+      "top": 0.507416,
+      "belt": 0.16,
+      "roof_half_width": 0.6426000000000001
+    },
+    {
+      "z": -0.49257999999999996,
+      "half_width": 0.9260999999999999,
+      "top": 0.5576,
+      "belt": 0.16,
+      "roof_half_width": 0.6426000000000001
+    },
+    {
+      "z": 0.11195,
+      "half_width": 0.93555,
+      "top": 0.5464479999999999,
+      "belt": 0.16,
+      "roof_half_width": 0.6426000000000001
+    },
+    {
+      "z": 0.76126,
+      "half_width": 0.945,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6426000000000001
+    },
+    {
+      "z": 1.61208,
+      "half_width": 0.9071999999999999,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6426000000000001
+    },
+    {
+      "z": 2.239,
+      "half_width": 0.8882999999999999,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6426000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.74,
+    "rearScale": 0.83,
+    "noseHeight": 0.42,
+    "frontTaper": 0.94,
+    "rearTaper": 0.82,
+    "deckOffset": -0.15,
+    "screenAngle": -0.695,
+    "rearAngle": 0.39,
+    "roofWidth": 1.0,
+    "lampSegments": 4,
+    "waist": 0.271
+  }
+}

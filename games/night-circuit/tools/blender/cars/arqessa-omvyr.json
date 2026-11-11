@@ -1,0 +1,155 @@
+{
+  "id": "arqessa-omvyr",
+  "name": "Arqessa Omvyr",
+  "family": "classic",
+  "seed": 230905,
+  "length": 4.732,
+  "width": 1.865,
+  "wheelbase": 2.981,
+  "track": 1.745,
+  "roof": 0.765,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.2
+    ],
+    [
+      -0.48,
+      0.478584
+    ],
+    [
+      -0.22,
+      0.5202
+    ],
+    [
+      0.05,
+      0.509796
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.89
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.98
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.366,
+      "half_width": 0.829925,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6341
+    },
+    {
+      "z": -1.7745000000000002,
+      "half_width": 0.9138499999999999,
+      "top": 0.2,
+      "belt": 0.16,
+      "roof_half_width": 0.6341
+    },
+    {
+      "z": -1.13568,
+      "half_width": 0.9325,
+      "top": 0.478584,
+      "belt": 0.16,
+      "roof_half_width": 0.6341
+    },
+    {
+      "z": -0.52052,
+      "half_width": 0.9138499999999999,
+      "top": 0.5202,
+      "belt": 0.16,
+      "roof_half_width": 0.6341
+    },
+    {
+      "z": 0.11830000000000002,
+      "half_width": 0.923175,
+      "top": 0.509796,
+      "belt": 0.16,
+      "roof_half_width": 0.6341
+    },
+    {
+      "z": 0.80444,
+      "half_width": 0.9325,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6341
+    },
+    {
+      "z": 1.70352,
+      "half_width": 0.8952,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6341
+    },
+    {
+      "z": 2.366,
+      "half_width": 0.9138499999999999,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6341
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.83,
+    "rearScale": 0.76,
+    "noseHeight": 0.18,
+    "frontTaper": 0.98,
+    "rearTaper": 0.89,
+    "deckOffset": -0.04,
+    "screenAngle": -0.32,
+    "rearAngle": 0.75,
+    "roofWidth": 0.94,
+    "lampSegments": 1,
+    "waist": 0.298
+  }
+}

@@ -13,7 +13,7 @@ function dial(id: string, label: string) {
     const a = ((-120 + i * 60) * Math.PI) / 180;
     return `<text data-dial-label="${i}" x="${60 + Math.sin(a) * 31}" y="${64 - Math.cos(a) * 31}">0</text>`;
   }).join('');
-  return `<svg id="${id}" viewBox="0 0 120 101" role="meter" aria-label="${label}" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0"><path class="dial-arc" d="M16.7 86 A50 50 0 1 1 103.3 86"/><g class="dial-ticks">${ticks}</g>${id === 'rpm-dial' ? '<path class="dial-redline" d="M109.2 69.7 A50 50 0 0 1 103.3 86"/>' : ''}${labels}<path class="dial-needle" d="M59 66 L60 23 L61 66 Z" transform="rotate(-120 60 61)"/><circle class="dial-hub" cx="60" cy="61" r="3"/><text class="dial-unit" x="60" y="94">${id === 'speed-dial' ? 'KM/H' : 'RPM ×1000'}</text></svg>`;
+  return `<svg id="${id}" viewBox="0 0 120 120" role="meter" aria-label="${label}" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0"><circle class="dial-face" cx="60" cy="61" r="53"/><path class="dial-arc" d="M16.7 86 A50 50 0 1 1 103.3 86"/><g class="dial-ticks">${ticks}</g>${id === 'rpm-dial' ? '<path class="dial-redline" d="M109.2 69.7 A50 50 0 0 1 103.3 86"/>' : ''}${labels}<path class="dial-needle" d="M59 66 L60 23 L61 66 Z" transform="rotate(-120 60 61)"/><circle class="dial-hub" cx="60" cy="61" r="3"/><text class="dial-unit" x="60" y="94">${id === 'speed-dial' ? 'KM/H' : 'RPM ×1000'}</text></svg>`;
 }
 export class Hud {
   private readonly root = document.querySelector<HTMLDivElement>('#interface')!;
@@ -185,9 +185,7 @@ export class Hud {
         label.textContent = String(Math.round((maximum * i) / 4));
       });
       this.rpmLabels.forEach((label, i) => {
-        label.textContent = ((car.stats.rpmLimit * i) / 4000)
-          .toFixed(1)
-          .replace('.', preferences.language === 'it' ? ',' : '.');
+        label.textContent = String(Math.round((car.stats.rpmLimit * i) / 4000));
       });
     }
     this.speedNeedle.setAttribute(

@@ -1,3 +1,4 @@
+import { installBakedLighting } from '../gen/lighting/lightmaps';
 import { installHeightFog } from './height-fog';
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -48,6 +49,7 @@ export class Effects {
     this.refreshMaterials();
   }
   refreshMaterials() {
+    installBakedLighting(this.scene);
     installHeightFog(this.scene);
   }
   private setup() {
@@ -55,8 +57,8 @@ export class Effects {
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     this.bloom = new UnrealBloomPass(
       new THREE.Vector2(innerWidth / 2, innerHeight / 2),
-      0.04,
-      0.2,
+      0.16,
+      0.3,
       0.85,
     );
     // Bound only the bloom source, preserving HDR lighting in the base image.

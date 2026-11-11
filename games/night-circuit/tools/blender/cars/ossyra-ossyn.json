@@ -1,0 +1,155 @@
+{
+  "id": "ossyra-ossyn",
+  "name": "Ossyra Ossyn",
+  "family": "compact",
+  "seed": 333852,
+  "length": 4.043,
+  "width": 1.81,
+  "wheelbase": 2.547,
+  "track": 1.69,
+  "roof": 1.01,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.6249880000000001
+    ],
+    [
+      -0.22,
+      0.6868000000000001
+    ],
+    [
+      0.05,
+      0.6730640000000001
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.7
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.96
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.0215,
+      "half_width": 0.6335,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6154000000000001
+    },
+    {
+      "z": -1.5161250000000002,
+      "half_width": 0.8869,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6154000000000001
+    },
+    {
+      "z": -1.01075,
+      "half_width": 0.905,
+      "top": 0.6249880000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6154000000000001
+    },
+    {
+      "z": -0.44473,
+      "half_width": 0.8869,
+      "top": 0.6868000000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6154000000000001
+    },
+    {
+      "z": 0.10107500000000001,
+      "half_width": 0.89595,
+      "top": 0.6730640000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6154000000000001
+    },
+    {
+      "z": 0.6873100000000001,
+      "half_width": 0.905,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6154000000000001
+    },
+    {
+      "z": 1.45548,
+      "half_width": 0.8688,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6154000000000001
+    },
+    {
+      "z": 2.0215,
+      "half_width": 0.8688,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6154000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.78,
+    "rearScale": 1.12,
+    "noseHeight": 0.24,
+    "frontTaper": 0.96,
+    "rearTaper": 0.7,
+    "deckOffset": -0.19,
+    "screenAngle": -0.77,
+    "rearAngle": 0.87,
+    "roofWidth": 0.82,
+    "lampSegments": 2,
+    "waist": 0.217
+  }
+}

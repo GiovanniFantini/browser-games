@@ -69,6 +69,7 @@ export function batchBodywork(root: THREE.Object3D) {
     for (const object of parent.children) {
       if (
         !(object instanceof THREE.Mesh) ||
+        !object.visible ||
         object instanceof THREE.InstancedMesh ||
         object.name ||
         object.children.length ||

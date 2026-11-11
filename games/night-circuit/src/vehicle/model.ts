@@ -1,3 +1,4 @@
+import { createDetailedCar, prepareDetailedCarModels } from './generated';
 import { bodyGeometry, batchBodywork } from './bodywork';
 import career from '../data/career.json';
 import * as THREE from 'three';
@@ -23,6 +24,9 @@ export function createCar(
     model?: string;
   } = {},
 ) {
+  const detailed = createDetailedCar(options);
+  if (detailed) return detailed;
+  let disposed = false;
   const a = options.appearance ?? defaultAppearance(),
     simple = !!options.simple;
   const spec =
@@ -860,6 +864,7 @@ export function createCar(
             : 0.28;
   }
   function dispose() {
+    disposed = true;
     const geometries = new Set<THREE.BufferGeometry>(),
       materials = new Set<THREE.Material>();
     root.traverse((object) => {
@@ -876,5 +881,27 @@ export function createCar(
     materials.forEach((m) => m.dispose());
     textures.forEach((t) => t.dispose());
   }
-  return { root, wheels, flame, tailMaterial, animate, dispose, spec };
+  const result = { root, wheels, flame, tailMaterial, animate, dispose, spec };
+  if (typeof document !== 'undefined')
+    void prepareDetailedCarModels([spec.id])
+      .then(() => {
+        if (disposed) return;
+        const next = createDetailedCar(options);
+        if (!next) return;
+        const positions = result.wheels.map((w) => w.position.clone());
+        dispose();
+        root.clear();
+        for (const child of [...next.root.children]) root.add(child);
+        Object.assign(root.userData, next.root.userData);
+        next.wheels.forEach((w, i) => w.position.copy(positions[i]));
+        result.wheels = next.wheels;
+        result.flame = next.flame;
+        result.tailMaterial = next.tailMaterial;
+        result.animate = next.animate;
+        result.dispose = next.dispose;
+      })
+      .catch((error) =>
+        console.error('Modello procedurale non caricato', spec.id, error),
+      );
+  return result;
 }

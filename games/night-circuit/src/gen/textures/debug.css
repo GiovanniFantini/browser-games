@@ -1,0 +1,161 @@
+.texture-lab {
+  max-width: 1400px;
+  margin: auto;
+  padding: 32px;
+  color: #dceaf0;
+  font-family: 'Circuit Grid', monospace;
+}
+body:has(.texture-lab) {
+  overflow: auto;
+  background: #0a111a;
+}
+.texture-lab header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #334653;
+  padding-bottom: 22px;
+}
+.texture-lab h1 {
+  font-size: 27px;
+  margin: 14px 0;
+  color: #faf0d6;
+}
+.texture-lab h2 {
+  font-size: 20px;
+  color: #faf0d6;
+}
+.texture-lab small,
+.texture-lab a {
+  color: #58dfd5;
+  font-size: 11px;
+}
+.texture-lab p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #b6c7cf;
+}
+.texture-lab form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 16px;
+  padding-top: 22px;
+}
+.texture-lab label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 10px;
+}
+.texture-lab input,
+.texture-lab select,
+.texture-lab button {
+  font: inherit;
+  font-size: 11px;
+  color: #e5eeee;
+  background: #162735;
+  border: 1px solid #3d5866;
+  padding: 12px;
+  cursor: pointer;
+}
+.texture-lab input {
+  max-width: 160px;
+}
+.texture-lab button:disabled {
+  opacity: 0.5;
+}
+.texture-lab button:hover {
+  border-color: #69eee0;
+}
+.texture-preview {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 30px;
+  padding: 20px;
+  margin: 22px 0;
+  background: #101e2b;
+  border: 1px solid #2a4352;
+}
+.texture-preview canvas {
+  width: 100%;
+  height: auto;
+  touch-action: none;
+}
+.texture-preview select {
+  max-width: 230px;
+}
+.texture-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.texture-name {
+  grid-column: 1/-1;
+  text-align: left;
+  background: transparent !important;
+  border-width: 0 0 1px !important;
+  color: #f3cf90 !important;
+}
+.texture-map {
+  padding: 0 !important;
+  overflow: hidden;
+}
+.texture-map img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.texture-map span {
+  display: block;
+  padding: 13px 5px;
+  font-size: 10px;
+}
+#texture-grid[data-view='albedo'] [data-map]:not([data-map='albedo']),
+#texture-grid[data-view='roughness'] [data-map]:not([data-map='roughness']),
+#texture-grid[data-view='normal'] [data-map]:not([data-map='normal']),
+#texture-grid[data-view='emissive'] [data-map]:not([data-map='emissive']) {
+  display: none;
+}
+#texture-grid[data-view]:not([data-view='all']) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+#texture-grid[data-view]:not([data-view='all']) .texture-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0;
+}
+#texture-grid[data-view]:not([data-view='all']) .texture-name {
+  min-height: 56px;
+}
+.texture-lab dialog {
+  color: #e0eeee;
+  background: #10202d;
+  border: 1px solid #58dfd5;
+  max-width: 90vw;
+}
+.texture-lab dialog::backdrop {
+  background: #000b;
+}
+.texture-lab dialog img {
+  display: block;
+  max-width: 100%;
+}
+@media (max-width: 800px) {
+  .texture-preview {
+    grid-template-columns: 1fr;
+  }
+  .texture-lab {
+    padding: 16px;
+  }
+  .texture-row {
+    gap: 5px;
+  }
+  .texture-lab h1 {
+    font-size: 20px;
+  }
+}

@@ -1,6 +1,27 @@
 import * as THREE from 'three';
+import {
+  generatedMaterial,
+  projectWorldMaterial,
+} from '../gen/textures/library';
 
 export function asphaltMaterial() {
+  const generated = generatedMaterial('asphalt');
+  if (generated) {
+    const material = new THREE.MeshPhysicalMaterial({
+      map: generated.map,
+      normalMap: generated.normalMap,
+      roughnessMap: generated.roughnessMap,
+      emissiveMap: generated.emissiveMap,
+      normalScale: generated.normalScale.clone(),
+      metalness: 0,
+      roughness: 1,
+      clearcoat: 0.12,
+      clearcoatRoughness: 0.45,
+    });
+    generated.dispose();
+    projectWorldMaterial(material, 'asphalt');
+    return material;
+  }
   const size = 64,
     normal = new Uint8Array(size * size * 4),
     roughness = new Uint8Array(size * size * 4);

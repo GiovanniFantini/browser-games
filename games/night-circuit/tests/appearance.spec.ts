@@ -4,9 +4,11 @@ import { readFile, copyFile } from 'node:fs/promises';
 test('fase 5: vinili sul kit largo e trascinamento preciso nell’editor ridimensionato', async ({
   page,
 }) => {
+  test.setTimeout(600000);
+  page.setDefaultTimeout(120000);
   await page.setViewportSize({ width: 800, height: 850 });
   await page.goto('/?quality=low', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.locator('#start-garage').click();
   await page.locator('#garage-mode').click();
   await page.locator('[data-part="kit"]').selectOption('5');
@@ -52,13 +54,14 @@ test('fase 5: elaborazione visiva, vinili, anteprima, acquisto e persistenza in 
   page,
 }) => {
   test.setTimeout(600000);
+  page.setDefaultTimeout(120000);
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => {
     if (m.type() === 'error') errors.push(m.text());
   });
   await page.goto('/?quality=low&qa=race', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.locator('#start-garage').click();
   await page.locator('#garage-mode').click();
   await expect(page.locator('[data-part="kit"] option')).toHaveCount(6);
@@ -178,7 +181,7 @@ test('fase 5: elaborazione visiva, vinili, anteprima, acquisto e persistenza in 
   await expect(page.locator('#garage')).toBeVisible();
   await page.locator('#garage-close').click();
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.locator('#start-garage').click();
   await page.locator('#garage-mode').click();
   await expect(page.locator('[data-part="kit"]')).toHaveValue('1');

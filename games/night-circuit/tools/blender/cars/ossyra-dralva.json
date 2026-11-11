@@ -1,0 +1,155 @@
+{
+  "id": "ossyra-dralva",
+  "name": "Ossyra Dralva",
+  "family": "compact",
+  "seed": 341771,
+  "length": 4.133,
+  "width": 1.835,
+  "wheelbase": 2.604,
+  "track": 1.715,
+  "roof": 1.045,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.646646
+    ],
+    [
+      -0.22,
+      0.7106
+    ],
+    [
+      0.05,
+      0.696388
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.74
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.8
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.0665,
+      "half_width": 0.6789499999999999,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6239
+    },
+    {
+      "z": -1.5498750000000001,
+      "half_width": 0.89915,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6239
+    },
+    {
+      "z": -1.03325,
+      "half_width": 0.9175,
+      "top": 0.646646,
+      "belt": 0.16,
+      "roof_half_width": 0.6239
+    },
+    {
+      "z": -0.45463,
+      "half_width": 0.89915,
+      "top": 0.7106,
+      "belt": 0.16,
+      "roof_half_width": 0.6239
+    },
+    {
+      "z": 0.103325,
+      "half_width": 0.9083249999999999,
+      "top": 0.696388,
+      "belt": 0.16,
+      "roof_half_width": 0.6239
+    },
+    {
+      "z": 0.7026100000000001,
+      "half_width": 0.9175,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6239
+    },
+    {
+      "z": 1.4878799999999999,
+      "half_width": 0.8807999999999999,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6239
+    },
+    {
+      "z": 2.0665,
+      "half_width": 0.734,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6239
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.09,
+    "rearScale": 1.25,
+    "noseHeight": 0.29,
+    "frontTaper": 0.8,
+    "rearTaper": 0.74,
+    "deckOffset": 0.22,
+    "screenAngle": -0.32,
+    "rearAngle": 0.27,
+    "roofWidth": 0.88,
+    "lampSegments": 3,
+    "waist": 0.244
+  }
+}

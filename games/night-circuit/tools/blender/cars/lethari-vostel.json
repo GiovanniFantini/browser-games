@@ -1,0 +1,155 @@
+{
+  "id": "lethari-vostel",
+  "name": "Lethari Vostel",
+  "family": "retro",
+  "seed": 88363,
+  "length": 4.977,
+  "width": 1.895,
+  "wheelbase": 3.136,
+  "track": 1.775,
+  "roof": 0.875,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.2
+    ],
+    [
+      -0.48,
+      0.5474000000000001
+    ],
+    [
+      -0.22,
+      0.5950000000000001
+    ],
+    [
+      0.05,
+      0.5831000000000001
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.72
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.84
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.4885,
+      "half_width": 0.6822,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6443000000000001
+    },
+    {
+      "z": -1.8663750000000001,
+      "half_width": 0.92855,
+      "top": 0.2,
+      "belt": 0.16,
+      "roof_half_width": 0.6443000000000001
+    },
+    {
+      "z": -1.19448,
+      "half_width": 0.9475,
+      "top": 0.5474000000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6443000000000001
+    },
+    {
+      "z": -0.54747,
+      "half_width": 0.92855,
+      "top": 0.5950000000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6443000000000001
+    },
+    {
+      "z": 0.12442500000000001,
+      "half_width": 0.938025,
+      "top": 0.5831000000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6443000000000001
+    },
+    {
+      "z": 0.8460900000000001,
+      "half_width": 0.9475,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6443000000000001
+    },
+    {
+      "z": 1.79172,
+      "half_width": 0.9096,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6443000000000001
+    },
+    {
+      "z": 2.4885,
+      "half_width": 0.7958999999999999,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6443000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.92,
+    "rearScale": 1.22,
+    "noseHeight": 0.31,
+    "frontTaper": 0.84,
+    "rearTaper": 0.72,
+    "deckOffset": -0.12,
+    "screenAngle": -0.545,
+    "rearAngle": 0.75,
+    "roofWidth": 0.76,
+    "lampSegments": 3,
+    "waist": 0.244
+  }
+}

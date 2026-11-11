@@ -1,0 +1,155 @@
+{
+  "id": "uldessa-nolvar",
+  "name": "Uldessa Nolvar",
+  "family": "suv",
+  "seed": 405123,
+  "length": 5.047,
+  "width": 2.155,
+  "wheelbase": 3.18,
+  "track": 2.035,
+  "roof": 1.525,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.8,
+      0.9332999999999999
+    ],
+    [
+      -0.55,
+      1.037
+    ],
+    [
+      -0.22,
+      1.037
+    ],
+    [
+      0.05,
+      1.01626
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.72
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.84
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.5235,
+      "half_width": 0.7757999999999999,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": -2.0188,
+      "half_width": 1.05595,
+      "top": 0.9332999999999999,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": -1.387925,
+      "half_width": 1.0775,
+      "top": 1.037,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": -0.5551699999999999,
+      "half_width": 1.05595,
+      "top": 1.037,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 0.126175,
+      "half_width": 1.066725,
+      "top": 1.01626,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 0.85799,
+      "half_width": 1.0775,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 1.8169199999999999,
+      "half_width": 1.0343999999999998,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 2.5235,
+      "half_width": 0.9050999999999999,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.7327
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.92,
+    "rearScale": 1.22,
+    "noseHeight": 0.31,
+    "frontTaper": 0.84,
+    "rearTaper": 0.72,
+    "deckOffset": -0.12,
+    "screenAngle": -0.395,
+    "rearAngle": 0.51,
+    "roofWidth": 0.76,
+    "lampSegments": 3,
+    "waist": 0.244
+  }
+}

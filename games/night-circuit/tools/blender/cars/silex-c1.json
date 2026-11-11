@@ -1,0 +1,155 @@
+{
+  "id": "silex-c1",
+  "name": "Orvane Silex C1",
+  "family": "compact",
+  "seed": 9173,
+  "length": 4.25,
+  "width": 1.86,
+  "wheelbase": 2.66,
+  "track": 1.76,
+  "roof": 1,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.6188
+    ],
+    [
+      -0.22,
+      0.68
+    ],
+    [
+      0.05,
+      0.6664
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.82
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.94
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.125,
+      "half_width": 0.7626,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6324000000000001
+    },
+    {
+      "z": -1.59375,
+      "half_width": 0.9114,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6324000000000001
+    },
+    {
+      "z": -1.0625,
+      "half_width": 0.93,
+      "top": 0.6188,
+      "belt": 0.16,
+      "roof_half_width": 0.6324000000000001
+    },
+    {
+      "z": -0.4675,
+      "half_width": 0.9114,
+      "top": 0.68,
+      "belt": 0.16,
+      "roof_half_width": 0.6324000000000001
+    },
+    {
+      "z": 0.10625000000000001,
+      "half_width": 0.9207000000000001,
+      "top": 0.6664,
+      "belt": 0.16,
+      "roof_half_width": 0.6324000000000001
+    },
+    {
+      "z": 0.7225,
+      "half_width": 0.93,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6324000000000001
+    },
+    {
+      "z": 1.53,
+      "half_width": 0.8928,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6324000000000001
+    },
+    {
+      "z": 2.125,
+      "half_width": 0.8742,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6324000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.74,
+    "rearScale": 0.83,
+    "noseHeight": 0.42,
+    "frontTaper": 0.94,
+    "rearTaper": 0.82,
+    "deckOffset": -0.15,
+    "screenAngle": -0.32,
+    "rearAngle": 0.27,
+    "roofWidth": 0.76,
+    "lampSegments": 1,
+    "waist": 0.19
+  }
+}

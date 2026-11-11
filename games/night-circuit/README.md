@@ -28,7 +28,22 @@ La destinazione iniziale è Old Docks. Aggiungere `?world=track` all'indirizzo p
 
 Per avviare direttamente la qualità bassa aggiungere `?quality=low`, oppure `?world=track&quality=low` per la pista. Questo riduce anche la risoluzione della cubemap generata all'avvio.
 
-## Comandi
+## Revisione grafica locale
+
+Il nuovo vincolo esclude tutti gli asset esterni, anche CC0. La revisione comprende 17 materiali originali con albedo, roughness, normal ed emissive a 512 px (anche 256 px nella scheda di debug), generati con seed in un worker OffscreenCanvas. IndexedDB conserva le mappe fra gli avvii; se lo storage è indisponibile il gioco le genera in memoria. Asfalto, cemento, lastre, mattoni, lamiera e facciate sono applicati alla città con scala in metri. Un cielo nuvoloso procedurale alimenta lo sfondo e la texture dei riflessi. Sono stati aggiunti 31 moduli edilizi, vetrine con interni simulati, il sottopasso guidabile dei Fonditori, lightmap generate al build, 51 auto Blender con parti separate e il garage arredato. Questa revisione è locale: il sito online conserva la versione pubblicata precedente. La [revisione grafica completa](docs/revisione-grafica.md) descrive contenuti e verifiche; la [guida Blender per principianti](tools/blender/README.md) spiega come generare e ispezionare le auto.
+
+Con il server locale avviato aprire [il laboratorio texture](http://127.0.0.1:5175/?debug=textures), adattando la porta a quella stampata da Vite. La scheda è disponibile anche nella build statica con `?debug=textures`. Mostra le quattro mappe in griglia, filtri per mappa, ingrandimento nativo e anteprima PBR selezionabile dal nome del materiale. Seed e risoluzione distinguono le voci della cache. Svuota cache texture elimina solo queste mappe, senza toccare i salvataggi.
+
+Il font Circuit Grid usa tratti vettoriali originali, con minuscole, accenti e tre pesi; gli stessi tratti disegnano le insegne. Il TTF generato è incluso nel progetto e non richiede Python per giocare. Per rigenerarlo, dalla cartella del gioco:
+
+```powershell
+python -m pip install fonttools
+python tools/fonts/generate.py
+```
+
+Verifica dedicata: `npx playwright test tests/textures.spec.ts`. Evidenze e limiti sono in [verifiche texture](docs/verifiche-texture.md).
+
+## Comandi di guida
 
 | Azione | Tastiera | Gamepad standard |
 | --- | --- | --- |

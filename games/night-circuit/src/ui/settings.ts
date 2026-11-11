@@ -226,7 +226,7 @@ export class SettingsUI {
         ['3', '3'],
       ],
       String(p.steerAxis),
-    )}<label><input type="checkbox" data-setting="invertSteer" ${p.invertSteer ? 'checked' : ''}>${t('Inverti sterzo')}</label><p id="settings-status" role="status">${t('Impostazioni locali salvate automaticamente.')}</p><button id="restore-settings">${t('RIPRISTINA IMPOSTAZIONI')}</button><details><summary>${t('Crediti e licenze')}</summary><p>${t('Codice, veicoli, marchi, ambienti, musica e suoni originali generati proceduralmente per NIGHT CIRCUIT. Rajdhani: Indian Type Foundry, SIL OFL 1.1. Three.js: MIT. Rapier: Apache-2.0. Licenze complete nei file distribuiti e in CREDITS.md.')}</p></details></section>`;
+    )}<label><input type="checkbox" data-setting="invertSteer" ${p.invertSteer ? 'checked' : ''}>${t('Inverti sterzo')}</label><p id="settings-status" role="status">${t('Impostazioni locali salvate automaticamente.')}</p><button id="restore-settings">${t('RIPRISTINA IMPOSTAZIONI')}</button><details><summary>${t('Crediti e licenze')}</summary><p>${t('Codice, veicoli, marchi, ambienti, musica e suoni originali generati proceduralmente per NIGHT CIRCUIT. Circuit Grid: font originale generato nel progetto. Three.js: MIT. Rapier: Apache-2.0. Licenze complete nei file distribuiti e in CREDITS.md.')}</p></details></section>`;
     this.panel.querySelector<HTMLButtonElement>('#close-settings')!.onclick =
       () => this.onClose();
     this.panel.querySelector<HTMLButtonElement>('#restore-settings')!.onclick =

@@ -1,0 +1,155 @@
+{
+  "id": "neralith-sorvath",
+  "name": "Neralith Sorvath",
+  "family": "sedan",
+  "seed": 373447,
+  "length": 5.29,
+  "width": 2.035,
+  "wheelbase": 3.333,
+  "track": 1.915,
+  "roof": 1.265,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.2
+    ],
+    [
+      -0.48,
+      0.791384
+    ],
+    [
+      -0.22,
+      0.8602
+    ],
+    [
+      0.05,
+      0.842996
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.86
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.78
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.645,
+      "half_width": 0.87505,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6919000000000001
+    },
+    {
+      "z": -1.9837500000000001,
+      "half_width": 0.9971500000000001,
+      "top": 0.2,
+      "belt": 0.16,
+      "roof_half_width": 0.6919000000000001
+    },
+    {
+      "z": -1.2696,
+      "half_width": 1.0175,
+      "top": 0.791384,
+      "belt": 0.16,
+      "roof_half_width": 0.6919000000000001
+    },
+    {
+      "z": -0.5819,
+      "half_width": 0.9971500000000001,
+      "top": 0.8602,
+      "belt": 0.16,
+      "roof_half_width": 0.6919000000000001
+    },
+    {
+      "z": 0.13225,
+      "half_width": 1.007325,
+      "top": 0.842996,
+      "belt": 0.16,
+      "roof_half_width": 0.6919000000000001
+    },
+    {
+      "z": 0.8993000000000001,
+      "half_width": 1.0175,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6919000000000001
+    },
+    {
+      "z": 1.9043999999999999,
+      "half_width": 0.9768,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6919000000000001
+    },
+    {
+      "z": 2.645,
+      "half_width": 0.7936500000000001,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6919000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.05,
+    "rearScale": 0.88,
+    "noseHeight": 0.46,
+    "frontTaper": 0.78,
+    "rearTaper": 0.86,
+    "deckOffset": 0.18,
+    "screenAngle": -0.62,
+    "rearAngle": 0.75,
+    "roofWidth": 0.82,
+    "lampSegments": 3,
+    "waist": 0.352
+  }
+}

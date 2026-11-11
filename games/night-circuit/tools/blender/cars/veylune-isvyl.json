@@ -1,0 +1,155 @@
+{
+  "id": "veylune-isvyl",
+  "name": "Veylune Isvyl",
+  "family": "super",
+  "seed": 215067,
+  "length": 4.955,
+  "width": 2.115,
+  "wheelbase": 3.122,
+  "track": 1.995,
+  "roof": 0.755,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.2954315
+    ],
+    [
+      -0.22,
+      0.32465
+    ],
+    [
+      0.05,
+      0.31815699999999997
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.82
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.94
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.4775,
+      "half_width": 0.8671500000000001,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.7191000000000001
+    },
+    {
+      "z": -1.858125,
+      "half_width": 1.03635,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7191000000000001
+    },
+    {
+      "z": -1.23875,
+      "half_width": 1.0575,
+      "top": 0.2954315,
+      "belt": 0.16,
+      "roof_half_width": 0.7191000000000001
+    },
+    {
+      "z": -0.54505,
+      "half_width": 1.03635,
+      "top": 0.32465,
+      "belt": 0.16,
+      "roof_half_width": 0.7191000000000001
+    },
+    {
+      "z": 0.12387500000000001,
+      "half_width": 1.046925,
+      "top": 0.31815699999999997,
+      "belt": 0.16,
+      "roof_half_width": 0.7191000000000001
+    },
+    {
+      "z": 0.84235,
+      "half_width": 1.0575,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7191000000000001
+    },
+    {
+      "z": 1.7838,
+      "half_width": 1.0152,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.7191000000000001
+    },
+    {
+      "z": 2.4775,
+      "half_width": 0.99405,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.7191000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.74,
+    "rearScale": 0.83,
+    "noseHeight": 0.42,
+    "frontTaper": 0.94,
+    "rearTaper": 0.82,
+    "deckOffset": -0.15,
+    "screenAngle": -0.695,
+    "rearAngle": 0.51,
+    "roofWidth": 0.82,
+    "lampSegments": 3,
+    "waist": 0.244
+  }
+}

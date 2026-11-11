@@ -1,0 +1,155 @@
+{
+  "id": "tyvoro-astryq",
+  "name": "Tyvoro Astryq",
+  "family": "prototype",
+  "seed": 254662,
+  "length": 4.999,
+  "width": 2.02,
+  "wheelbase": 3.149,
+  "track": 1.9,
+  "roof": 0.67,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.26217100000000004
+    ],
+    [
+      -0.22,
+      0.2881
+    ],
+    [
+      0.05,
+      0.28233800000000003
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.91
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.72
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.4995,
+      "half_width": 0.9191,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6868000000000001
+    },
+    {
+      "z": -1.874625,
+      "half_width": 0.9898,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6868000000000001
+    },
+    {
+      "z": -1.24975,
+      "half_width": 1.01,
+      "top": 0.26217100000000004,
+      "belt": 0.16,
+      "roof_half_width": 0.6868000000000001
+    },
+    {
+      "z": -0.54989,
+      "half_width": 0.9898,
+      "top": 0.2881,
+      "belt": 0.16,
+      "roof_half_width": 0.6868000000000001
+    },
+    {
+      "z": 0.124975,
+      "half_width": 0.9999,
+      "top": 0.28233800000000003,
+      "belt": 0.16,
+      "roof_half_width": 0.6868000000000001
+    },
+    {
+      "z": 0.84983,
+      "half_width": 1.01,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6868000000000001
+    },
+    {
+      "z": 1.79964,
+      "half_width": 0.9696,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6868000000000001
+    },
+    {
+      "z": 2.4995,
+      "half_width": 0.7272,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6868000000000001
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.14,
+    "rearScale": 0.73,
+    "noseHeight": 0.22,
+    "frontTaper": 0.72,
+    "rearTaper": 0.91,
+    "deckOffset": 0.08,
+    "screenAngle": -0.545,
+    "rearAngle": 0.39,
+    "roofWidth": 0.82,
+    "lampSegments": 4,
+    "waist": 0.379
+  }
+}

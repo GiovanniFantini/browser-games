@@ -1,3 +1,5 @@
+import { prepareDetailedCarModels } from './vehicle/generated';
+import { prepareBakedLighting } from './gen/lighting/lightmaps';
 import { WorldLighting } from './world/lighting';
 import {
   preferences,
@@ -18,7 +20,6 @@ import {
   recordSpeed,
 } from './progression/career';
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { FixedLoop, FIXED_DT } from './core/loop';
 import { Input } from './core/input';
@@ -56,6 +57,10 @@ import { calculateStats } from './progression/catalog';
 import './ui/style.css';
 import './ui/navigation.css';
 import './ui/races.css';
+import {
+  prepareWorldTextures,
+  generatedEnvironment,
+} from './gen/textures/library';
 
 const DRIFT_MODES = new Set(['drift', 'downhill']);
 async function boot() {
@@ -592,17 +597,8 @@ async function boot() {
       0.1,
       1100,
     );
-    const environment = new RoomEnvironment();
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const environmentMap = pmrem.fromScene(environment, 0.04, 0.1, 100, {
-      size: initialLow ? 64 : 128,
-    });
-    scene.environment = environmentMap.texture;
-    scene.environmentIntensity = initialLow ? 0.2 : 0.3;
-    environment.dispose();
-    pmrem.dispose();
-    scene.add(new THREE.HemisphereLight(0xb5d6f9, 0x293746, 1.5));
-    const moon = new THREE.DirectionalLight(0xb8d9f0, 1.8);
+    scene.add(new THREE.HemisphereLight(0x9fb6c0, 0x242f29, 0.65));
+    const moon = new THREE.DirectionalLight(0x9dc4d0, 0.65);
     moon.position.set(-45, 75, 30);
     moon.castShadow = true;
     moon.shadow.mapSize.set(1024, 1024);
@@ -615,8 +611,17 @@ async function boot() {
     scene.add(moon, moon.target);
     await Promise.all([
       RAPIER.init(),
-      document.fonts.load('700 64px Rajdhani'),
+      document.fonts.load('700 64px "Circuit Grid"'),
+      prepareWorldTextures(),
+      prepareBakedLighting(),
+      prepareDetailedCarModels(['silex-c1', activeCar(store.profile).model]),
     ]);
+    const sky = generatedEnvironment();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromEquirectangular(sky).texture;
+    scene.environmentIntensity = 0.8;
+    scene.background = sky;
+    pmrem.dispose();
     const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
     world.timestep = FIXED_DT;
     if (testTrack) createTrack(scene, world);
@@ -803,7 +808,7 @@ async function boot() {
       const low = value === 'low';
       renderer.setPixelRatio(Math.min(devicePixelRatio, low ? 1 : 1.5));
       renderer.shadowMap.enabled = !low;
-      scene.environmentIntensity = low ? 0.2 : 0.3;
+      scene.environmentIntensity = low ? 0.65 : 0.8;
       if (city) city.low = low;
       visualEffects?.resize();
       scene.traverse((object) => {
@@ -1039,13 +1044,14 @@ async function boot() {
         hud.showDebug,
         races?.session?.route.points,
       );
-      effects.render(
-        vehicle.position.x,
-        vehicle.position.y,
-        vehicle.position.z,
-        time,
-        vehicle.power.boosting,
-      );
+      if (!garage?.open)
+        effects.render(
+          vehicle.position.x,
+          vehicle.position.y,
+          vehicle.position.z,
+          time,
+          vehicle.power.boosting,
+        );
       hud.update(
         vehicle,
         dt,
@@ -1087,4 +1093,9 @@ async function boot() {
   }
 }
 
-void boot();
+if (new URLSearchParams(location.search).get('debug') === 'textures') {
+  void document.fonts.load('16px "Circuit Grid"').then(async () => {
+    const { showTextureDebug } = await import('./gen/textures/debug');
+    await showTextureDebug();
+  });
+} else void boot();

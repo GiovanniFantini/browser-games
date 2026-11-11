@@ -1,0 +1,155 @@
+{
+  "id": "drevalyn-torvane",
+  "name": "Drevalyn Torvane",
+  "family": "single",
+  "seed": 294257,
+  "length": 4.946,
+  "width": 1.925,
+  "wheelbase": 3.116,
+  "track": 1.805,
+  "roof": 0.645,
+  "side_profile": [
+    [
+      -1,
+      0.08
+    ],
+    [
+      -0.75,
+      0.15
+    ],
+    [
+      -0.5,
+      0.26
+    ],
+    [
+      -0.22,
+      0.33
+    ],
+    [
+      0.05,
+      0.26
+    ],
+    [
+      0.34,
+      0.1
+    ],
+    [
+      0.72,
+      -0.05
+    ],
+    [
+      1,
+      -0.16
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.96
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.65
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.473,
+      "half_width": 0.46199999999999997,
+      "top": 0.08,
+      "belt": 0.16,
+      "roof_half_width": 0.336875
+    },
+    {
+      "z": -1.85475,
+      "half_width": 0.471625,
+      "top": 0.15,
+      "belt": 0.16,
+      "roof_half_width": 0.336875
+    },
+    {
+      "z": -1.2365,
+      "half_width": 0.48125,
+      "top": 0.26,
+      "belt": 0.16,
+      "roof_half_width": 0.336875
+    },
+    {
+      "z": -0.54406,
+      "half_width": 0.471625,
+      "top": 0.33,
+      "belt": 0.16,
+      "roof_half_width": 0.336875
+    },
+    {
+      "z": 0.12365,
+      "half_width": 0.4764375,
+      "top": 0.26,
+      "belt": 0.16,
+      "roof_half_width": 0.336875
+    },
+    {
+      "z": 0.84082,
+      "half_width": 0.48125,
+      "top": 0.1,
+      "belt": 0.16,
+      "roof_half_width": 0.336875
+    },
+    {
+      "z": 1.78056,
+      "half_width": 0.46199999999999997,
+      "top": -0.05,
+      "belt": 0.08,
+      "roof_half_width": 0.336875
+    },
+    {
+      "z": 2.473,
+      "half_width": 0.3128125,
+      "top": -0.16,
+      "belt": 0.08,
+      "roof_half_width": 0.336875
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.19,
+    "rearScale": 0.6,
+    "noseHeight": 0.37,
+    "frontTaper": 0.65,
+    "rearTaper": 0.96,
+    "deckOffset": 0.12,
+    "screenAngle": -0.395,
+    "rearAngle": 0.27,
+    "roofWidth": 0.82,
+    "lampSegments": 1,
+    "waist": 0.298
+  }
+}

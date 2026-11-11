@@ -1,0 +1,155 @@
+{
+  "id": "ystren-arveth",
+  "name": "Ystren Arveth",
+  "family": "coupe",
+  "seed": 183391,
+  "length": 4.748,
+  "width": 1.965,
+  "wheelbase": 2.991,
+  "track": 1.845,
+  "roof": 0.925,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.5723900000000002
+    ],
+    [
+      -0.22,
+      0.6290000000000001
+    ],
+    [
+      0.05,
+      0.6164200000000001
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.96
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.65
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.374,
+      "half_width": 0.9432,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6681
+    },
+    {
+      "z": -1.7805,
+      "half_width": 0.96285,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6681
+    },
+    {
+      "z": -1.187,
+      "half_width": 0.9825,
+      "top": 0.5723900000000002,
+      "belt": 0.16,
+      "roof_half_width": 0.6681
+    },
+    {
+      "z": -0.5222800000000001,
+      "half_width": 0.96285,
+      "top": 0.6290000000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6681
+    },
+    {
+      "z": 0.11870000000000001,
+      "half_width": 0.9726750000000001,
+      "top": 0.6164200000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.6681
+    },
+    {
+      "z": 0.8071600000000001,
+      "half_width": 0.9825,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6681
+    },
+    {
+      "z": 1.70928,
+      "half_width": 0.9432,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6681
+    },
+    {
+      "z": 2.374,
+      "half_width": 0.638625,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6681
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.19,
+    "rearScale": 0.6,
+    "noseHeight": 0.37,
+    "frontTaper": 0.65,
+    "rearTaper": 0.96,
+    "deckOffset": 0.12,
+    "screenAngle": -0.395,
+    "rearAngle": 0.75,
+    "roofWidth": 0.88,
+    "lampSegments": 3,
+    "waist": 0.352
+  }
+}

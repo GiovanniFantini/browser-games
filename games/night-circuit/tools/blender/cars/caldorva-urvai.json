@@ -1,0 +1,155 @@
+{
+  "id": "caldorva-urvai",
+  "name": "Caldorva Urvai",
+  "family": "suv",
+  "seed": 135877,
+  "length": 4.811,
+  "width": 2.105,
+  "wheelbase": 3.031,
+  "track": 1.985,
+  "roof": 1.455,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.8,
+      0.8904600000000001
+    ],
+    [
+      -0.55,
+      0.9894000000000002
+    ],
+    [
+      -0.22,
+      0.9894000000000002
+    ],
+    [
+      0.05,
+      0.9696120000000001
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.74
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.8
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.4055,
+      "half_width": 0.7788499999999999,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.7157
+    },
+    {
+      "z": -1.9244,
+      "half_width": 1.03145,
+      "top": 0.8904600000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.7157
+    },
+    {
+      "z": -1.3230250000000001,
+      "half_width": 1.0525,
+      "top": 0.9894000000000002,
+      "belt": 0.16,
+      "roof_half_width": 0.7157
+    },
+    {
+      "z": -0.52921,
+      "half_width": 1.03145,
+      "top": 0.9894000000000002,
+      "belt": 0.16,
+      "roof_half_width": 0.7157
+    },
+    {
+      "z": 0.120275,
+      "half_width": 1.0419749999999999,
+      "top": 0.9696120000000001,
+      "belt": 0.16,
+      "roof_half_width": 0.7157
+    },
+    {
+      "z": 0.8178700000000001,
+      "half_width": 1.0525,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7157
+    },
+    {
+      "z": 1.73196,
+      "half_width": 1.0104,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.7157
+    },
+    {
+      "z": 2.4055,
+      "half_width": 0.8420000000000001,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.7157
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.09,
+    "rearScale": 1.25,
+    "noseHeight": 0.29,
+    "frontTaper": 0.8,
+    "rearTaper": 0.74,
+    "deckOffset": 0.22,
+    "screenAngle": -0.47,
+    "rearAngle": 0.75,
+    "roofWidth": 0.82,
+    "lampSegments": 1,
+    "waist": 0.19
+  }
+}

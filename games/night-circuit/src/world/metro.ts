@@ -1,3 +1,4 @@
+import { BuildingKit, KitBatch } from '../gen/buildings/kit';
 import { landmark } from './landmarks';
 import exploration from '../data/exploration.json';
 import district from '../data/district.json';
@@ -113,6 +114,7 @@ export class MetroWorld {
         glowMat = new THREE.MeshBasicMaterial({ color: info.color });
       const buildings = new THREE.InstancedMesh(box, buildMat, 256),
         lights = new THREE.InstancedMesh(box, glowMat, 1024);
+      const architecture = new KitBatch(root);
       let seed = info.seed;
       const random = () => {
         seed = (Math.imul(seed, 1664525) + 1013904223) | 0;
@@ -146,13 +148,25 @@ export class MetroWorld {
             this.dummy.rotation.set(0, 0, 0);
             this.dummy.updateMatrix();
             buildings.setMatrixAt(id, this.dummy.matrix);
+            const building = new BuildingKit(architecture, {
+              x: bx,
+              y,
+              z: bz,
+              width: w,
+              depth: d,
+              height: Math.min(h, index === 1 ? 42 : index === 2 ? 14 : 22),
+              district: index,
+              seed: id * 7919 + info.seed,
+            });
+            building.build();
+            const bodyHeight = building.bodyHeight;
             colliders.push(
               world.createCollider(
-                RAPIER.ColliderDesc.cuboid(w / 2, h / 2, d / 2).setTranslation(
-                  bx,
-                  y + h / 2,
-                  bz,
-                ),
+                RAPIER.ColliderDesc.cuboid(
+                  w / 2,
+                  bodyHeight / 2,
+                  d / 2,
+                ).setTranslation(bx, y + bodyHeight / 2, bz),
               ),
             );
             for (let row = 0; row < 4; row++) {
@@ -166,7 +180,9 @@ export class MetroWorld {
               lights.setMatrixAt(id * 4 + row, this.dummy.matrix);
             }
           }
-      root.add(buildings, lights);
+      architecture.flush();
+      lights.count = 0;
+      root.add(lights);
       const roofGeometry =
           index === 2
             ? new THREE.ConeGeometry(1, 1, 4)
@@ -203,7 +219,7 @@ export class MetroWorld {
         this.dummy.updateMatrix();
         roofs.setMatrixAt(id, this.dummy.matrix);
       }
-      root.add(roofs);
+      roofs.dispose();
       for (const lot of info.architecture)
         landmark(
           root,
@@ -557,7 +573,7 @@ export class MetroWorld {
     const ctx = c.getContext('2d')!;
     ctx.fillStyle = '#10202c';
     ctx.fillRect(0, 0, 512, 96);
-    ctx.font = '700 34px Rajdhani';
+    ctx.font = '700 34px "Circuit Grid"';
     ctx.textAlign = 'center';
     ctx.fillStyle = color;
     const texture = new THREE.CanvasTexture(c);

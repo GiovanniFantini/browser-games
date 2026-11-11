@@ -1,0 +1,155 @@
+{
+  "id": "orvane-auvra",
+  "name": "Orvane Auvra",
+  "family": "compact",
+  "seed": 40849,
+  "length": 3.89,
+  "width": 1.785,
+  "wheelbase": 2.451,
+  "track": 1.665,
+  "roof": 0.975,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.75,
+      0.19
+    ],
+    [
+      -0.5,
+      0.60333
+    ],
+    [
+      -0.22,
+      0.663
+    ],
+    [
+      0.05,
+      0.64974
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.98
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.88
+    ]
+  ],
+  "sections": [
+    {
+      "z": -1.945,
+      "half_width": 0.8746499999999999,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.6069
+    },
+    {
+      "z": -1.45875,
+      "half_width": 0.8746499999999999,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6069
+    },
+    {
+      "z": -0.9725,
+      "half_width": 0.8925,
+      "top": 0.60333,
+      "belt": 0.16,
+      "roof_half_width": 0.6069
+    },
+    {
+      "z": -0.4279,
+      "half_width": 0.8746499999999999,
+      "top": 0.663,
+      "belt": 0.16,
+      "roof_half_width": 0.6069
+    },
+    {
+      "z": 0.09725,
+      "half_width": 0.883575,
+      "top": 0.64974,
+      "belt": 0.16,
+      "roof_half_width": 0.6069
+    },
+    {
+      "z": 0.6613000000000001,
+      "half_width": 0.8925,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.6069
+    },
+    {
+      "z": 1.4004,
+      "half_width": 0.8567999999999999,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.6069
+    },
+    {
+      "z": 1.945,
+      "half_width": 0.7854,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.6069
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 0.69,
+    "rearScale": 0.93,
+    "noseHeight": 0.49,
+    "frontTaper": 0.88,
+    "rearTaper": 0.98,
+    "deckOffset": -0.22,
+    "screenAngle": -0.62,
+    "rearAngle": 0.75,
+    "roofWidth": 1.0,
+    "lampSegments": 1,
+    "waist": 0.298
+  }
+}

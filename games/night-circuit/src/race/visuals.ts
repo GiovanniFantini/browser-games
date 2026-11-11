@@ -61,9 +61,12 @@ export class RaceVisuals {
       (e) => !('hidden' in e && e.hidden) || e.id.startsWith('career-'),
     )) {
       const circle = new THREE.Mesh(
-        new THREE.TorusGeometry(5, 0.12, 5, 40),
+        new THREE.TorusGeometry(3.2, 0.035, 4, 48),
         new THREE.MeshBasicMaterial({
-          color: event.mode === 'circuit' ? 0xd3ec7b : 0x76dce5,
+          color: event.mode === 'circuit' ? 0xc3caa5 : 0x83b7bb,
+          transparent: true,
+          opacity: 0.5,
+          depthWrite: false,
         }),
       );
       circle.rotation.x = Math.PI / 2;
@@ -131,7 +134,7 @@ export class RaceVisuals {
     ctx.fillStyle = '#0a1729';
     ctx.fillRect(0, 0, 512, 96);
     ctx.fillStyle = finish ? '#d3ec7b' : '#77e5ee';
-    ctx.font = '700 45px Rajdhani';
+    ctx.font = '700 45px "Circuit Grid"';
     ctx.textAlign = 'center';
     ctx.fillText(
       t(

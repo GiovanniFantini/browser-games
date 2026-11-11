@@ -1,9 +1,12 @@
+import { BuildingKit, KitBatch } from '../gen/buildings/kit';
+import { createFoundryUnderpass } from '../gen/buildings/underpass';
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import defaultData from '../data/district.json';
 import type { RoadGraph } from './graph';
 import { signalColor } from '../traffic/signals';
 import { asphaltMaterial } from './asphalt';
+import { generatedMaterial } from '../gen/textures/library';
 
 interface Chunk {
   group: THREE.Group;
@@ -37,24 +40,35 @@ export class City {
     world.forEachCollider((c) => previous.add(c.handle));
     this.low = low;
     this.materials = {
-      concrete: new THREE.MeshStandardMaterial({
-        color: 0x29343d,
-        roughness: 0.8,
-      }),
-      building: new THREE.MeshStandardMaterial({
-        color: 0x2f3b49,
-        roughness: 0.6,
-        metalness: 0.2,
-      }),
-      brick: new THREE.MeshStandardMaterial({
-        color: 0x4a3b3e,
-        roughness: 0.7,
-      }),
-      metal: new THREE.MeshStandardMaterial({
-        color: 0x2e535d,
-        roughness: 0.45,
-        metalness: 0.65,
-      }),
+      concrete:
+        generatedMaterial('concrete', 3) ??
+        new THREE.MeshStandardMaterial({
+          color: 0x29343d,
+          roughness: 0.8,
+        }),
+      sidewalk:
+        generatedMaterial('sidewalk') ??
+        new THREE.MeshStandardMaterial({ color: 0x6d7168, roughness: 0.9 }),
+      building:
+        generatedMaterial('facade-amber', 2) ??
+        new THREE.MeshStandardMaterial({
+          color: 0x2f3b49,
+          roughness: 0.6,
+          metalness: 0.2,
+        }),
+      brick:
+        generatedMaterial('brick-russet', 4) ??
+        new THREE.MeshStandardMaterial({
+          color: 0x4a3b3e,
+          roughness: 0.7,
+        }),
+      metal:
+        generatedMaterial('corrugated', 3) ??
+        new THREE.MeshStandardMaterial({
+          color: 0x2e535d,
+          roughness: 0.45,
+          metalness: 0.65,
+        }),
       water: new THREE.MeshPhysicalMaterial({
         color: 0x071e2a,
         metalness: 0.8,
@@ -76,6 +90,7 @@ export class City {
     );
     this.roads(world);
     this.blocks(world);
+    if (this.openBorders) createFoundryUnderpass(this.scene, world);
     this.signalMeshes = new THREE.InstancedMesh(
       new THREE.SphereGeometry(0.27, 6, 4),
       new THREE.MeshBasicMaterial(),
@@ -204,7 +219,7 @@ export class City {
           sx,
           0.04,
           sz,
-          'concrete',
+          'sidewalk',
         );
         world.createCollider(
           RAPIER.ColliderDesc.cuboid(
@@ -332,24 +347,54 @@ export class City {
       return (seed >>> 0) / 4294967296;
     };
     const coords = this.data.coordinates;
+    const sectors = new Map<string, { batch: KitBatch; detail: KitBatch }>();
     for (let z = 0; z < coords.length - 1; z++)
       for (let x = 0; x < coords.length - 1; x++) {
+        const sx = Math.floor(x / 2),
+          sz = Math.floor(z / 2),
+          key = `${sx}:${sz}`;
+        let sector = sectors.get(key);
+        if (!sector) {
+          const group = new THREE.Group(),
+            detail = new THREE.Group();
+          group.add(detail);
+          this.scene.add(group);
+          this.chunks.push({
+            group,
+            detail,
+            x: coords[sx * 2] + 120,
+            z: coords[sz * 2] + 120,
+          });
+          sector = { batch: new KitBatch(group), detail: new KitBatch(detail) };
+          sectors.set(key, sector);
+        }
         const cx = (coords[x] + coords[x + 1]) / 2,
           cz = (coords[z] + coords[z + 1]) / 2;
-        const group = new THREE.Group(),
-          detail = new THREE.Group();
-        group.add(detail);
-        const chunk: Chunk = { group, detail, x: cx, z: cz };
-        this.chunks.push(chunk);
-        this.scene.add(group);
-        const docks = this.data.theme.water && x >= 6,
-          lanterns = this.data.theme.lanterns || (x <= 1 && z >= 4);
+        const docks = this.data.theme.water && x >= 6;
         if (docks) {
-          this.box(group, 72, 0.08, 77, cx + 3, 0.005, cz, 'water');
-          this.box(group, 7, 0.7, 82, cx - 37, 0.3, cz, 'concrete');
-          // The dock water is blocked by a visible low guardrail.
+          sector.batch.add('box', 'glass', cx, 0.005, cz, 78, 0.05, 80);
+          sector.batch.add('box', 'stone', cx - 40, 0.35, cz, 3, 0.7, 85);
           for (const side of [-1, 1]) {
-            this.box(group, 79, 0.9, 0.5, cx, 0.45, cz + side * 40, 'metal');
+            sector.batch.add(
+              'box',
+              'iron',
+              cx,
+              0.45,
+              cz + side * 40,
+              79,
+              0.9,
+              0.5,
+            );
+            sector.batch.add(
+              'box',
+              'iron',
+              cx + side * 40,
+              0.45,
+              cz,
+              0.5,
+              0.9,
+              80,
+            );
             world.createCollider(
               RAPIER.ColliderDesc.cuboid(39.5, 0.45, 0.25).setTranslation(
                 cx,
@@ -357,7 +402,6 @@ export class City {
                 cz + side * 40,
               ),
             );
-            this.box(group, 0.5, 0.9, 80, cx + side * 40, 0.45, cz, 'metal');
             world.createCollider(
               RAPIER.ColliderDesc.cuboid(0.25, 0.45, 40).setTranslation(
                 cx + side * 40,
@@ -366,93 +410,40 @@ export class City {
               ),
             );
           }
-          this.box(group, 1.5, 32, 1.5, cx - 29, 16, cz, 'metal');
-          this.box(group, 48, 1.3, 1.3, cx - 6, 32, cz, 'metal');
-          this.box(detail, 0.1, 18, 0.1, cx + 15, 23, cz, 'amber');
           continue;
         }
-        const count = 4;
-        const buildings = new THREE.InstancedMesh(
-          this.boxGeometry,
-          this.materials[lanterns ? 'brick' : 'building'],
-          count,
-        );
-        const strips = new THREE.InstancedMesh(
-          this.boxGeometry,
-          this.materials[lanterns ? 'pink' : 'amber'],
-          count * 4,
-        );
-        buildings.castShadow = buildings.receiveShadow = true;
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < 4; i++) {
           const bx = cx + (i % 2 ? 23 : -23),
-            bz = cz + (i < 2 ? -23 : 23);
-          const w = 27 + random() * 7,
-            d = 26 + random() * 8,
-            h =
-              this.data.theme.heightMin +
-              random() *
-                (lanterns
-                  ? this.data.theme.lanternRange
-                  : this.data.theme.heightRange);
-          this.dummy.position.set(bx, h / 2, bz);
-          this.dummy.scale.set(w, h, d);
-          this.dummy.updateMatrix();
-          buildings.setMatrixAt(i, this.dummy.matrix);
+            bz = cz + (i < 2 ? -23 : 23),
+            w = 24 + random() * 10,
+            d = 24 + random() * 9;
+          const n = Math.floor(random() * 100000),
+            h = 7 + Math.floor(random() * 5) * 3.3;
+          const building = new BuildingKit(sector.batch, {
+            x: bx,
+            y: 0,
+            z: bz,
+            width: w,
+            depth: d,
+            height: h,
+            district: 0,
+            seed: n,
+          });
+          building.build();
+          const bodyHeight = building.bodyHeight;
           world.createCollider(
-            RAPIER.ColliderDesc.cuboid(w / 2, h / 2, d / 2).setTranslation(
-              bx,
-              h / 2,
-              bz,
-            ),
+            RAPIER.ColliderDesc.cuboid(
+              w / 2,
+              bodyHeight / 2,
+              d / 2,
+            ).setTranslation(bx, bodyHeight / 2, bz),
           );
-          for (let row = 0; row < 4; row++) {
-            this.dummy.position.set(
-              bx,
-              2 + (row * (h - 3)) / 4,
-              bz + (i < 2 ? -1 : 1) * (d / 2 + 0.04),
-            );
-            this.dummy.scale.set(w * 0.8, 0.22, 0.08);
-            this.dummy.updateMatrix();
-            strips.setMatrixAt(i * 4 + row, this.dummy.matrix);
-          }
-          this.box(detail, w + 0.5, 0.25, d + 0.5, bx, h + 0.1, bz, 'metal');
-          if (lanterns)
-            for (let j = 0; j < 3; j++)
-              this.box(
-                detail,
-                0.9,
-                1.5,
-                0.9,
-                bx - 8 + j * 8,
-                4,
-                bz - d / 2 - 0.8,
-                'pink',
-              );
-          else if (i < 2) {
-            this.box(detail, 9, 3, 5, bx, 1.5, cz, 'metal');
-            world.createCollider(
-              RAPIER.ColliderDesc.cuboid(4.5, 1.5, 2.5).setTranslation(
-                bx,
-                1.5,
-                cz,
-              ),
-            );
-            for (let j = 0; j < 4; j++)
-              this.box(
-                detail,
-                0.15,
-                2.7,
-                5.04,
-                bx - 3 + j * 2,
-                1.5,
-                cz,
-                'concrete',
-              );
-          }
         }
-        group.add(buildings);
-        detail.add(strips);
       }
+    for (const sector of sectors.values()) {
+      sector.batch.flush();
+      sector.detail.flush();
+    }
   }
 
   private landmarks() {
@@ -483,10 +474,10 @@ export class City {
       context.fillRect(0, 0, 512, 128);
       context.fillStyle = '#d3ec7b';
       context.textAlign = 'center';
-      context.font = '700 38px Rajdhani';
+      context.font = '700 38px "Circuit Grid"';
       context.fillText(poi.name.toUpperCase(), 256, 60);
       context.fillStyle = '#85dce6';
-      context.font = '600 23px Rajdhani';
+      context.font = '600 23px "Circuit Grid"';
       context.fillText(
         this.data.name.toUpperCase() + ' / PORT RIDERS',
         256,

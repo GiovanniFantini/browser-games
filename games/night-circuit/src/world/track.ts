@@ -267,7 +267,7 @@ export function createTrack(scene: THREE.Scene, world: RAPIER.World) {
   ctx.fillStyle = '#10202e';
   ctx.fillRect(0, 0, 1024, 128);
   ctx.fillStyle = '#d4ef70';
-  ctx.font = '700 64px Rajdhani';
+  ctx.font = '700 64px "Circuit Grid"';
   ctx.textAlign = 'center';
   ctx.fillText('BACINO 09 / NIGHT RUN', 512, 86);
   const sign = new THREE.Mesh(

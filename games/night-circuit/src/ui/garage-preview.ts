@@ -1,9 +1,10 @@
+import { createWorkshopStage } from './workshop-stage';
 import { t } from './translation';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createCar, type StudioPose } from '../vehicle/model';
 import { visualCatalog, type Appearance } from '../tuning/appearance';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { createWorkshopReflection } from './workshop-reflection';
 
 export class GaragePreview {
   private readonly renderer = new THREE.WebGLRenderer({
@@ -34,27 +35,21 @@ export class GaragePreview {
       'Auto 3D: trascina per ruotare, usa la rotella per lo zoom',
     );
     host.append(renderer.domElement);
-    this.camera.position.set(6, 3.5, 7);
+    this.camera.position.set(4.1, 2.1, 4.8);
     this.controls = new OrbitControls(this.camera, renderer.domElement);
     this.controls.target.set(0, 0.75, 0);
     this.controls.enablePan = false;
     this.controls.minDistance = 4;
-    this.controls.maxDistance = 13;
+    this.controls.maxDistance = 10;
     this.controls.maxPolarAngle = Math.PI / 2 - 0.05;
-    this.car.root.position.y = 0.9;
+    this.car.root.position.y = 0.74;
     this.positionWheels();
     this.scene.background = new THREE.Color(0x101c29);
-    const room = new RoomEnvironment(),
-      pmrem = new THREE.PMREMGenerator(renderer);
-    this.scene.environment = pmrem.fromScene(room, 0.04, 0.1, 100, {
-      size: 64,
-    }).texture;
+    this.scene.environment = createWorkshopReflection(renderer).texture;
     this.scene.environmentIntensity = 0.65;
-    room.dispose();
-    pmrem.dispose();
     this.scene.add(
       this.car.root,
-      new THREE.HemisphereLight(0xb3e4ff, 0x3f4153, 2.5),
+      new THREE.HemisphereLight(0xb3d1d4, 0x3f4153, 1.2),
     );
     this.photoRoot.id = 'photo-studio';
     this.photoRoot.hidden = true;
@@ -92,18 +87,13 @@ export class GaragePreview {
         first.focus();
       }
     });
-    const light = new THREE.DirectionalLight(0xffffff, 4);
+    const light = new THREE.DirectionalLight(0xffe6c3, 2.8);
     light.position.set(3, 5, 2);
     this.scene.add(light);
-    const rim = new THREE.DirectionalLight(0x71cfe9, 3);
+    const rim = new THREE.DirectionalLight(0x71cfe9, 1.8);
     rim.position.set(-4, 2, -3);
     this.scene.add(rim);
-    const floor = new THREE.Mesh(
-      new THREE.CylinderGeometry(3.5, 3.5, 0.15, 48),
-      new THREE.MeshStandardMaterial({ color: 0x1a2c37, roughness: 0.65 }),
-    );
-    floor.position.y = 0.05;
-    this.scene.add(floor);
+    createWorkshopStage(this.scene);
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(host);
     this.observer.observe(this.photoHost);
@@ -128,7 +118,7 @@ export class GaragePreview {
     this.positionWheels();
   }
   private positionWheels() {
-    this.car.root.position.y = 0.9;
+    this.car.root.position.y = 0.74;
     this.car.wheels.forEach((wheel, i) =>
       wheel.position.set(
         ((i % 2 ? 1 : -1) * this.car.spec.track) / 2,
@@ -148,11 +138,11 @@ export class GaragePreview {
   }
   view(index: number) {
     const views = [
-      [6, 3.5, 7],
-      [-6, 3.1, -7],
-      [7, 1.8, 0],
+      [4.1, 2.1, 4.8],
+      [-4.1, 1.9, -4.8],
+      [6, 1.65, 0],
       [0, 7, 0.1],
-      [-7, 1.8, 0],
+      [-6, 1.65, 0],
     ];
     this.camera.position.fromArray(views[index]);
     this.controls.target.set(0, 0.75, 0);
@@ -204,14 +194,14 @@ export class GaragePreview {
           ctx.fillStyle = gradient;
           ctx.fillRect(0, 0, 1600, 900);
           ctx.fillStyle = '#d3ec7b';
-          ctx.font = '700 96px Rajdhani';
+          ctx.font = '700 96px "Circuit Grid"';
           ctx.fillText(cover.title.toUpperCase(), 65, 125, 1470);
           ctx.fillStyle = '#eaf4f7';
-          ctx.font = '600 32px Rajdhani';
+          ctx.font = '600 32px "Circuit Grid"';
           ctx.fillText(cover.edition, 70, 180);
-          ctx.font = '700 60px Rajdhani';
+          ctx.font = '700 60px "Circuit Grid"';
           ctx.fillText(t('LA TUA FIRMA. LA TUA NOTTE.'), 70, 810);
-          ctx.font = '400 27px Rajdhani';
+          ctx.font = '400 27px "Circuit Grid"';
           ctx.fillText(t('PORT RIDERS / SERVIZIO ORIGINALE'), 70, 856);
         }
       } finally {
@@ -266,7 +256,7 @@ export class GaragePreview {
       const time = now / 1000,
         age = time - this.jumpAt;
       this.car.root.position.y =
-        0.9 +
+        0.74 +
         (age < 2 ? Math.abs(Math.sin(age * 6)) * Math.exp(-age * 2) * 0.65 : 0);
       this.car.animate(time, 0, false, this.pose);
       this.controls.update();

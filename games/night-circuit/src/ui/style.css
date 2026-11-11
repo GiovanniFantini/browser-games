@@ -1,9 +1,24 @@
-@import '@fontsource/rajdhani/latin-400.css';
-@import '@fontsource/rajdhani/latin-600.css';
-@import '@fontsource/rajdhani/latin-700.css';
+@font-face {
+  font-family: 'Circuit Grid';
+  src: url('/fonts/circuit-grid.ttf') format('truetype');
+  font-weight: 100 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Circuit Grid';
+  src: url('/fonts/circuit-grid-semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Circuit Grid';
+  src: url('/fonts/circuit-grid-bold.ttf') format('truetype');
+  font-weight: 700 900;
+  font-display: swap;
+}
 
 :root {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Circuit Grid', sans-serif;
   color: #e9efef;
   background: #080d18;
   font-synthesis: none;
@@ -110,7 +125,7 @@ button:disabled {
 }
 kbd {
   font:
-    600 11px 'Rajdhani',
+    600 11px 'Circuit Grid',
     sans-serif;
   border: 1px solid #9ab8c438;
   color: #c7d5da;
@@ -405,7 +420,7 @@ input {
   top: 100px;
   right: 30px;
   font:
-    600 13px/1.7 'Rajdhani',
+    600 13px/1.7 'Circuit Grid',
     sans-serif;
   background: #04101de8;
   color: #bce5dd;
@@ -513,4 +528,202 @@ input {
   fill: none;
   stroke: #ef7187;
   stroke-width: 3;
+}
+/* Driving instruments leave the road and the vehicle unobstructed. */
+.topbar {
+  padding: 14px 22px;
+  background: linear-gradient(#060c10aa, transparent);
+  justify-content: flex-end;
+}
+.wordmark,
+.topbar .location {
+  display: none;
+}
+.top-actions {
+  gap: 5px;
+}
+.top-actions button {
+  font-size: 10px;
+  padding: 6px 9px;
+  background: #0a151d77;
+  border-color: #80949722;
+}
+.top-actions button kbd {
+  font-size: 8px;
+  padding: 1px 3px;
+}
+.session {
+  top: 54px;
+  left: 26px;
+  text-shadow: 0 2px 3px #000;
+}
+.session h2,
+.session-rule,
+.session-label,
+.session .eyebrow {
+  display: none;
+}
+.session p {
+  font-size: 16px;
+  color: #e4deaf;
+  font-weight: 600;
+}
+.bottom-hint {
+  display: none;
+}
+.driving-hud {
+  bottom: 28px;
+  left: 25px;
+  right: 24px;
+}
+.speed-cluster {
+  width: 276px;
+  height: 258px;
+  padding: 0;
+  border: 0;
+  background: none;
+  position: relative;
+}
+.speed-cluster .analog-dials {
+  display: block;
+  position: absolute;
+  inset: 0;
+  height: 230px;
+}
+.speed-cluster #rpm-dial {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 235px;
+  height: 216px;
+}
+.speed-cluster #speed-dial {
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100px;
+  height: 95px;
+}
+.dial-face {
+  fill: #0c1515e8;
+  stroke: #c6ccc0;
+  stroke-width: 1.3;
+}
+.speed-cluster .dial-arc {
+  stroke: #78c6cf;
+  stroke-width: 4;
+}
+.speed-cluster .dial-ticks {
+  stroke: #e7e5cc;
+  stroke-width: 1.2;
+}
+.speed-cluster svg text {
+  fill: #ede9cd;
+  font-size: 7px;
+  font-weight: 600;
+}
+.speed-cluster .dial-needle {
+  fill: #edede0;
+  filter: drop-shadow(0 0 1px #fff);
+}
+.speed-cluster .dial-hub {
+  fill: #bcbda6;
+}
+.speed-cluster .dial-unit {
+  font-size: 4px;
+}
+.speed-cluster .rpm-scale,
+.speed-cluster .rpm-track {
+  display: none;
+}
+.speed-cluster .speed-row {
+  position: absolute;
+  right: 26px;
+  bottom: 54px;
+  gap: 25px;
+  align-items: end;
+}
+.speed-cluster .gear-box span {
+  font-size: 30px;
+  color: #e1ddba;
+}
+.speed-cluster .gear-box small {
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+.speed-cluster #speed {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.speed-cluster .speed-number {
+  gap: 5px;
+}
+.speed-cluster .speed-number small {
+  font-size: 9px;
+}
+.speed-cluster .nitro-row {
+  position: absolute;
+  right: 18px;
+  bottom: 9px;
+  width: 200px;
+  font-size: 9px;
+}
+.speed-cluster .nitro-row kbd {
+  display: none;
+}
+.toast {
+  top: 80px;
+  bottom: auto;
+  font-size: 12px;
+  background: #111b1bbb;
+  border: 0;
+  padding: 8px 15px;
+  max-width: 560px;
+}
+.city-mode .mini-wrap {
+  left: 24px;
+  bottom: 35px;
+  width: 206px;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.city-mode #minimap {
+  height: 192px;
+  width: 192px;
+  border-radius: 50%;
+  border: 5px solid #8b9b98aa;
+  background: #182a2cbb;
+  box-shadow: 0 3px 10px #0008;
+}
+.city-mode .mini-title {
+  display: none;
+}
+.city-mode .mini-actions {
+  border: 0;
+  width: 192px;
+}
+.city-mode .mini-actions button {
+  background: #09191a77;
+  font-size: 9px;
+  padding: 3px;
+}
+.city-mode #gps-info {
+  position: absolute;
+  left: 0;
+  bottom: -23px;
+  width: 210px;
+  padding: 3px 0;
+  border: 0;
+  font-size: 10px;
+  min-height: 0;
+  text-shadow: 0 1px 3px #000;
+}
+.speed-cluster #rpm-dial {
+  height: 235px;
+}
+.speed-cluster #rpm-dial .dial-unit {
+  display: none;
 }

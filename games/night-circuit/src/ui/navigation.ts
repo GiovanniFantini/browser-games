@@ -384,7 +384,7 @@ export class Navigation {
         ctx.lineWidth = 1 / scale;
         ctx.strokeRect(o.x - 480, o.z - 480, 960, 960);
         ctx.fillStyle = '#d3ec7b';
-        ctx.font = `700 ${18 / scale}px Rajdhani`;
+        ctx.font = `700 ${18 / scale}px "Circuit Grid"`;
         ctx.fillText(districts.districts[i].name, o.x - 400, o.z - 440);
       }
     }
@@ -428,7 +428,7 @@ export class Navigation {
         ctx.arc(poi.x, poi.z, 5 / scale, 0, Math.PI * 2);
         ctx.fill();
         if (!mini && this.mapSpan === 1080) {
-          ctx.font = '600 17px Rajdhani';
+          ctx.font = '600 17px "Circuit Grid"';
           ctx.textAlign = poi.x > 200 ? 'right' : 'left';
           ctx.fillText(poi.name, poi.x + (poi.x > 200 ? -12 : 12), poi.z - 13);
         }
@@ -455,7 +455,7 @@ export class Navigation {
     ctx.stroke();
     ctx.restore();
     ctx.fillStyle = '#8eabb7';
-    ctx.font = '600 14px Rajdhani';
+    ctx.font = '600 14px "Circuit Grid"';
     ctx.fillText(t(mini && this.rotated ? 'AUTO ↑' : 'N ↑'), 12, 22);
   }
 }

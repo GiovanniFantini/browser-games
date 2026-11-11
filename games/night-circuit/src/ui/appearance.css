@@ -142,7 +142,7 @@
   justify-content: center;
   pointer-events: auto;
   color: #e2eff2;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Circuit Grid', sans-serif;
 }
 #photo-host {
   width: min(100vw, calc((100vh - 100px) * 16 / 9));

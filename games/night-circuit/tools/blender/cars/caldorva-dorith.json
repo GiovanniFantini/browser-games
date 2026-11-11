@@ -1,0 +1,155 @@
+{
+  "id": "caldorva-dorith",
+  "name": "Caldorva Dorith",
+  "family": "suv",
+  "seed": 151715,
+  "length": 4.991,
+  "width": 2.155,
+  "wheelbase": 3.144,
+  "track": 2.035,
+  "roof": 1.525,
+  "side_profile": [
+    [
+      -1,
+      0.11
+    ],
+    [
+      -0.8,
+      0.9332999999999999
+    ],
+    [
+      -0.55,
+      1.037
+    ],
+    [
+      -0.22,
+      1.037
+    ],
+    [
+      0.05,
+      1.01626
+    ],
+    [
+      0.34,
+      0.19
+    ],
+    [
+      0.72,
+      0.1
+    ],
+    [
+      1,
+      -0.04
+    ]
+  ],
+  "top_profile": [
+    [
+      -1,
+      0.8
+    ],
+    [
+      -0.75,
+      0.98
+    ],
+    [
+      -0.5,
+      1
+    ],
+    [
+      -0.22,
+      0.98
+    ],
+    [
+      0.05,
+      0.99
+    ],
+    [
+      0.34,
+      1
+    ],
+    [
+      0.72,
+      0.96
+    ],
+    [
+      1,
+      0.68
+    ]
+  ],
+  "sections": [
+    {
+      "z": -2.4955,
+      "half_width": 0.862,
+      "top": 0.11,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": -1.9964,
+      "half_width": 1.05595,
+      "top": 0.9332999999999999,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": -1.372525,
+      "half_width": 1.0775,
+      "top": 1.037,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": -0.54901,
+      "half_width": 1.05595,
+      "top": 1.037,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 0.124775,
+      "half_width": 1.066725,
+      "top": 1.01626,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 0.8484700000000001,
+      "half_width": 1.0775,
+      "top": 0.19,
+      "belt": 0.16,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 1.79676,
+      "half_width": 1.0343999999999998,
+      "top": 0.1,
+      "belt": 0.08,
+      "roof_half_width": 0.7327
+    },
+    {
+      "z": 2.4955,
+      "half_width": 0.7327,
+      "top": -0.04,
+      "belt": 0.08,
+      "roof_half_width": 0.7327
+    }
+  ],
+  "cross_section_segments": 24,
+  "longitudinal_segments": 40,
+  "target_triangles": 6500,
+  "ao_size": 256,
+  "ao_samples": 8,
+  "design": {
+    "hoodScale": 1.22,
+    "rearScale": 1.06,
+    "noseHeight": 0.2,
+    "frontTaper": 0.68,
+    "rearTaper": 0.8,
+    "deckOffset": 0.04,
+    "screenAngle": -0.62,
+    "rearAngle": 0.27,
+    "roofWidth": 0.94,
+    "lampSegments": 3,
+    "waist": 0.244
+  }
+}

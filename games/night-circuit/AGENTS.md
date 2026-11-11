@@ -6,13 +6,13 @@ Si applicano anche le istruzioni generali della raccolta.
 
 Gioco arcade 3D notturno per browser desktop, ambientato nella città inventata Port Riders. Codice, dati e risorse indipendenti dagli altri giochi. TypeScript strict, Vite, Three.js/WebGL2, Rapier raycast, Web Audio e interfaccia HTML/CSS. Tastiera e gamepad standard. Niente servizi esterni, backend o pipeline.
 
-Rispettare la roadmap in docs/requisiti.md. L'autorizzazione attuale comprende le fasi 1, 2, 3, 4, 5, 6, 7 e 8. Le otto fasi sono completate e verificate localmente; la review Codex/Opus è conclusa con READY TO PROD per la build statica. Evidenze e limiti correnti sono in docs/review-finale.md. Non confondere le prime gare giocabili con il gioco completo.
+Rispettare la roadmap in docs/requisiti.md. L'autorizzazione attuale comprende le fasi 1, 2, 3, 4, 5, 6, 7 e 8 e la successiva revisione grafica. Le otto fasi sono completate e verificate localmente; la review Codex/Opus della versione precedente è conclusa con READY TO PROD per la build statica. Per quella versione consultare docs/review-finale.md; per la nuova revisione locale consultare docs/revisione-grafica.md. Non confondere le prime gare giocabili con il gioco completo.
 
 ## Contenuti e dati
 
 Nomi, veicoli, marchi immaginari, sagome, insegne e testi originali. Non aggiungere riferimenti a costruttori reali, modelli reali, città reali o altri giochi nei contenuti del gioco, commenti, file o metadati. Le dipendenze mantengono i loro identificativi e le licenze obbligatorie.
 
-Asset generati dal codice. Eventuali risorse esterne richiedono licenza compatibile e registrazione in CREDITS.md. Font solo OFL. Audio procedurale; nessuna musica di terzi. Cataloghi, parametri delle auto, prezzi, quartieri ed eventi in JSON. Le costanti degli algoritmi restano nei rispettivi moduli.
+Nessun asset esterno, nemmeno CC0. Texture, modelli, font, icone e suoni devono essere generati nel progetto, con codice o script inclusi nel repository. Audio e musica sintetizzati localmente. Obiettivo visivo: racing arcade console dei primi anni 2000, texture 256-512 px, auto originali da 3-8k triangoli, luce ricca e satura. La nuova revisione procede per texture, edifici, illuminazione, auto. La richiesta più recente di Giovanni autorizza a continuare autonomamente attraverso tutti i passi fino al livello di dettaglio e grafica dei riferimenti in chat. Non attendere più approvazioni fra i passi; mostrare evidenze browser reali e continuare finché il risultato non è adeguato. Cataloghi, parametri delle auto, prezzi, quartieri ed eventi in JSON. Le costanti degli algoritmi restano nei rispettivi moduli.
 
 ## Verifica
 

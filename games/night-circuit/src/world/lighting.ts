@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { atlasPois, districtIndex, roadHeight } from './atlas';
+import { atlasPois, districtIndex, roadHeight, ORIGINS } from './atlas';
 /** Four persistent uniforms, even when no sign is close enough to contribute light. */
 export class WorldLighting {
   private readonly lights = Array.from(
@@ -18,9 +18,18 @@ export class WorldLighting {
         y: roadHeight(p.x, p.z) + 5,
         z: p.z + offset,
         index,
+        power: 85,
         color: p.type === 'shop' ? 0xe775b2 : 0x72d4e5,
       };
     });
+  private readonly underpassSources = Array.from({ length: 12 }, (_, i) => ({
+    x: i % 2 ? 6 : -8.5,
+    y: 7.3,
+    z: -342 + Math.floor(i / 2) * 16,
+    index: 0,
+    color: 0xffcc82,
+    power: 90,
+  }));
   private readonly distances = new Float64Array(4);
   private readonly picks = new Int32Array(4);
   private next = 0;
@@ -28,6 +37,36 @@ export class WorldLighting {
   private z = Infinity;
   private access = 0;
   constructor(scene: THREE.Scene) {
+    this.sources.push(...this.underpassSources);
+    for (let index = 0; index < 4; index++) {
+      const origin = ORIGINS[index];
+      for (let a = -480; a <= 480; a += 120)
+        for (let b = -420; b <= 420; b += 120)
+          for (const side of [-1, 1]) {
+            const cool =
+              (Math.round((a + 480) / 120) +
+                Math.round((b + 420) / 120) +
+                (side > 0 ? 1 : 0) +
+                index) %
+                3 ===
+              0;
+            for (const [lx, lz] of [
+              [a + side * 14, b],
+              [b, a + side * 14],
+            ]) {
+              const x = origin.x + lx,
+                z = origin.z + lz;
+              this.sources.push({
+                x,
+                y: roadHeight(x, z) + 9.4,
+                z,
+                index,
+                color: cool ? 0x91cbd3 : 0xffd098,
+                power: 60,
+              });
+            }
+          }
+    }
     scene.add(...this.lights);
   }
   update(x: number, y: number, z: number, time: number, unlocked: number) {
@@ -61,7 +100,7 @@ export class WorldLighting {
     for (let i = 0; i < 4; i++) {
       const p = this.sources[this.picks[i]],
         light = this.lights[i];
-      light.intensity = p ? 85 : 0;
+      light.intensity = p ? p.power : 0;
       if (p) {
         light.position.set(p.x, p.y, p.z);
         light.color.setHex(p.color);

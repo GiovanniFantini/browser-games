@@ -216,3 +216,23 @@
   border-color: #d3ec7b;
   margin: 10px 0;
 }
+#race-interact {
+  bottom: auto;
+  top: 90px;
+  max-width: 500px;
+  padding: 7px 12px;
+  font-size: 11px;
+  background: #101b1bbb;
+  border: 0;
+}
+#street-challenge {
+  bottom: auto;
+  top: 122px;
+  left: auto;
+  right: 24px;
+  transform: none;
+  font-size: 10px;
+  background: #15212488;
+  border-color: #82949844;
+  padding: 6px 10px;
+}

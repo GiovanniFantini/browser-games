@@ -25,11 +25,11 @@ export class ChaseCamera {
     this.direction.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, yaw);
     if (this.mode < 2) {
       this.desired
-        .set(0, this.mode === 0 ? 3.1 : 5.3, this.mode === 0 ? -7.7 : -12)
+        .set(0, this.mode === 0 ? 1.45 : 4.3, this.mode === 0 ? -6.6 : -11)
         .applyQuaternion(this.direction)
         .add(root.position);
       this.target
-        .set(0, 0.75, 5.5)
+        .set(0, 1.0, 8.5)
         .applyQuaternion(this.direction)
         .add(root.position);
     } else {
@@ -53,7 +53,7 @@ export class ChaseCamera {
     this.camera.lookAt(this.look);
     this.camera.fov = THREE.MathUtils.damp(
       this.camera.fov,
-      car.power.boosting ? 83 : 65 + Math.min(Math.abs(car.speed) * 0.13, 7),
+      car.power.boosting ? 78 : 59 + Math.min(Math.abs(car.speed) * 0.13, 7),
       4,
       dt,
     );
