@@ -22,6 +22,16 @@ Verifiche completate nella candidata locale:
 
 Le catture usano ANGLE Direct3D 11 sulla GPU virtuale VMware. Non certificano 60 fps su GPU integrata fisica. Una prima esecuzione del controllo sulle richieste esterne usava una porta diversa da quella fissata nel test; è stata ripetuta sulla porta prevista, con esito positivo. Non sono state modificate pipeline o configurazioni CI/CD.
 
+## Pubblicazione del nuovo ciclo verificata
+
+Distribuzione pubblica: commit `47bd9436249fe5a70f758e6832e5756e08076008` di `GiovanniFantini/night-circuit`. Codice della build: commit `ae3611d3dfea09833e1033cc8f61b1308daf196c` di BrowserGames. GitHub Pages ha completato la pubblicazione. Verifica reale eseguita sul dominio pubblico l'11 novembre 2026 alle 21:46 UTC.
+
+- `release.json` corrisponde al commit sorgente atteso. SHA-256 del GLB iniziale servito online: `9dfbe09c12b2dd7a374a3409ff203c0613e9bea8c8d6b95c46c720a0e0feac69`, identico al file locale.
+- Avvio, accelerazione con input continui, uscita in città, derapata, garage e studio fotografico funzionano. Nessun errore JavaScript/WebGL, nessuna richiesta a origini esterne, interfaccia QA assente.
+- Anche il pacchetto locale in qualità bassa supera avvio, guida e studio. Il benchmark visivo di Opus riguarda la qualità media. Le immagini, il report pubblico e le review sono conservati negli artefatti locali; i riferimenti non sono distribuiti.
+- I 92 test unitari sono stati ripetuti sulla candidata finale. Le cinque prove browser su estetica e modelli sono passate anche dopo gli ultimi cambiamenti. Controllo diretto della nuova lente: intensità 1,8 in marcia e 3 in frenata, con colore emissivo più luminoso.
+- Nessuna modifica a pipeline o CI/CD. I file personali non tracciati nella radice e il gioco Dragon Ball sono rimasti fuori dai commit.
+
 ## Cronologia della versione precedente, respinta da Giovanni
 
 Richiesta successiva alla pubblicazione della prima revisione grafica: raggiungere il dettaglio e la resa del riferimento fornito in chat, con review ripetute di Claude Code locale, modello Opus. Il riferimento resta materiale di confronto nelle evidenze locali ignorate e non è un asset del gioco.
