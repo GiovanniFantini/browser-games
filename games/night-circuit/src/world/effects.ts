@@ -57,16 +57,16 @@ export class Effects {
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     this.bloom = new UnrealBloomPass(
       new THREE.Vector2(innerWidth / 2, innerHeight / 2),
-      0.16,
-      0.3,
-      0.85,
+      0.65,
+      0.5,
+      0.8,
     );
     // Bound only the bloom source, preserving HDR lighting in the base image.
     // Headlight reflections otherwise spread unbounded energy across the car.
     this.bloom.materialHighPassFilter.fragmentShader =
       this.bloom.materialHighPassFilter.fragmentShader.replace(
         'vec4 texel = texture2D( tDiffuse, vUv );',
-        'vec4 texel = texture2D( tDiffuse, vUv ); texel.rgb = min(texel.rgb, vec3(1.5));',
+        'vec4 texel = texture2D( tDiffuse, vUv ); texel.rgb = min(texel.rgb, vec3(5.0));',
       );
     this.composer.addPass(this.bloom);
     this.radial = new ShaderPass({
@@ -77,6 +77,20 @@ export class Effects {
         'uniform sampler2D tDiffuse;uniform float boost;varying vec2 vUv;void main(){vec2 delta=(vUv-vec2(.5))*boost*.014;vec4 c=texture2D(tDiffuse,vUv)*.4;for(int i=1;i<4;i++){c+=texture2D(tDiffuse,vUv-delta*float(i))*.2;}gl_FragColor=c;}',
     });
     this.composer.addPass(this.radial);
+    this.composer.addPass(
+      new ShaderPass({
+        uniforms: { tDiffuse: { value: null } },
+        vertexShader:
+          'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+        fragmentShader: `uniform sampler2D tDiffuse;varying vec2 vUv;
+        void main(){vec4 c=texture2D(tDiffuse,vUv);float l=dot(c.rgb,vec3(.2126,.7152,.0722));
+        c.rgb=max(vec3(0.),c.rgb-vec3(.009));
+        c.rgb*=mix(vec3(.92,.95,1.10),vec3(1.08,.98,.95),smoothstep(.04,.8,l));
+        c.rgb=pow(c.rgb,vec3(1.055));
+        float v=1.-.27*smoothstep(.25,.78,length((vUv-.5)*vec2(1.,.8)));
+        gl_FragColor=vec4(c.rgb*v,c.a);}`,
+      }),
+    );
     this.composer.addPass(new OutputPass());
     this.resize(true);
   }
@@ -99,7 +113,14 @@ export class Effects {
     const scale = graphicsQuality() === 'high' ? 0.75 : 0.5;
     this.bloom!.setSize(innerWidth * scale, innerHeight * scale);
   }
-  render(x: number, y: number, z: number, time: number, boost: boolean) {
+  render(
+    x: number,
+    y: number,
+    z: number,
+    time: number,
+    boost: boolean,
+    speed = 0,
+  ) {
     this.rain.visible = p.rain;
     if (p.rain) {
       const count = graphicsQuality() === 'low' ? 300 : 900;
@@ -127,8 +148,11 @@ export class Effects {
     else {
       if (!this.composer) this.setup();
       this.bloom!.enabled = p.bloom;
-      this.radial!.enabled = boost;
-      this.radial!.uniforms.boost.value = boost ? 1 : 0;
+      const motion = boost
+        ? 1
+        : Math.min(0.3, Math.max(0, (Math.abs(speed) - 30) / 80));
+      this.radial!.enabled = motion > 0;
+      this.radial!.uniforms.boost.value = motion;
       this.composer!.render();
     }
   }

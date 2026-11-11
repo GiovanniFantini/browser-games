@@ -30,12 +30,14 @@ export class GaragePreview {
     const renderer = this.renderer;
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.domElement.setAttribute(
       'aria-label',
       'Auto 3D: trascina per ruotare, usa la rotella per lo zoom',
     );
     host.append(renderer.domElement);
-    this.camera.position.set(4.1, 2.1, 4.8);
+    this.camera.position.set(4.1, 1.55, 4.8);
     this.controls = new OrbitControls(this.camera, renderer.domElement);
     this.controls.target.set(0, 0.75, 0);
     this.controls.enablePan = false;
@@ -49,7 +51,7 @@ export class GaragePreview {
     this.scene.environmentIntensity = 0.65;
     this.scene.add(
       this.car.root,
-      new THREE.HemisphereLight(0xb3d1d4, 0x3f4153, 1.2),
+      new THREE.HemisphereLight(0xb3d1d4, 0x3f4153, 0.85),
     );
     this.photoRoot.id = 'photo-studio';
     this.photoRoot.hidden = true;
@@ -87,13 +89,24 @@ export class GaragePreview {
         first.focus();
       }
     });
-    const light = new THREE.DirectionalLight(0xffe6c3, 2.8);
+    const light = new THREE.DirectionalLight(0xffe6c3, 2);
     light.position.set(3, 5, 2);
+    light.castShadow = true;
+    light.shadow.mapSize.set(1024, 1024);
+    light.shadow.camera.left = light.shadow.camera.bottom = -4;
+    light.shadow.camera.right = light.shadow.camera.top = 4;
+    light.shadow.camera.near = 0.1;
+    light.shadow.camera.far = 20;
+    light.shadow.normalBias = 0.01;
+    light.shadow.bias = -0.0001;
     this.scene.add(light);
-    const rim = new THREE.DirectionalLight(0x71cfe9, 1.8);
+    const rim = new THREE.DirectionalLight(0x71cfe9, 1.1);
     rim.position.set(-4, 2, -3);
     this.scene.add(rim);
     createWorkshopStage(this.scene);
+    this.scene.traverse((object) => {
+      if (object instanceof THREE.Mesh) object.receiveShadow = true;
+    });
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(host);
     this.observer.observe(this.photoHost);
@@ -138,7 +151,7 @@ export class GaragePreview {
   }
   view(index: number) {
     const views = [
-      [4.1, 2.1, 4.8],
+      [4.1, 1.55, 4.8],
       [-4.1, 1.9, -4.8],
       [6, 1.65, 0],
       [0, 7, 0.1],

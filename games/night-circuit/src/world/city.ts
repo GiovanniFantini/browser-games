@@ -235,9 +235,9 @@ export class City {
           sx,
           9.6,
           sz,
-          vertical ? 3.4 : 0.6,
+          vertical ? 1.05 : 0.45,
           0.13,
-          vertical ? 0.6 : 3.4,
+          vertical ? 0.45 : 1.05,
         );
       }
       for (let j = 0; j < 8; j++) {
@@ -465,7 +465,9 @@ export class City {
     for (const poi of this.data.pois) {
       const x = poi.x + 18,
         z = poi.z + 18;
-      this.box(this.scene, 0.25, 7, 0.25, x, 3.5, z, 'metal');
+      if (this.openBorders && Math.abs(x) < 35 && z > -355 && z < -250)
+        continue;
+      this.box(this.scene, 0.25, 5.5, 0.25, x, 2.75, z, 'metal');
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 128;
@@ -487,8 +489,8 @@ export class City {
         map: new THREE.CanvasTexture(canvas),
       });
       for (const direction of [0, Math.PI]) {
-        const sign = new THREE.Mesh(new THREE.PlaneGeometry(12, 3), material);
-        sign.position.set(x, 6, z + (direction ? -0.05 : 0.05));
+        const sign = new THREE.Mesh(new THREE.PlaneGeometry(5, 1.3), material);
+        sign.position.set(x, 5, z + (direction ? -0.05 : 0.05));
         sign.rotation.y = direction;
         this.scene.add(sign);
       }

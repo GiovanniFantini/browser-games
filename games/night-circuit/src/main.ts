@@ -1,4 +1,9 @@
 import { prepareDetailedCarModels } from './vehicle/generated';
+import { Atmosphere } from './world/atmosphere';
+import { reflectionEnvironment } from './world/reflections';
+import { createStreetscape } from './world/streetscape';
+import { TireSmoke } from './vehicle/smoke';
+import { WetReflections } from './world/wet-reflections';
 import { prepareBakedLighting } from './gen/lighting/lightmaps';
 import { WorldLighting } from './world/lighting';
 import {
@@ -97,6 +102,7 @@ async function boot() {
   };
   const input = new Input(action);
   let vehicle: Vehicle;
+  let wetReflections: WetReflections | undefined;
   let chase: ChaseCamera;
   let loop: FixedLoop;
   let renderer: THREE.WebGLRenderer;
@@ -590,7 +596,7 @@ async function boot() {
     renderer.info.autoReset = false;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0c1525);
-    scene.fog = new THREE.FogExp2(0x0c1525, 0.0022);
+    scene.fog = new THREE.FogExp2(0x121020, 0.0022);
     const camera = new THREE.PerspectiveCamera(
       65,
       innerWidth / innerHeight,
@@ -618,9 +624,12 @@ async function boot() {
     ]);
     const sky = generatedEnvironment();
     const pmrem = new THREE.PMREMGenerator(renderer);
-    scene.environment = pmrem.fromEquirectangular(sky).texture;
+    const reflectionSky = reflectionEnvironment();
+    scene.environment = pmrem.fromEquirectangular(reflectionSky).texture;
+    reflectionSky.dispose();
     scene.environmentIntensity = 0.8;
     scene.background = sky;
+    const atmosphere = new Atmosphere(scene);
     pmrem.dispose();
     const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
     world.timestep = FIXED_DT;
@@ -630,6 +639,8 @@ async function boot() {
       const cityRoot = new THREE.Scene();
       scene.add(cityRoot);
       city = new City(cityRoot, world, graph, initialLow, district, true);
+      createStreetscape(cityRoot, graph, world);
+      wetReflections = new WetReflections(cityRoot, graph);
       metro = new MetroWorld(scene, world);
       traffic = new Traffic(scene, world, graph);
       navigation = new Navigation(graph, scene);
@@ -875,6 +886,7 @@ async function boot() {
       accessCount(store.profile.career.defeated),
     );
     const effects = new Effects(renderer, scene, camera);
+    const tireSmoke = new TireSmoke(scene, renderer);
     visualEffects = effects;
     window.addEventListener('resize', () => effects.resize());
     const previousSettingsChange = settings.onChange;
@@ -915,6 +927,7 @@ async function boot() {
       vehicle.step(raceControls, dt);
       world.step();
       vehicle.capture();
+      tireSmoke.update(vehicle, dt, raceControls.handbrake);
       races?.afterStep(dt);
       if (traffic) {
         const notice = drivingStyle.update(
@@ -988,6 +1001,9 @@ async function boot() {
       fps = THREE.MathUtils.damp(fps, 1 / Math.max(dt, 0.001), 2, dt);
       const blend = playing && !qa.manual ? alpha : 1;
       renderer.info.reset();
+      document
+        .querySelector('#interface')!
+        .classList.toggle('driving', playing);
       vehicle.render(blend, time);
       races?.render(blend, time, dt, playing);
       if (races && currentDistrict !== 'old-docks' && !races.active) {
@@ -1022,6 +1038,8 @@ async function boot() {
         playing && !races?.active && !navigation?.open && nearGarage(),
       );
       chase.update(vehicle, dt);
+      atmosphere.update(camera);
+      wetReflections?.update(camera);
       moon.position.set(
         vehicle.position.x - 45,
         vehicle.position.y + 75,
@@ -1051,6 +1069,7 @@ async function boot() {
           vehicle.position.z,
           time,
           vehicle.power.boosting,
+          vehicle.speed,
         );
       hud.update(
         vehicle,

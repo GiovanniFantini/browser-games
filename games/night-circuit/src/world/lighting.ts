@@ -21,14 +21,17 @@ export class WorldLighting {
         power: 85,
         color: p.type === 'shop' ? 0xe775b2 : 0x72d4e5,
       };
-    });
+    })
+    .filter(
+      (p) => !(p.index === 0 && Math.abs(p.x) < 24 && p.z > -355 && p.z < -250),
+    );
   private readonly underpassSources = Array.from({ length: 12 }, (_, i) => ({
     x: i % 2 ? 6 : -8.5,
-    y: 7.3,
+    y: 4.2 + 5.5 * Math.sqrt(1 - ((i % 2 ? 6 : -8.5) / 16.5) ** 2) - 1.04,
     z: -342 + Math.floor(i / 2) * 16,
     index: 0,
     color: 0xffcc82,
-    power: 90,
+    power: 30,
   }));
   private readonly distances = new Float64Array(4);
   private readonly picks = new Int32Array(4);
@@ -56,6 +59,8 @@ export class WorldLighting {
             ]) {
               const x = origin.x + lx,
                 z = origin.z + lz;
+              if (index === 0 && Math.abs(x) < 24 && z > -355 && z < -250)
+                continue;
               this.sources.push({
                 x,
                 y: roadHeight(x, z) + 9.4,

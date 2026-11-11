@@ -166,7 +166,8 @@ export class Hud {
     if (this.elapsed < 0.065) return;
     this.elapsed = 0;
     const speed =
-        Math.abs(car.speed) * (preferences.units === 'mph' ? 2.236936 : 3.6),
+        Math.hypot(car.speed, car.slip) *
+        (preferences.units === 'mph' ? 2.236936 : 3.6),
       maximum = Math.max(
         50,
         Math.ceil(
@@ -203,7 +204,8 @@ export class Hud {
     );
     this.speed.textContent = String(
       Math.round(
-        Math.abs(car.speed) * (preferences.units === 'mph' ? 2.236936 : 3.6),
+        Math.hypot(car.speed, car.slip) *
+          (preferences.units === 'mph' ? 2.236936 : 3.6),
       ),
     ).padStart(3, '0');
     this.root.querySelector('.speed-number small')!.textContent =

@@ -101,8 +101,9 @@ function material(key: string) {
     result.emissiveIntensity = key === 'lit' ? 1.3 : 1.6;
   }
   if (key === 'shop') {
-    result.emissiveIntensity = 0.9;
+    result.emissiveIntensity = 1.2;
   }
+  if (key === 'sign-cyan' || key === 'sign-pink') result.emissiveIntensity = 3;
   if (key === 'glass') {
     result.roughness = 0.3;
     result.metalness = 0.25;
@@ -287,6 +288,46 @@ export class BuildingKit {
         this.box('stone', 0, y + 0.05, 0, w + 0.12, 0.13, d + 0.12);
         for (const x of [-w / 2 + 0.15, w / 2 - 0.15])
           this.box(this.wall, x, y + 1.65, (side * d) / 2, 0.48, 3.3, 0.3);
+        if (id === 'brick-floor') {
+          const axis = this.facadeAxis;
+          for (let face = 0; face < 2; face++) {
+            this.facadeAxis = face;
+            for (const side of [-1, 1])
+              for (let x = -this.w / 2 + 2.5; x < this.w / 2 - 1; x += 4.5) {
+                const lit =
+                  (Math.floor(x * 3) + Math.floor(y) * 7 + this.spec.seed) % 5 <
+                  2;
+                this.box(
+                  'iron',
+                  x,
+                  y + 1.8,
+                  side * (this.d / 2 + 0.04),
+                  1.9,
+                  1.9,
+                  0.12,
+                );
+                this.box(
+                  lit ? 'shop' : 'glass',
+                  x,
+                  y + 1.8,
+                  side * (this.d / 2 + 0.115),
+                  1.65,
+                  1.6,
+                  0.05,
+                );
+                this.box(
+                  'stone',
+                  x,
+                  y + 0.95,
+                  side * (this.d / 2 + 0.18),
+                  2.05,
+                  0.09,
+                  0.4,
+                );
+              }
+          }
+          this.facadeAxis = axis;
+        }
         break;
       }
       case 'stone-pier':
@@ -598,7 +639,13 @@ export class BuildingKit {
     this.facadeAxis = 0;
     for (let floor = 0; floor < floors; floor++) {
       this.module(
-        this.spec.district === 1 ? 'office-floor' : 'plaster-floor',
+        this.spec.district === 1
+          ? 'office-floor'
+          : type % 3 === 1
+            ? 'brick-floor'
+            : type % 3 === 2
+              ? 'office-floor'
+              : 'plaster-floor',
         3.8 + floor * 3.3,
       );
       if (type === 3 && floor % 2 === 0)
@@ -607,7 +654,8 @@ export class BuildingKit {
     const top = 3.8 + floors * 3.3;
     this.module('cornice', top);
     this.module('flat-roof', top + 0.15);
-    if (this.spec.district === 2 && type % 2) this.module('pitched-roof', top);
+    if ((this.spec.district === 2 && type % 2) || type === 5)
+      this.module('pitched-roof', top);
     else this.module('parapet', top);
     this.module(type % 2 ? 'roof-chiller' : 'water-tank', top + 0.15);
     this.module('chimney', top);

@@ -22,7 +22,7 @@ export const RECIPES = [
   ['storefront', 'Vetrina illuminata'],
 ] as const;
 export type TextureId = (typeof RECIPES)[number][0];
-export const TEXTURE_VERSION = 6;
+export const TEXTURE_VERSION = 8;
 export const TEXTURE_SIZE = 512;
 export interface TexturePack {
   id: TextureId;
@@ -178,6 +178,12 @@ export async function generateTexture(
         const drip = noise(u, v * 0.08, 32, seed + 41);
         shade = 0.7 + medium * 0.19 + broad * 0.15 + grain * 0.12 - drip * 0.08;
         height = 128 + grain * 5 + (fine - 0.5) * 6;
+        if (id === 'concrete') {
+          shade =
+            0.95 + (fine - 0.5) * 0.065 + (grain - 0.5) * 0.06 - drip * 0.025;
+          height = 128 + (grain - 0.5) * 3 + (fine - 0.5) * 2;
+          rough = 208 + fine * 22;
+        }
       }
       if (id === 'night-sky') {
         const horizon = Math.exp(-Math.pow((v - 0.48) * 8, 2));
@@ -188,9 +194,9 @@ export async function generateTexture(
         );
         color =
           v < 0.54
-            ? [8 + horizon * 42, 14 + horizon * 30, 20 + horizon * 16]
-            : [9, 12, 14];
-        shade = v < 0.54 ? 0.45 + cloud * 0.55 : 0.8 + medium * 0.15;
+            ? [27 + horizon * 53, 25 + horizon * 22, 47 + horizon * 34]
+            : [14, 20, 31];
+        shade = v < 0.54 ? 0.65 + cloud * 0.6 : 0.8 + medium * 0.15;
         rough = 255;
         height = 128;
       }
@@ -286,8 +292,8 @@ export async function generateTexture(
       for (const dx of [-512, 0, 512])
         for (const dy of [-512, 0, 512]) {
           const path = pts.map(([px, py]) => [px + dx, py + dy]);
-          line(a, path, road ? '#1720209a' : '#31352d70', 0.65);
-          line(h, path, '#767676', 1);
+          line(a, path, road ? '#30343935' : '#31352d70', 0.5);
+          line(h, path, road ? '#7c7c7c' : '#767676', 0.6);
           line(r, path, '#c5c5c5', 1);
         }
     }
@@ -335,6 +341,23 @@ export async function generateTexture(
           0.6,
         );
       }
+  }
+  if (id === 'concrete') {
+    for (const p of [0, 256]) {
+      rect(p, 0, 2, 512, '#444b4b', 124, 225);
+      rect(p + 2, 0, 1, 512, '#8d9189', 131, 210);
+      rect(0, p, 512, 2, '#444b4b', 124, 225);
+      rect(0, p + 2, 512, 1, '#8d9189', 131, 210);
+      for (const x of [p + 12, p + 244])
+        for (const y of [12, 244, 268, 500]) {
+          a.fillStyle = '#42494a';
+          a.beginPath();
+          a.arc(x, y, 2, 0, Math.PI * 2);
+          a.fill();
+          a.fillStyle = '#333d3b20';
+          a.fillRect(x - 1, y + 3, 2, 14 + rng() * 30);
+        }
+    }
   }
   if (facade) {
     for (let row = 0; row < 4; row++) {

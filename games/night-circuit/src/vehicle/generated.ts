@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { projectorLens, tyreLettering, factoryGraphic } from './details';
 import { roadHeight } from '../world/atlas';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { batchBodywork } from './bodywork';
@@ -77,8 +78,8 @@ function contactShadow() {
     c.width = c.height = 128;
     const ctx = c.getContext('2d')!;
     const gradient = ctx.createRadialGradient(64, 64, 16, 64, 64, 64);
-    gradient.addColorStop(0, '#000b');
-    gradient.addColorStop(0.65, '#0008');
+    gradient.addColorStop(0, '#000f');
+    gradient.addColorStop(0.72, '#000c');
     gradient.addColorStop(1, '#0000');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 128, 128);
@@ -152,15 +153,42 @@ export function createDetailedCar(
     color: options.color ?? a.paint,
     // A restrained console-style fill keeps the body readable between street lamps.
     emissive: options.color ?? a.paint,
-    emissiveIntensity: 0.1,
+    emissiveIntensity: 0.035,
     metalness: finish.metalness,
-    roughness: Math.max(0.18, finish.roughness),
-    clearcoat: finish.clearcoat,
-    clearcoatRoughness: 0.18,
+    roughness: Math.max(0.19, finish.roughness),
+    clearcoat: finish.clearcoat * 0.95,
+    clearcoatRoughness: 0.12,
+    specularIntensity: 0.7,
+    envMapIntensity: 2.4,
   });
   ownedMaterial.add(paint);
+  paint.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <lights_fragment_end>',
+      `#include <lights_fragment_end>
+      reflectedLight.directSpecular*=.08;
+      #ifdef USE_CLEARCOAT
+      clearcoatSpecularDirect*=.04;
+      #endif`,
+    );
+    if (finish.clearcoat > 0)
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <opaque_fragment>',
+        `#ifdef USE_ENVMAP
+        float coatFresnel=pow(1.-saturate(dot(geometryNormal,geometryViewDir)),2.);
+        vec3 reflectedCity=getIBLRadiance(geometryViewDir,geometryNormal,.10);
+        vec3 worldCoatNormal=transformDirectionByInverseViewMatrix(geometryNormal,viewMatrix);
+        vec3 reflectionTint=mix(vec3(1.),diffuseColor.rgb*2.,(1.-abs(worldCoatNormal.y))*.9);
+        outgoingLight=mix(outgoingLight,reflectedCity*.55*reflectionTint,.20+coatFresnel*.25);
+        #endif
+        #include <opaque_fragment>`,
+      );
+  };
+  paint.customProgramCacheKey = () => 'car-coat-3';
   if ('shift' in finish) {
-    paint.onBeforeCompile = (shader) => {
+    const priorPaint = paint.onBeforeCompile;
+    paint.onBeforeCompile = (shader, renderer) => {
+      priorPaint(shader, renderer);
       shader.uniforms.shiftColor = { value: new THREE.Color(a.secondary) };
       shader.fragmentShader =
         'uniform vec3 shiftColor;\n' +
@@ -170,14 +198,14 @@ export function createDetailedCar(
         );
     };
     paint.customProgramCacheKey = () =>
-      `generated-angle-paint-${a.parts.finish}`;
+      `generated-angle-paint-coat-3-${a.parts.finish}`;
   }
   const tailMaterial = new THREE.MeshBasicMaterial({ color: a.tailColor });
   ownedMaterial.add(tailMaterial);
   const rearLensMaterial = new THREE.MeshPhysicalMaterial({
     color: a.tailColor,
     emissive: a.tailColor,
-    emissiveIntensity: 0.4,
+    emissiveIntensity: 3.5,
     map: rearLens(),
     emissiveMap: rearLens(),
     roughness: 0.23,
@@ -189,7 +217,9 @@ export function createDetailedCar(
   const headMaterial = new THREE.MeshPhysicalMaterial({
     color: a.headColor,
     emissive: a.headColor,
-    emissiveIntensity: 0.7,
+    emissiveIntensity: 3.2,
+    map: projectorLens(),
+    emissiveMap: projectorLens(),
     roughness: 0.24,
     clearcoat: 1,
   });
@@ -200,16 +230,35 @@ export function createDetailedCar(
     roughness: 0.22,
   });
   ownedMaterial.add(rimMaterial);
+  const exhaustMaterial = new THREE.MeshStandardMaterial({
+    color: 0x556169,
+    metalness: 0.55,
+    roughness: 0.6,
+    envMapIntensity: 0.5,
+  });
+  ownedMaterial.add(exhaustMaterial);
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(0x132a32).multiplyScalar(1 - a.tint * 0.65),
-    metalness: 0.35,
-    roughness: 0.12,
+    color: new THREE.Color(0x64718f).multiplyScalar(1 - a.tint * 0.55),
+    metalness: 0.65,
+    roughness: 0.08,
     clearcoat: 1,
     transparent: true,
-    opacity: 0.95 + a.tint * 0.05,
+    opacity: 0.73 + a.tint * 0.23,
+    envMapIntensity: 2,
     depthWrite: false,
     side: THREE.DoubleSide,
   });
+  glassMaterial.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <opaque_fragment>',
+      `#ifdef USE_ENVMAP
+      vec3 reflectedSky=getIBLRadiance(geometryViewDir,geometryNormal,.06);
+      outgoingLight=mix(outgoingLight,reflectedSky*.55,.6);
+      #endif
+      #include <opaque_fragment>`,
+    );
+  };
+  glassMaterial.customProgramCacheKey = () => 'reflective-glazing-1';
   ownedMaterial.add(glassMaterial);
   const otherMaterials = new Map<THREE.Material, THREE.Material>();
   const plateCanvas = document.createElement('canvas');
@@ -250,16 +299,20 @@ export function createDetailedCar(
       ? o.material[0]
       : o.material;
     const role = String(o.userData.role ?? o.name);
-    if (role.startsWith('fanale') || role === 'targa') {
+    if (
+      role.startsWith('fanale') ||
+      role.startsWith('faro') ||
+      role === 'targa'
+    ) {
       o.geometry.computeBoundingBox();
       const bounds = o.geometry.boundingBox!;
       const positions = o.geometry.attributes.position,
         uv = new Float32Array(positions.count * 2);
       for (let i = 0; i < positions.count; i++) {
-        uv[i * 2] =
-          1 -
+        const u =
           (positions.getX(i) - bounds.min.x) /
-            Math.max(0.001, bounds.max.x - bounds.min.x);
+          Math.max(0.001, bounds.max.x - bounds.min.x);
+        uv[i * 2] = role.startsWith('faro') ? u : 1 - u;
         uv[i * 2 + 1] =
           (positions.getY(i) - bounds.min.y) /
           Math.max(0.001, bounds.max.y - bounds.min.y);
@@ -272,6 +325,7 @@ export function createDetailedCar(
     else if (role.startsWith('cristallo')) o.material = glassMaterial;
     else if (role.startsWith('fanale')) o.material = rearLensMaterial;
     else if (role.startsWith('faro')) o.material = headMaterial;
+    else if (role.startsWith('scarico')) o.material = exhaustMaterial;
     else if (role === 'cerchio' || role === 'spoke' || role === 'hub')
       o.material = rimMaterial;
     else if (
@@ -295,6 +349,33 @@ export function createDetailedCar(
     o.castShadow = o.receiveShadow = true;
   });
   root.userData.triangles = triangles;
+  const seamMaterial = new THREE.LineBasicMaterial({
+    color: 0x0a1220,
+    transparent: true,
+    opacity: 0.78,
+  });
+  ownedMaterial.add(seamMaterial);
+  root.traverse((o) => {
+    if (
+      !(o instanceof THREE.Mesh) ||
+      ![
+        'cofano',
+        'porta_sx',
+        'porta_dx',
+        'portellone',
+        'cristallo_ant',
+        'cristallo_post',
+        'cristallo_sx',
+        'cristallo_dx',
+      ].includes(o.name)
+    )
+      return;
+    const edges = new THREE.EdgesGeometry(o.geometry, 179);
+    ownedGeometry.add(edges);
+    const lines = new THREE.LineSegments(edges, seamMaterial);
+    lines.name = 'panel-shutline';
+    o.add(lines);
+  });
   // Distinct named geometry is retained for every tuning attachment.
   const byName = (name: string) => root.getObjectByName(name);
   const pivot = (name: string, pos: THREE.Vector3) => {
@@ -337,6 +418,49 @@ export function createDetailedCar(
     }
   };
   attach(rearGlass, hatch);
+  if (rearGlass instanceof THREE.Mesh && !simple) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d')!;
+    ctx.fillStyle = '#09152299';
+    ctx.fillRect(0, 0, 512, 64);
+    ctx.font = '700 39px "Circuit Grid"';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#d9e2e6';
+    ctx.fillText(
+      (
+        data.makers.find((m) => m.id === spec.maker)?.name ?? spec.badge
+      ).toUpperCase(),
+      256,
+      45,
+      475,
+    );
+    const map = new THREE.CanvasTexture(canvas);
+    map.colorSpace = THREE.SRGBColorSpace;
+    textures.push(map);
+    const m = new THREE.MeshBasicMaterial({
+      map,
+      transparent: true,
+      depthWrite: false,
+    });
+    ownedMaterial.add(m);
+    const box = new THREE.Box3().setFromBufferAttribute(
+      rearGlass.geometry.attributes.position as THREE.BufferAttribute,
+    );
+    const geo = new THREE.PlaneGeometry((box.max.x - box.min.x) * 0.8, 0.09);
+    ownedGeometry.add(geo);
+    const banner = new THREE.Mesh(geo, m);
+    banner.position.set(0, box.max.y - 0.05, box.max.z - 0.08);
+    banner.lookAt(
+      banner.position
+        .clone()
+        .add(
+          new THREE.Vector3(0, box.max.z - box.min.z, -(box.max.y - box.min.y)),
+        ),
+    );
+    rearGlass.add(banner);
+  }
   for (let i = 0; i < 2; i++) {
     const side = i ? 'dx' : 'sx';
     attach(byName('cristallo_' + side), doors[i]);
@@ -414,6 +538,14 @@ export function createDetailedCar(
     }
   }
   const spoiler = byName('spoiler');
+  for (const name of [
+    'serie_spoiler',
+    'serie_supporto_-1',
+    'serie_supporto_1',
+  ]) {
+    const part = byName(name);
+    if (part) part.visible = a.parts.spoiler === 0;
+  }
   if (spoiler) {
     spoiler.visible = a.parts.spoiler > 0;
     for (const name of ['spoiler_mount_sx', 'spoiler_mount_dx']) {
@@ -459,6 +591,66 @@ export function createDetailedCar(
     ownedGeometry.add(geometry);
     return mesh;
   };
+  const lightHalos: THREE.Sprite[] = [];
+  const diffuser = byName('diffusore');
+  if (diffuser) {
+    diffuser.position.y = -0.42;
+    diffuser.position.z = -spec.length * 0.515;
+  }
+  const rearReflections: THREE.Mesh[] = [];
+  for (const side of [-1, 1]) {
+    for (const rear of [true, false]) {
+      const haloMaterial = new THREE.SpriteMaterial({
+        map: softGlow(),
+        color: rear ? a.tailColor : a.headColor,
+        transparent: true,
+        opacity: rear ? 0.25 : 0.18,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        toneMapped: false,
+      });
+      ownedMaterial.add(haloMaterial);
+      const halo = new THREE.Sprite(haloMaterial);
+      halo.position.set(
+        side * spec.width * 0.3,
+        rear ? 0.02 : -0.115,
+        (rear ? -1 : 1) * spec.length * 0.53,
+      );
+      halo.scale.set(rear ? 0.55 : 0.3, rear ? 0.27 : 0.22, 1);
+      const haloPosition = new THREE.Vector3(),
+        view = new THREE.Vector3(),
+        direction = new THREE.Vector3(),
+        orientation = new THREE.Quaternion();
+      halo.userData.strength = rear ? 0.25 : 0.18;
+      halo.onBeforeRender = (_r, _s, camera) => {
+        root.getWorldQuaternion(orientation);
+        halo.getWorldPosition(haloPosition);
+        camera.getWorldPosition(view);
+        direction.set(0, 0, rear ? -1 : 1).applyQuaternion(orientation);
+        haloMaterial.opacity =
+          halo.userData.strength *
+          Math.max(0, view.sub(haloPosition).normalize().dot(direction));
+      };
+      root.add(halo);
+      if (rear) lightHalos.push(halo);
+    }
+    const reflectionMaterial = new THREE.MeshBasicMaterial({
+      map: softGlow(),
+      color: a.tailColor,
+      transparent: true,
+      opacity: 0.22,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    ownedMaterial.add(reflectionMaterial);
+    const reflected = addPart(
+      new THREE.PlaneGeometry(0.7, 2.7),
+      reflectionMaterial,
+      new THREE.Vector3(side * spec.width * 0.3, -0.7, -spec.length * 0.68),
+    );
+    reflected.rotation.x = -Math.PI / 2;
+    rearReflections.push(reflected);
+  }
   if (a.parts.hood === 1)
     for (const side of [-1, 1])
       for (let n = 0; n < 3; n++)
@@ -548,6 +740,21 @@ export function createDetailedCar(
     wheels.push(wheel);
     const i = wheels.length - 1,
       side = i % 2 ? 1 : -1;
+    const tyreMat = new THREE.MeshBasicMaterial({
+      map: tyreLettering(),
+      transparent: true,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+    });
+    ownedMaterial.add(tyreMat);
+    const sidewall = addPart(
+      new THREE.PlaneGeometry(0.69, 0.69),
+      tyreMat,
+      new THREE.Vector3(side * 0.127, 0, 0),
+      wheel,
+    );
+    sidewall.rotation.y = (side * Math.PI) / 2;
     wheel.traverse((o) => {
       if (o instanceof THREE.Mesh && o.userData.role === 'cerchio')
         o.scale.set(1, a.diameter / 17, a.diameter / 17);
@@ -639,7 +846,7 @@ export function createDetailedCar(
   ownedGeometry.add(flame.geometry);
   ownedMaterial.add(flame.material);
   const shadow = new THREE.Mesh(
-    new THREE.PlaneGeometry(spec.width * 1.4, spec.length * 1.15),
+    new THREE.PlaneGeometry(spec.width * 1.2, spec.length * 1.06),
     new THREE.MeshBasicMaterial({
       map: contactShadow(),
       transparent: true,
@@ -672,9 +879,14 @@ export function createDetailedCar(
   root.add(glow);
   ownedGeometry.add(glow.geometry);
   for (const side of ['left', 'right', 'hood', 'roof'] as const) {
-    const texture = vinylTexture(a.vinyls, side);
+    const factory =
+      !simple &&
+      spec.id === 'silex-c1' &&
+      !a.vinyls.length &&
+      (side === 'left' || side === 'right');
+    const texture = factory ? factoryGraphic() : vinylTexture(a.vinyls, side);
     if (!texture) continue;
-    textures.push(texture);
+    if (!factory) textures.push(texture);
     const names =
       side === 'left'
         ? ['porta_sx']
@@ -700,8 +912,10 @@ export function createDetailedCar(
             : position.getZ(i) / spec.length + 0.5;
       }
       geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-      const m = new THREE.MeshBasicMaterial({
+      const m = new THREE.MeshStandardMaterial({
         map: texture,
+        roughness: 0.35,
+        metalness: 0.1,
         transparent: true,
         depthWrite: false,
         polygonOffset: true,
@@ -773,7 +987,13 @@ export function createDetailedCar(
     engineRoot.visible = pose.hood;
     tailMaterial.color.set(a.tailColor).multiplyScalar(braking ? 1.7 : 1);
     rearLensMaterial.emissive.copy(tailMaterial.color);
-    rearLensMaterial.emissiveIntensity = braking ? 1.1 : 0.4;
+    rearLensMaterial.emissiveIntensity = braking ? 6 : 3.5;
+    lightHalos.forEach((halo) => {
+      halo.userData.strength = braking ? 0.5 : 0.25;
+    });
+    rearReflections.forEach((reflection) => {
+      reflection.position.y = shadow.position.y + 0.008;
+    });
     hood.rotation.x = pose.hood ? -1.05 : 0;
     hatch.rotation.x = pose.hatch ? 1.05 : 0;
     doors.forEach((door, i) => {

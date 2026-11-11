@@ -78,7 +78,7 @@ Se vuoi continuare a usare il server durante una generazione lunga, aggiungi `--
 1. Costruisce le curve di controllo e le otto sezioni originali.
 2. Campiona il loft con passaruota e profili raccordati.
 3. Applica una suddivisione leggera e una decimazione che conserva le giunzioni fra i pannelli.
-4. Separa e nomina le parti, aggiunge dettagli, ruote e interni.
+4. Separa e nomina le parti, aggiunge parafanghi sagomati, paraurti curvi, fari incassati, fanali avvolgenti, ruote e interni. I passaruota delle monoposto rimangono aperti. Le parti curve mantengono normali morbide, mentre quelle rigide usano normali pesate. Il budget finale include anche la scocca.
 5. Crea e impagina automaticamente le UV.
 6. Esegue il bake AO con Cycles e incorpora la texture nel GLB. Una copia ispezionabile resta in `artifacts/blender/ao`.
 7. Esporta il GLB e aggiorna `public/models/manifest.json`, che riporta triangoli e parti di ciascun modello.

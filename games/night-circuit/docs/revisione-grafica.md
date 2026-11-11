@@ -2,6 +2,8 @@
 
 La richiesta corrente di Giovanni autorizza a proseguire senza pause di approvazione fino al dettaglio e alla grafica dei riferimenti in chat. Le precedenti attese fra texture, edifici, luce e auto sono superate. Le immagini orientano la qualità e non sono incorporate nel gioco.
 
+La successiva revisione con Opus locale è descritta in [review visiva](review-visiva.md). Dopo otto esiti negativi, il revisore ha restituito due volte `raggiunto`, con immagini reali del gioco. Le modifiche successive comprendono carrozzerie curve, parafanghi, fanali avvolgenti, riflessi, cielo, illuminazione, fumo e telecamera. Il catalogo aggiornato contiene 51 modelli tra 6.093 e 6.190 triangoli.
+
 ## Contenuti
 
 - Texture procedurali con seed e cache IndexedDB, senza risorse esterne.

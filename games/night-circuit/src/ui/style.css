@@ -727,3 +727,44 @@ input {
 .speed-cluster #rpm-dial .dial-unit {
   display: none;
 }
+
+.driving .topbar {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+.driving .topbar:hover,
+.driving .topbar:focus-within {
+  opacity: 1;
+  transform: none;
+}
+.driving .bottom-hint {
+  display: none;
+}
+.dial-face {
+  fill: #080f20;
+  stroke: #66d4ea;
+  stroke-width: 2.3;
+}
+.dial-arc {
+  stroke: #24bde6;
+  stroke-width: 4;
+}
+.speed-number {
+  font-style: italic;
+}
+.speed-cluster #speed-dial {
+  left: -35px;
+  bottom: 5px;
+  width: 80px;
+  height: 80px;
+}
+.speed-cluster #speed-dial {
+  left: auto;
+  right: 10px;
+  bottom: 247px;
+  width: 70px;
+  height: 70px;
+}

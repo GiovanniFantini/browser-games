@@ -16,6 +16,8 @@ Nessun asset esterno, nemmeno CC0. Texture, modelli, font, icone e suoni devono 
 
 ## Verifica
 
+La richiesta grafica più recente richiede cicli con Claude Code locale, modello Opus. Ogni review confronta screenshot reali del gioco con il riferimento fornito in chat. Proseguire autonomamente con le correzioni finché il revisore restituisce la riga esatta `raggiunto`. I precedenti verdetti funzionali READY TO PROD non approvano questo requisito grafico. Conservare immagini, prompt e risposte nelle evidenze locali ignorate; documentare esito e verifiche in docs/review-visiva.md. Non inserire il riferimento nel gioco o nella distribuzione.
+
 Per modifiche alla guida o all'interfaccia eseguire i controlli appropriati e verificare il rendering nel browser. I test fisici usano il vero Rapier, non una simulazione fittizia. Non dichiarare raggiunti 60 fps su GPU integrata senza misure su tale hardware. Gli screenshot/test con rendering software verificano funzionalità e layout, non quel requisito prestazionale.
 
 Tenere README, requisiti e resoconto delle verifiche coerenti con il comportamento effettivo. Non modificare configurazioni CI/CD senza l'autorizzazione esplicita richiesta dalle istruzioni generali.

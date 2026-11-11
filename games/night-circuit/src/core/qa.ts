@@ -24,6 +24,8 @@ export function installRaceQA(
           x: races.player.position.x,
           z: races.player.position.z,
           speed: races.player.speed,
+          slip: races.player.slip,
+          grounded: races.player.grounded,
           y: races.player.position.y,
           gear: races.player.power.gear,
           modelSource: races.player.model.root.userData.assetSource ?? null,

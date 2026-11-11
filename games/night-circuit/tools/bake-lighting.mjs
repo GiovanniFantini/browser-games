@@ -13,13 +13,13 @@ const sources=[];
 for(const [index,[ox,oz]] of [[0,[0,0]],[1,[1080,0]],[2,[1080,1080]],[3,[0,1080]]]){
   for(let a=-480;a<=480;a+=120)for(let b=-420;b<=420;b+=120)for(const side of [-1,1]){
     const cool=(Math.round((a+480)/120)+Math.round((b+420)/120)+(side>0?1:0)+index)%3===0;
-    const color=cool?[.12,.32,.37]:[.43,.28,.11];
+    const color=cool?[.065,.115,.20]:[.22,.14,.07];
     sources.push([ox+a+side*14,oz+b,13,22,...color],[ox+b,oz+a+side*14,22,13,...color]);
   }
   for(let x=-420;x<=420;x+=120)for(let z=-420;z<=420;z+=120){sources.push([ox+x-20,oz+z-38,10,7,.22,.1,.05],[ox+x+20,oz+z-38,9,8,.04,.16,.18]);}
 }
-const tunnel=[];for(let z=-342;z<=-262;z+=16)for(const x of [-8.5,6])tunnel.push([x,z,8,10,.77,.57,.23]);
-for(let z=-342;z<=-262;z+=16)tunnel.push([0,z+8,13,8,.13,.22,.18]);
+const tunnel=[];for(let z=-342;z<=-262;z+=16)for(const x of [-8.5,6])tunnel.push([x,z,7,7,.85,.51,.22]);
+for(let z=-342;z<=-262;z+=16)tunnel.push([0,z+8,13,8,.025,.036,.07]);
 bake('city-lightmap.png',512,[-600,-600,2800,2600],sources);
 bake('underpass-lightmap.png',512,[-24,-360,48,116],tunnel);
 writeFileSync(path.join(root,'src/gen/lighting/bake.json'),JSON.stringify({version:1,cityBounds:[-600,-600,2800,2600],underpassBounds:[-24,-360,48,116],sources:sources.length,underpassSources:tunnel.length,size:512})+'\n');

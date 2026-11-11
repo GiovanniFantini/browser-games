@@ -24,30 +24,21 @@ export function createWorkshopReflection(renderer: THREE.WebGLRenderer) {
     geometries.push(geometry);
     materials.push(material);
   };
-  add(8, 2.8, 0, 5, 0, Math.PI / 2, 0, new THREE.Color().setRGB(1.8, 1.7, 1.4));
   add(
-    2.5,
-    4,
-    -5,
-    2,
+    8,
+    0.12,
     0,
-    0,
-    Math.PI / 2,
-    new THREE.Color().setRGB(1.0, 1.4, 1.6),
-  );
-  add(
-    1.5,
-    3.5,
     5,
-    2,
-    0,
     0,
     Math.PI / 2,
-    new THREE.Color().setRGB(1.4, 1.2, 0.8),
+    0,
+    new THREE.Color().setRGB(1.2, 1.1, 1.0),
   );
+  add(7, 0.1, 0, 1.4, -5, 0, 0, new THREE.Color().setRGB(1.3, 1.5, 1.7));
+  add(6, 0.08, 0, 2.2, -5, 0, 0, new THREE.Color().setRGB(1.4, 1.2, 0.8));
   add(12, 12, 0, -1, 0, Math.PI / 2, 0, new THREE.Color(0x26332f));
   const generator = new THREE.PMREMGenerator(renderer),
-    target = generator.fromScene(room, 0.04, 0.1, 100, { size: 64 });
+    target = generator.fromScene(room, 0.01, 0.1, 100, { size: 128 });
   generator.dispose();
   geometries.forEach((g) => g.dispose());
   materials.forEach((m) => m.dispose());

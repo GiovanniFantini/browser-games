@@ -61,16 +61,16 @@ export class RaceVisuals {
       (e) => !('hidden' in e && e.hidden) || e.id.startsWith('career-'),
     )) {
       const circle = new THREE.Mesh(
-        new THREE.TorusGeometry(3.2, 0.035, 4, 48),
+        new THREE.ConeGeometry(0.16, 0.35, 3),
         new THREE.MeshBasicMaterial({
-          color: event.mode === 'circuit' ? 0xc3caa5 : 0x83b7bb,
+          color: event.mode === 'circuit' ? 0x68cbe6 : 0xc38be9,
           transparent: true,
-          opacity: 0.5,
+          opacity: 0.25,
           depthWrite: false,
         }),
       );
-      circle.rotation.x = Math.PI / 2;
-      circle.position.set(event.meeting.x, 0.08, event.meeting.z);
+      circle.rotation.x = Math.PI;
+      circle.position.set(event.meeting.x + 9, 0.9, event.meeting.z);
       circle.userData.district =
         'district' in event ? event.district : 'old-docks';
       this.meetings.add(circle);

@@ -10,6 +10,8 @@ Stato locale: fasi 1-8 completate e verificate funzionalmente. La misura dei 60 
 
 ## Vincoli comuni al gioco
 
+La successiva richiesta di Giovanni stabilisce una soglia visiva minima equivalente al riferimento console fornito in chat. La verifica è affidata a Claude Code locale con Opus, confrontando immagini reali del gioco e riferimento. Continuare a correggere e richiedere review finché il verdetto non è `raggiunto`. Il precedente READY TO PROD riguarda la verifica funzionale e non chiude questa revisione grafica. Stato ed evidenze in review-visiva.md.
+
 - Tutti i contenuti creativi originali: nessun marchio automobilistico/aftermarket reale, modello reale, sagoma riconoscibilmente copiata, città reale o riferimento ad altri giochi. Nitro è il nome del boost. Personaggi, testi, loghi e UI originali.
 - Almeno 50 auto originali e almeno 12 costruttori inventati dettagliati nel gioco completo. Famiglie di compatte, coupé, berline/SUV sportivi, vetture storiche da corsa, monoposto e supercar con sagome proprie.
 - Nessun asset esterno, nemmeno CC0. Texture, modelli, font, icone e suoni generati nel progetto da codice o script nel repository. Audio e musica interamente sintetizzati con Web Audio.

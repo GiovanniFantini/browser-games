@@ -224,6 +224,17 @@ export class Vehicle {
       dt,
       car,
     );
+    // Lost lateral traction unloads the engine even when forward wheel speed drops.
+    if (this.grounded > 1 && input.throttle > 0.1 && Math.abs(this.slip) > 2) {
+      const lostTraction = Math.min(
+        1,
+        Math.abs(this.slip) / Math.max(6, Math.hypot(this.speed, this.slip)),
+      );
+      this.power.rpm = Math.max(
+        this.power.rpm,
+        950 + lostTraction * input.throttle * car.rpmLimit * 0.7,
+      );
+    }
     const targetSteer =
       input.steer * (0.48 / (1 + Math.abs(this.speed) * 0.022));
     const counter =

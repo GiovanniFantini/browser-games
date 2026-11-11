@@ -12,11 +12,13 @@ export function asphaltMaterial() {
       normalMap: generated.normalMap,
       roughnessMap: generated.roughnessMap,
       emissiveMap: generated.emissiveMap,
-      normalScale: generated.normalScale.clone(),
+      normalScale: new THREE.Vector2(0.12, 0.12),
       metalness: 0,
       roughness: 1,
-      clearcoat: 0.12,
-      clearcoatRoughness: 0.45,
+      clearcoat: 0.08,
+      clearcoatRoughness: 0.6,
+      specularIntensity: 0.15,
+      envMapIntensity: 0.25,
     });
     generated.dispose();
     projectWorldMaterial(material, 'asphalt');
