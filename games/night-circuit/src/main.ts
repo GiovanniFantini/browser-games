@@ -1,3 +1,6 @@
+import { WetRoad } from './world/wet-road';
+import { CarReflections } from './world/car-reflections';
+import { createSkyline } from './world/skyline';
 import { prepareDetailedCarModels } from './vehicle/generated';
 import { Atmosphere } from './world/atmosphere';
 import { reflectionEnvironment } from './world/reflections';
@@ -596,15 +599,15 @@ async function boot() {
     renderer.info.autoReset = false;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0c1525);
-    scene.fog = new THREE.FogExp2(0x121020, 0.0022);
+    scene.fog = new THREE.FogExp2(0x151a22, 0.0038);
     const camera = new THREE.PerspectiveCamera(
       65,
       innerWidth / innerHeight,
       0.1,
       1100,
     );
-    scene.add(new THREE.HemisphereLight(0x9fb6c0, 0x242f29, 0.65));
-    const moon = new THREE.DirectionalLight(0x9dc4d0, 0.65);
+    scene.add(new THREE.HemisphereLight(0x8fabbc, 0x171c20, 0.24));
+    const moon = new THREE.DirectionalLight(0x9dc4d0, 0.28);
     moon.position.set(-45, 75, 30);
     moon.castShadow = true;
     moon.shadow.mapSize.set(1024, 1024);
@@ -627,7 +630,7 @@ async function boot() {
     const reflectionSky = reflectionEnvironment();
     scene.environment = pmrem.fromEquirectangular(reflectionSky).texture;
     reflectionSky.dispose();
-    scene.environmentIntensity = 0.8;
+    scene.environmentIntensity = 0.4;
     scene.background = sky;
     const atmosphere = new Atmosphere(scene);
     pmrem.dispose();
@@ -642,6 +645,7 @@ async function boot() {
       createStreetscape(cityRoot, graph, world);
       wetReflections = new WetReflections(cityRoot, graph);
       metro = new MetroWorld(scene, world);
+      createSkyline(scene);
       traffic = new Traffic(scene, world, graph);
       navigation = new Navigation(graph, scene);
       navigation.bindOpen(toggleMap);
@@ -819,7 +823,7 @@ async function boot() {
       const low = value === 'low';
       renderer.setPixelRatio(Math.min(devicePixelRatio, low ? 1 : 1.5));
       renderer.shadowMap.enabled = !low;
-      scene.environmentIntensity = low ? 0.65 : 0.8;
+      scene.environmentIntensity = low ? 0.3 : 0.4;
       if (city) city.low = low;
       visualEffects?.resize();
       scene.traverse((object) => {
@@ -887,6 +891,8 @@ async function boot() {
     );
     const effects = new Effects(renderer, scene, camera);
     const tireSmoke = new TireSmoke(scene, renderer);
+    const carReflections = new CarReflections(renderer, scene);
+    const wetRoad = new WetRoad(scene, camera);
     visualEffects = effects;
     window.addEventListener('resize', () => effects.resize());
     const previousSettingsChange = settings.onChange;
@@ -1035,17 +1041,24 @@ async function boot() {
       );
       navigation?.update(vehicle.position.x, vehicle.position.z, yaw, dt);
       garage?.nearby(
-        playing && !races?.active && !navigation?.open && nearGarage(),
+        playing &&
+          Math.hypot(vehicle.speed, vehicle.slip) < 5 &&
+          !races?.active &&
+          !navigation?.open &&
+          nearGarage(),
       );
       chase.update(vehicle, dt);
       atmosphere.update(camera);
+      wetReflections?.enabled(graphicsQuality() === 'low');
       wetReflections?.update(camera);
+      wetRoad.update(vehicle.position);
       moon.position.set(
         vehicle.position.x - 45,
         vehicle.position.y + 75,
         vehicle.position.z + 30,
       );
       moon.target.position.copy(vehicle.position);
+      if (!garage?.open) carReflections.update(vehicle.model.root, time);
       audio.update(
         vehicle.power.rpm,
         input.state.throttle,

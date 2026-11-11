@@ -73,3 +73,7 @@ I riferimenti visivi forniti da Giovanni dopo la prima verifica texture chiarisc
 ## Autorizzazione corrente della revisione completa
 
 Giovanni ha chiesto di continuare fino a raggiungere almeno il dettaglio e la grafica dell’ultimo riferimento, che mostra una strada sotto una struttura ad archi con luce calda, materiali articolati e auto dettagliata. Questa richiesta sostituisce le pause di approvazione fra i passi. Procedere autonomamente con edifici, illuminazione, auto e rifinitura; verificare scene reali nel browser, mantenendo contenuti e asset originali generati nel repository. Il confronto visivo resta necessario, non basta il superamento dei test.
+
+## Nuovo ciclo dopo il rifiuto della resa pubblicata
+
+Il criterio corrente richiede qualità almeno equivalente a entrambi i riferimenti, senza la vecchia tolleranza. La review Opus 9 sulle catture round-21 ha restituito `raggiunto` nei tre assi. Il loft usa campionamento fitto e rilassamento, con scocca e normali protette: la semplificazione riguarda i dettagli. Le rifiniture ottiche sono generate in codice e condivise da studio e strada. Verifiche del pacchetto e pubblicazione sono registrate nella review visiva; il verdetto del revisore non sostituisce l’accettazione di Giovanni.

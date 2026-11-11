@@ -1,6 +1,44 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
+/** Only open panel boundaries, without drawing the triangles inside the skin. */
+export function panelSeamGeometry(mesh: THREE.Mesh) {
+  const g = mesh.geometry,
+    p = g.attributes.position,
+    n = g.attributes.normal;
+  const edges = new Map<string, { a: number; b: number; count: number }>();
+  const keys = Array.from({ length: p.count }, (_, i) =>
+    [p.getX(i), p.getY(i), p.getZ(i)].map((v) => v.toFixed(4)).join(','),
+  );
+  const count = g.index?.count ?? p.count;
+  for (let i = 0; i < count; i += 3) {
+    const face = [0, 1, 2].map((k) => g.index?.getX(i + k) ?? i + k);
+    for (let j = 0; j < 3; j++) {
+      const a = face[j],
+        b = face[(j + 1) % 3];
+      const key = [keys[a], keys[b]].sort().join('/');
+      const edge = edges.get(key);
+      if (edge) edge.count++;
+      else edges.set(key, { a, b, count: 1 });
+    }
+  }
+  const vertices: number[] = [];
+  for (const edge of edges.values())
+    if (edge.count === 1)
+      for (const i of [edge.a, edge.b])
+        vertices.push(
+          p.getX(i) + n.getX(i) * 0.0018,
+          p.getY(i) + n.getY(i) * 0.0018,
+          p.getZ(i) + n.getZ(i) * 0.0018,
+        );
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(vertices, 3),
+  );
+  return geometry;
+}
+
 export function bodyGeometry(
   width: number,
   design: {
@@ -65,7 +103,10 @@ export function batchBodywork(root: THREE.Object3D) {
     if (o instanceof THREE.Group) parents.push(o);
   });
   for (const parent of parents) {
-    const groups = new Map<THREE.Material, THREE.Mesh[]>();
+    const groups = new Map<
+      string,
+      { material: THREE.Material; meshes: THREE.Mesh[] }
+    >();
     for (const object of parent.children) {
       if (
         !(object instanceof THREE.Mesh) ||
@@ -77,11 +118,24 @@ export function batchBodywork(root: THREE.Object3D) {
         object.material.transparent
       )
         continue;
-      const list = groups.get(object.material) ?? [];
-      list.push(object);
-      groups.set(object.material, list);
+      const geometry: THREE.BufferGeometry = object.geometry;
+      const layout = Object.entries(geometry.attributes)
+        .map(
+          ([key, a]) =>
+            `${key}:${a.itemSize}:${a.normalized}:${(a instanceof THREE.InterleavedBufferAttribute ? a.data.array : a.array).constructor.name}`,
+        )
+        .sort()
+        .join('/');
+      const key = `${object.material.uuid}/${!!object.geometry.index}/${layout}`;
+      const group: { material: THREE.Material; meshes: THREE.Mesh[] } =
+        groups.get(key) ?? {
+          material: object.material,
+          meshes: [],
+        };
+      group.meshes.push(object);
+      groups.set(key, group);
     }
-    for (const [material, meshes] of groups) {
+    for (const { material, meshes } of groups.values()) {
       if (meshes.length < 2) continue;
       const geometries = meshes.map((mesh) => {
         mesh.updateMatrix();

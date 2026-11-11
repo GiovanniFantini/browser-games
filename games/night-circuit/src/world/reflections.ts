@@ -12,25 +12,25 @@ export function reflectionEnvironment() {
         horizon = Math.exp(-Math.pow((v - 0.49) * 9, 2));
       const sky = v < 0.52;
       const band = Math.exp(
-        -Math.pow((v - 0.45 - 0.025 * Math.sin(u * Math.PI * 6)) / 0.035, 2),
+        -Math.pow((v - 0.45 - 0.012 * Math.sin(u * Math.PI * 6)) / 0.006, 2),
       );
       const n = (Math.sin(u * 41 + v * 27) + Math.sin(u * 19 - v * 31)) * 0.5;
       const cloud = Math.max(0, n * 0.5 + 0.25);
       const color = sky
         ? [
-            0.16 + horizon * 0.14 + cloud * 0.25,
-            0.055 + horizon * 0.045 + cloud * 0.03,
-            0.2 + horizon * 0.1 + cloud * 0.3,
+            0.028 + horizon * 0.055 + cloud * 0.025,
+            0.035 + horizon * 0.05 + cloud * 0.03,
+            0.052 + horizon * 0.045 + cloud * 0.04,
           ]
         : [0.013, 0.02, 0.032];
-      color[0] += band * 0.9;
-      color[1] += band * 0.3;
-      color[2] += band * 0.8;
+      color[0] += band * 1.2;
+      color[1] += band * 1.4;
+      color[2] += band * 1.65;
       for (let a = 0; a < 4; a++) {
         const centre = 0.08 + a * 0.25;
         if (Math.abs(u - centre) < 0.025 && v > 0.36 && v < 0.64) {
           const stripe = Math.abs(Math.sin(y * 0.85)) > 0.4 ? 1 : 0.1;
-          const c = a % 2 ? [0.4, 1.8, 2.4] : [2.5, 1.1, 0.45];
+          const c = a % 2 ? [0.3, 1.3, 1.7] : [1.7, 1.1, 0.5];
           for (let k = 0; k < 3; k++) color[k] += c[k] * stripe;
         }
       }

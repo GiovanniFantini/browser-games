@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const folder=path.join(root,'public/models');
 let before=0,after=0;
@@ -40,3 +41,7 @@ for(const file of fs.readdirSync(folder).filter(n=>n.endsWith('.glb')&&(!process
  const result=Buffer.concat([head,text,binHead,...parts]);fs.writeFileSync(name,result);before+=bytes.length;after+=result.length;
 }
 console.log(`GLB quantizzati: ${(before/1e6).toFixed(2)} -> ${(after/1e6).toFixed(2)} MB`);
+const versions=Object.fromEntries(fs.readdirSync(folder).filter(n=>n.endsWith('.glb')).sort().map(file=>[
+ file.slice(0,-4),createHash('sha256').update(fs.readFileSync(path.join(folder,file))).digest('hex').slice(0,12)
+]));
+fs.writeFileSync(path.join(root,'src/data/model-versions.json'),JSON.stringify(versions,null,2)+'\n');

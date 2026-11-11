@@ -27,7 +27,7 @@ node tools/pack-models.mjs
 npm run dev
 ```
 
-La compattazione usa `KHR_mesh_quantization`, senza cambiare il numero dei triangoli, i nomi o gli attacchi dei componenti. Il gioco carica e decodifica il modello quando serve.
+La compattazione usa `KHR_mesh_quantization`, senza cambiare il numero dei triangoli, i nomi o gli attacchi dei componenti. Il gioco carica e decodifica il modello quando serve. Il comando aggiorna anche `src/data/model-versions.json`: gli URL dei GLB incorporano un hash del contenuto per aggiornare correttamente la cache del browser.
 
 ## Usare Blender 4.x installato normalmente
 
@@ -77,10 +77,12 @@ Se vuoi continuare a usare il server durante una generazione lunga, aggiungi `--
 
 1. Costruisce le curve di controllo e le otto sezioni originali.
 2. Campiona il loft con passaruota e profili raccordati.
-3. Applica una suddivisione leggera e una decimazione che conserva le giunzioni fra i pannelli.
+3. Campiona la scocca a 48 segmenti trasversali e 40 longitudinali e applica un rilassamento leggero della superficie. La scocca continua e le sue normali sono protette dalla decimazione; il budget viene ottenuto semplificando i dettagli.
 4. Separa e nomina le parti, aggiunge parafanghi sagomati, paraurti curvi, fari incassati, fanali avvolgenti, ruote e interni. I passaruota delle monoposto rimangono aperti. Le parti curve mantengono normali morbide, mentre quelle rigide usano normali pesate. Il budget finale include anche la scocca.
 5. Crea e impagina automaticamente le UV.
 6. Esegue il bake AO con Cycles e incorpora la texture nel GLB. Una copia ispezionabile resta in `artifacts/blender/ao`.
 7. Esporta il GLB e aggiorna `public/models/manifest.json`, che riporta triangoli e parti di ciascun modello.
 
 Il tuning nel browser riutilizza queste parti, genera varianti dei componenti e dei cerchi e conserva i pivot per portiere, cofano e portellone. Il modello impiegato nel garage è lo stesso della guida.
+
+Il browser completa le ottiche con lenti continue e texture originali e rifinisce griglia, terminali e diffusore con geometria generata in codice. Le stesse rifiniture sono usate nella guida e nel garage. Il catalogo verificato contiene 51 GLB tra 7.512 e 7.554 triangoli.

@@ -8,6 +8,7 @@ import math
 import sys
 from pathlib import Path
 import bpy
+import bmesh
 from mathutils import Vector
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -62,6 +63,7 @@ def bumper(name,pos,width,height,depth,mat,rear=False):
     for inner in range(2):
         for row in range(rows):
             for j in range(steps):
+                if not rear and inner==0 and row in (1,2) and 4<=j<16:continue
                 a=inner*layer+row*(steps+1)+j
                 face=(a,a+1,a+steps+2,a+steps+1)
                 faces.append(tuple(reversed(face)) if bool(inner)^rear else face)
@@ -111,23 +113,30 @@ def deck_lip(w,l,mat):
             a=row*(steps+1)+j;faces.append((a,a+1,a+steps+2,a+steps+1))
     return mesh('labbro_baule',verts,faces,mat)
 
-def formed_tail(side,w,l,mats):
-    suffix='sx' if side<0 else 'dx';steps=12;verts=[];faces=[]
-    for row in range(2):
-        for j in range(steps+1):
-            t=j/steps;x=side*w*(.17+t*.32)
-            y=.02+(-.06 if row==0 else .06)-.025*t**4
-            z=-l*.513+.25*(abs(x)/(w*.49))**4
-            verts.append((x,y,z))
-    for j in range(steps):
-        face=(j+steps+1,j+steps+2,j+1,j)
-        faces.append(tuple(reversed(face)) if side<0 else face)
-    return mesh('fanale_'+suffix,verts,faces,mats['tail'])
+def formed_tail(side,w,l,mats,rear_width):
+    suffix='sx' if side<0 else 'dx';steps=16;verts=[];faces=[]
+    for lamp in range(3):
+        cx=side*rear_width*(.225+lamp*.095);cy=.025
+        cz=-l*.5+.22*(abs(cx)/(w*.49))**4-.012
+        slope=.88*cx**3/(w*.49)**4
+        verts=[];faces=[];n=16
+        for radius,depth in [(1,.006),(1,-.003),(.80,-.020),(.12,-.024)]:
+            for j in range(n):
+                a=j/n*math.tau;dx=math.cos(a)*.077*radius;dy=math.sin(a)*.063*radius
+                verts.append((cx+dx,cy+dy,cz+slope*dx+depth))
+        for ring in range(3):
+            for j in range(n):
+                a=ring*n+j;b=ring*n+(j+1)%n;faces.append((a+n,b+n,b,a))
+        faces.append(tuple(reversed(range(3*n,4*n))))
+        mesh('fanale_'+suffix+'_'+str(lamp),verts,faces,mats['tail'])
+        bpy.ops.mesh.primitive_uv_sphere_add(segments=8,ring_count=4,radius=1,location=xyz(cx,cy,cz-.026))
+        core=bpy.context.object;core.name='nucleo_post_'+suffix+'_'+str(lamp);core.scale=(.018,.008,.018);core.data.materials.append(mats['tail_core']);core['role']='tail_core'
+        for poly in core.data.polygons:poly.use_smooth=True
 
 def formed_headlight(side,w,l,mats):
     suffix='sx' if side<0 else 'dx'
     outline=[(0,.05),(.65,.08),(1,.045),(.94,-.045),(.28,-.065),(0,-.045)]
-    for label,inset,thickness,mat in [('cornice_faro_',1,.018,mats['dark']),('faro_',.88,.008,mats['head'])]:
+    for label,inset,thickness,mat in [('cornice_faro_',1,.018,mats['dark'])]:
         verts=[]
         for depth in [-thickness,0]:
             for t,dy in outline:
@@ -138,14 +147,31 @@ def formed_headlight(side,w,l,mats):
         if side<0:faces=[tuple(reversed(face)) for face in faces]
         mesh(label+suffix,verts,faces,mat)
 
+    group=bpy.data.objects.new('faro_'+suffix,None);bpy.context.collection.objects.link(group)
+    for lamp in range(2):
+        cx=side*w*(.225+lamp*.11);cy=-.11;cz=l*.5-.26*(abs(cx)/(w*.5))**2+.017
+        verts=[];faces=[];n=16
+        for radius,depth in [(1,-.012),(1,.002),(.84,.015),(.10,.020)]:
+            for j in range(n):
+                a=j/n*math.tau;dx=math.cos(a)*.065*radius;dy=math.sin(a)*.060*radius
+                verts.append((cx+dx,cy+dy,cz+depth-.52*cx/(w*.5)**2*dx))
+        for ring in range(3):
+            for j in range(n):
+                a=ring*n+j;b=ring*n+(j+1)%n;faces.append((a,b,b+n,a+n))
+        faces.append(tuple(range(3*n,4*n)))
+        lens=mesh('faro_'+suffix+'_lente_'+str(lamp),verts,faces,mats['head']);lens.parent=group
+
 def cross(p,angle,wheelbase,wheel_radius=.375):
     # The side is relieved over the wheels; the skin does not cover the tyres.
-    z=p['z'];half=p['half_width'];top=p['top'];belt=min(p['belt'],top-.015)
+    z=p['z'];half=p['half_width'];top=p['top'];belt=min(p['belt'],top-.085)
     outline=[(1,0),(.98,.1),(.84,.58),(.74,.93),(.66,1),(.33,1.01),(0,1.01),(-.33,1.01),(-.66,1),(-.74,.93),(-.84,.58),(-.98,.1),(-1,0),(-1,-.25),(-.98,-.65),(-.88,-1),(-.65,-1),(-.32,-1),(0,-1),(.32,-1),(.65,-1),(.88,-1),(.98,-.65),(1,-.25)]
-    index=int(round(angle/math.tau*24))%24
-    cx,cy=outline[index]
+    f=angle/math.tau*24;index=int(math.floor(f))%24;t=f-math.floor(f)
+    def blend(axis):
+        a,b,c,d=[outline[j%24][axis] for j in [index-1,index,index+1,index+2]]
+        return .5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t)
+    cx,cy=blend(0),blend(1)
     dist=min(abs(z-wheelbase/2),abs(z+wheelbase/2))
-    half*=1+.18*math.exp(-(dist/.48)**2)
+    half*=1+.06*math.exp(-(dist/.48)**2)
     x=half*cx
     if cy>=0:
         # Wide bonnet and deck, narrower cabin with a defined shoulder crease.
@@ -153,9 +179,11 @@ def cross(p,angle,wheelbase,wheel_radius=.375):
         y=belt+(top-belt)*cy
     else:
         bottom=-.53
-        if abs(cx)>.8 and dist<wheel_radius:
-            bottom=max(bottom,-.4+math.sqrt(max(0,wheel_radius**2-dist**2)))
         y=belt+(belt-bottom)*cy
+    # Trim the side against the arch envelope. Interpolating towards an arch higher
+    # than the belt would invert faces and leave a black notch on the front wing.
+    if abs(cx)>.8 and dist<wheel_radius:
+        y=max(y,-.28+math.sqrt(max(0,wheel_radius**2-dist**2)))
     return x,y,z
 
 def make_body(p,mats):
@@ -174,17 +202,6 @@ def make_body(p,mats):
     for j in range(rings+1):
         t=j/rings;sec={key:catmull([v[key] for v in sections],t) for key in ['z','half_width','top','belt']}
         for k in range(segments):verts.append(cross(sec,k/segments*math.tau,p['wheelbase']))
-    # Analytic forming of the nose and bonnet keeps the original loft editable.
-    formed=[]
-    for x,y,z in verts:
-        front=max(0,min(1,(z-p['length']*.42)/(p['length']*.08)))
-        z-=.26*front*(abs(x)/(p['width']*.5))**2
-        rear=max(0,min(1,(-z-p['length']*.4)/(p['length']*.1)))
-        z+=.25*rear*(abs(x)/(p['width']*.49))**4
-        if z>p['length']*.12 and z<p['length']*.43 and y>.1:
-            y+=.065*max(0,1-(x/(p['width']*.5))**2)*math.sin((z-p['length']*.12)/(p['length']*.31)*math.pi)
-        formed.append((x,y,z))
-    verts=formed
     role_names=['scocca','cofano','tetto','porta_sx','porta_dx','cristallo_ant','cristallo_post','cristallo_sx','cristallo_dx','portellone']
     for j in range(rings):
         z=(verts[j*segments][2]+verts[(j+1)*segments][2])/2;nz=z/(p['length']/2)
@@ -209,9 +226,28 @@ def make_body(p,mats):
         mat=base.copy();mat.name='part_'+role;obj.data.materials.append(mat)
     for poly,role in zip(obj.data.polygons,roles):poly.material_index=role
     bpy.context.view_layer.objects.active=obj;obj.select_set(True)
-    bevel=obj.modifiers.new('rounded loft end contours','BEVEL');bevel.width=.04;bevel.segments=3;bevel.limit_method='ANGLE';bevel.angle_limit=.9;bpy.ops.object.modifier_apply(modifier=bevel.name)
-    sub=obj.modifiers.new('light subdivision','SUBSURF');sub.levels=1;bpy.ops.object.modifier_apply(modifier=sub.name)
-    dec=obj.modifiers.new('arcade triangle budget','DECIMATE');dec.ratio=.34;dec.use_collapse_triangulate=True;dec.delimit={'MATERIAL'};bpy.ops.object.modifier_apply(modifier=dec.name)
+    # Cap tessellation is established in a plane, then shaped with the rest of the skin.
+    # This avoids non-planar ngon fans and preserves a regular body mesh without collapse.
+    bm=bmesh.new();bm.from_mesh(obj.data)
+    caps=[face for face in bm.faces if len(face.verts)>4]
+    result=bmesh.ops.triangulate(bm,faces=caps,quad_method='BEAUTY',ngon_method='BEAUTY')
+    cap_edges=list({edge for face in result['faces'] for edge in face.edges})
+    bmesh.ops.subdivide_edges(bm,edges=cap_edges,cuts=1,use_grid_fill=True)
+    bm.to_mesh(obj.data);bm.free()
+    for vertex in obj.data.vertices:
+        x,y,z=vertex.co.x,vertex.co.z,-vertex.co.y
+        front=max(0,min(1,(z-p['length']*.42)/(p['length']*.08)))
+        z-=.26*front*(abs(x)/(p['width']*.5))**2
+        rear=max(0,min(1,(-z-p['length']*.4)/(p['length']*.1)))
+        z+=.22*rear*(abs(x)/(p['width']*.49))**4
+        if p['length']*.12<z<p['length']*.43 and y>.05:
+            crown=.065*max(0,1-(x/(p['width']*.5))**2)+.025*math.exp(-((abs(x)/p['width']-.28)/.055)**2)
+            y+=crown*math.sin((z-p['length']*.12)/(p['length']*.31)*math.pi)
+        vertex.co=xyz(x,y,z)
+    obj.data.update()
+    bpy.context.view_layer.objects.active=obj
+    smooth=obj.modifiers.new('loft surface relaxation','SMOOTH');smooth.factor=.22;smooth.iterations=2
+    bpy.ops.object.modifier_apply(modifier=smooth.name)
     # Keep the continuous skin's vertex normals when splitting its animated panels.
     # Otherwise Blender recalculates each cut independently, producing wavy highlights.
     obj.data.update()
@@ -221,6 +257,27 @@ def make_body(p,mats):
     for part in body_parts:
         role=part.data.materials[part.data.polygons[0].material_index].name.removeprefix('part_').split('.')[0];part.name=role;part['role']=role;part['loft']=True
         part.data.normals_split_custom_set_from_vertices([skin_normals[tuple(round(c,6) for c in v.co)] for v in part.data.vertices])
+        if role.startswith('cristallo'):
+            counts={}
+            for poly in part.data.polygons:
+                for edge in poly.edge_keys:
+                    key=tuple(sorted(edge));counts[key]=counts.get(key,0)+1
+            links={}
+            for (a,b),count in counts.items():
+                if count==1:links.setdefault(a,[]).append(b);links.setdefault(b,[]).append(a)
+            if links:
+                start=next(iter(links));ordered=[start];prior=None;current=start
+                while True:
+                    options=[v for v in links[current] if v!=prior]
+                    if not options:break
+                    nxt=options[0]
+                    if nxt==start or nxt in ordered:break
+                    ordered.append(nxt);prior,current=current,nxt
+                curve=bpy.data.curves.new('gasket_'+role,'CURVE');curve.dimensions='3D';curve.bevel_depth=.006;curve.bevel_resolution=0
+                spline=curve.splines.new('POLY');spline.points.add(len(ordered)-1);spline.use_cyclic_u=True
+                for point,index in zip(spline.points,ordered):point.co=(*part.data.vertices[index].co,1)
+                rubber=bpy.data.objects.new('guarnizione_'+role,curve);bpy.context.collection.objects.link(rubber);curve.materials.append(mats['dark'])
+                bpy.ops.object.select_all(action='DESELECT');rubber.select_set(True);bpy.context.view_layer.objects.active=rubber;bpy.ops.object.convert(target='MESH');rubber['role']='gasket'
     return body_parts
 
 def wheel(name,center,side,mats):
@@ -272,7 +329,7 @@ def bake_ao(objects,p):
             if not mat:continue
             node=mat.node_tree.nodes.new('ShaderNodeTexImage');node.image=image;mat.node_tree.nodes.active=node
     if not args.no_bake:
-        bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=p['ao_samples'];bpy.context.scene.render.threads_mode='FIXED';bpy.context.scene.render.threads=4;bpy.context.scene.render.bake.margin=3
+        bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=p['ao_samples'];bpy.context.scene.render.threads_mode='FIXED';bpy.context.scene.render.threads=2;bpy.context.scene.render.bake.margin=3
         bpy.context.scene.world.color=(.1,.1,.1)
         bpy.context.view_layer.update()
         duplicates=[]
@@ -309,48 +366,56 @@ def generate(p):
     bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
     for block in list(bpy.data.materials):bpy.data.materials.remove(block)
     mats={'paint':material('paint',(.24,.32,.39),.62,.24),'glass':material('glass',(.025,.055,.065),.3,.18),'rubber':material('rubber',(.018,.022,.024),0,.83),'silver':material('silver',(.57,.62,.63),.82,.22),'dark':material('dark',(.023,.03,.032),.15,.5),'head':material('headlight',(.7,.83,.75),.2,.22,.8),'tail':material('tail',(.62,.025,.018),.1,.25,1.2),'plate':material('plate',(.68,.7,.56),0,.65)}
+    mats['tail_core']=material('tail_core',(1,.025,.012),0,.15,2.4)
     make_body(p,mats)
     if p['family']=='single':
         for obj in list(bpy.context.scene.objects):
-            if obj.get('role') in ['tetto','cristallo_ant','cristallo_post','cristallo_sx','cristallo_dx']:bpy.data.objects.remove(obj,do_unlink=True)
+            if obj.get('role') in ['tetto','cristallo_ant','cristallo_post','cristallo_sx','cristallo_dx','gasket']:bpy.data.objects.remove(obj,do_unlink=True)
     w=p['width'];l=p['length']
-    bumper('paraurti_ant',(0,-.32,l*.475),w*.96,.28,.28,mats['paint'])
-    bumper('paraurti_post',(0,-.32,-l*.475),w*.94,.28,.24,mats['paint'],True)
+    bumper('paraurti_ant',(0,-.34,l*.475),w*.96,.36,.28,mats['paint'])
+    bumper('paraurti_post',(0,-.33,-l*.475),w*.94,.38,.24,mats['paint'],True)
     grille_verts=[];grille_faces=[];grille_steps=20
     for row in range(2):
-        y=-.385+row*.12;v=(y+.32)/.14
+        y=-.423+row*.167;v=(y+.34)/.18
         for j in range(grille_steps+1):
-            x=(j/grille_steps*2-1)*w*.30;t=x/(w*.48)
-            z=l*.475+.14-.24*t*t-.06*v*v+.004
+            x=(j/grille_steps*2-1)*w*.282;t=x/(w*.48*(1-.06*v*v))
+            z=l*.475+.14-.24*t*t-.06*v*v-.009
             grille_verts.append((x,y,z))
     for j in range(grille_steps):grille_faces.append((j,j+1,j+grille_steps+2,j+grille_steps+1))
     mesh('griglia',grille_verts,grille_faces,mats['dark'])
-    for side in [-1,1]:
-        x=side*w*.38;z=l*.475+.14-.24*(x/(w*.48))**2
-        vent=cube('presa_aria_'+str(side),(x,-.32,z+.004),(.13,.095,.012),mats['dark'],.022)
-        vent.rotation_euler.z=side*math.atan(.48*abs(x)/(w*.48)**2)
-    cube('diffusore',(0,-.46,-l*.49),(w*.74,.12,.08),mats['dark'],.035)
+    lipverts=[];lipfaces=[]
+    for row in range(2):
+        for j in range(21):
+            t=j/20*2-1;lipverts.append((t*w*.47,-.515,l*.475+.14-.24*t*t-.06+row*.085))
+    for j in range(20):lipfaces.append((j,j+1,j+22,j+21))
+    mesh('splitter_ant',lipverts,lipfaces,mats['dark'])
+    cube('diffusore',(0,-.49,-l*.496),(w*.64,.085,.06),mats['dark'],.035)
+    for x in [-.25,-.09,.09,.25]:cube('aletta_diffusore_'+str(x),(x*w,-.45,-l*.50),(.018,.12,.18),mats['dark'],.004)
     for side in [-1,1]:
         suffix='sx' if side<0 else 'dx'
         cube('minigonna_'+suffix,(side*w*.475,-.44,0),(.12,.16,p['wheelbase']*.74),mats['paint'],.05)
         mirror=cube('specchietto_'+suffix,(side*w*.525,.25,l*.075),(.17,.10,.20),mats['paint'],.04)
         cube('specchio_'+suffix,(side*w*.532,.25,l*.05),(.13,.065,.012),mats['silver'],.012)
         formed_headlight(side,w,l,mats)
-        formed_tail(side,w,l,mats)
-        if p['family']!='single':
-            for axle in [-1,1]:arch_lip(side,axle,p['wheelbase'],w,mats['paint'])
+        formed_tail(side,w,l,mats,p['sections'][0]['half_width']*1.96)
         cube('spoiler_mount_'+suffix,(side*w*.3,.18,-l*.4),(.07,.19,.09),mats['dark'],.018)
-        cube('scarico_'+suffix,(side*w*.31,-.38,-l*.504),(.13,.095,.15),mats['silver'],.04)
-        cube('scarico_interno_'+suffix,(side*w*.31,-.38,-l*.524),(.09,.065,.01),mats['dark'],.027)
+        ev=[];ef=[]
+        for radius,depth in [(.067,.05),(.067,-.08),(.048,-.08),(.048,.05)]:
+            for j in range(16):
+                a=j/16*math.tau;ev.append((side*w*.31+math.cos(a)*radius,-.40+math.sin(a)*radius,-l*.5+depth))
+        for row in range(4):
+            for j in range(16):ef.append((row*16+j,row*16+(j+1)%16,((row+1)%4)*16+(j+1)%16,((row+1)%4)*16+j))
+        mesh('scarico_'+suffix,ev,ef,mats['silver'])
+        cube('scarico_interno_'+suffix,(side*w*.31,-.40,-l*.5+.03),(.085,.085,.01),mats['dark'],.025)
         cube('maniglia_'+suffix,(side*w*.487,.06,-l*.13),(.02,.025,.16),mats['dark'],.01)
-        wheel('ruota_ant_'+suffix,(side*p['track']/2,-.4,p['wheelbase']/2),side,mats)
-        wheel('ruota_post_'+suffix,(side*p['track']/2,-.4,-p['wheelbase']/2),side,mats)
+        wheel('ruota_ant_'+suffix,(side*p['track']/2,-.28,p['wheelbase']/2),side,mats)
+        wheel('ruota_post_'+suffix,(side*p['track']/2,-.28,-p['wheelbase']/2),side,mats)
     cube('spoiler',(0,.3,-l*.41),(w*.86,.075,.22),mats['paint'],.035)
     cube('targa',(0,-.19,-l*.505),(.48,.16,.015),mats['plate'],.01)
     cube('stemma',(0,.055,-l*.51),(.065,.035,.014),mats['silver'],.01)
-    rear_fascia(w,l,mats['paint'])
-    if p['family'] in ('compact','coupe','super'):deck_lip(w,l,mats['paint'])
-    if p['family']=='super':
+
+
+    if p['family'] in ('compact','coupe','super'):
         cube('serie_spoiler',(0,.28,-l*.405),(w*.86,.05,.19),mats['paint'],.023)
         for side in [-1,1]:cube('serie_supporto_'+str(side),(side*w*.28,.18,-l*.405),(.045,.18,.065),mats['dark'],.012)
     # Interior silhouettes, engine cover and baggage audio are genuine geometry.
@@ -367,10 +432,11 @@ def generate(p):
     triangles=sum(sum(len(face.vertices)-2 for face in obj.data.polygons) for obj in objects)
     target=p['target_triangles']
     if triangles>target:
-        ratio=max(.2,(target-1000)/(triangles-1000))
+        fixed=sum(sum(len(f.vertices)-2 for f in o.data.polygons) for o in objects if o.get('loft',False) or len(o.data.polygons)<=20)
+        mutable=max(1,triangles-fixed);ratio=max(.15,min(1,(target-fixed)/mutable))
         for obj in objects:
-            if len(obj.data.polygons)>20:
-                bpy.context.view_layer.objects.active=obj;mod=obj.modifiers.new('final triangle budget','DECIMATE');mod.ratio=ratio;mod.use_collapse_triangulate=True;bpy.ops.object.modifier_apply(modifier=mod.name)
+            if len(obj.data.polygons)>20 and not obj.get('loft',False):
+                bpy.context.view_layer.objects.active=obj;mod=obj.modifiers.new('detail triangle budget','DECIMATE');mod.ratio=ratio;mod.use_collapse_triangulate=True;bpy.ops.object.modifier_apply(modifier=mod.name)
     # Broad manufactured faces retain straight reflections after bevel/decimation.
     # Loft panels already share continuous surface normals and must keep them.
     for obj in objects:

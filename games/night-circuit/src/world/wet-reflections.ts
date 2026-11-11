@@ -4,6 +4,9 @@ import { lightTexture } from './streetscape';
 
 /** Ground intersections of mirrored street lights, rendered as inexpensive ripple cards. */
 export class WetReflections {
+  enabled(value: boolean) {
+    this.cards.visible = value;
+  }
   private readonly sources: {
     x: number;
     y: number;

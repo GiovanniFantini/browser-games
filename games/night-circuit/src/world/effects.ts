@@ -57,16 +57,16 @@ export class Effects {
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     this.bloom = new UnrealBloomPass(
       new THREE.Vector2(innerWidth / 2, innerHeight / 2),
-      0.65,
+      0.9,
       0.5,
-      0.8,
+      0.45,
     );
     // Bound only the bloom source, preserving HDR lighting in the base image.
     // Headlight reflections otherwise spread unbounded energy across the car.
     this.bloom.materialHighPassFilter.fragmentShader =
       this.bloom.materialHighPassFilter.fragmentShader.replace(
         'vec4 texel = texture2D( tDiffuse, vUv );',
-        'vec4 texel = texture2D( tDiffuse, vUv ); texel.rgb = min(texel.rgb, vec3(5.0));',
+        'vec4 texel = texture2D( tDiffuse, vUv ); texel.rgb = min(texel.rgb, vec3(1.5));',
       );
     this.composer.addPass(this.bloom);
     this.radial = new ShaderPass({
@@ -142,7 +142,7 @@ export class Effects {
       this.rain.geometry.attributes.position.needsUpdate = true;
     }
     if (this.scene.fog instanceof THREE.FogExp2)
-      this.scene.fog.density = 0.0022 + (p.rain ? 0.0006 : 0);
+      this.scene.fog.density = 0.0038 + (p.rain ? 0.0008 : 0);
     if (graphicsQuality() === 'low')
       this.renderer.render(this.scene, this.camera);
     else {

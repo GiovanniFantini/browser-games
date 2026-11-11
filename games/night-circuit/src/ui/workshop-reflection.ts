@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { workshopTubes, workshopTubeRadiance } from './workshop-fixtures';
 /** Original reflection rig, generated from primitives and authored light panels. */
 export function createWorkshopReflection(renderer: THREE.WebGLRenderer) {
   const room = new THREE.Scene();
@@ -24,19 +25,29 @@ export function createWorkshopReflection(renderer: THREE.WebGLRenderer) {
     geometries.push(geometry);
     materials.push(material);
   };
-  add(
-    8,
-    0.12,
-    0,
-    5,
-    0,
-    Math.PI / 2,
-    0,
-    new THREE.Color().setRGB(1.2, 1.1, 1.0),
-  );
-  add(7, 0.1, 0, 1.4, -5, 0, 0, new THREE.Color().setRGB(1.3, 1.5, 1.7));
-  add(6, 0.08, 0, 2.2, -5, 0, 0, new THREE.Color().setRGB(1.4, 1.2, 0.8));
-  add(12, 12, 0, -1, 0, Math.PI / 2, 0, new THREE.Color(0x26332f));
+  for (const tube of workshopTubes)
+    add(
+      tube.width,
+      tube.depth,
+      tube.x,
+      tube.y - 0.7,
+      tube.z,
+      Math.PI / 2,
+      0,
+      new THREE.Color().setRGB(...workshopTubeRadiance),
+    );
+  for (const x of [-3, 3])
+    add(
+      2.8,
+      0.09,
+      x,
+      3.65 - 0.7,
+      -5.55,
+      0,
+      0,
+      new THREE.Color().setRGB(1.4, 1.3, 1.0),
+    );
+  add(12, 12, 0, -0.7, 0, Math.PI / 2, 0, new THREE.Color(0x26332f));
   const generator = new THREE.PMREMGenerator(renderer),
     target = generator.fromScene(room, 0.01, 0.1, 100, { size: 128 });
   generator.dispose();

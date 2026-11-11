@@ -44,14 +44,14 @@ export class GaragePreview {
     this.controls.minDistance = 4;
     this.controls.maxDistance = 10;
     this.controls.maxPolarAngle = Math.PI / 2 - 0.05;
-    this.car.root.position.y = 0.74;
+    this.car.root.position.y = 0.62;
     this.positionWheels();
     this.scene.background = new THREE.Color(0x101c29);
     this.scene.environment = createWorkshopReflection(renderer).texture;
-    this.scene.environmentIntensity = 0.65;
+    this.scene.environmentIntensity = 0.45;
     this.scene.add(
       this.car.root,
-      new THREE.HemisphereLight(0xb3d1d4, 0x3f4153, 0.85),
+      new THREE.HemisphereLight(0xb3d1d4, 0x3f4153, 0.2),
     );
     this.photoRoot.id = 'photo-studio';
     this.photoRoot.hidden = true;
@@ -89,23 +89,26 @@ export class GaragePreview {
         first.focus();
       }
     });
-    const light = new THREE.DirectionalLight(0xffe6c3, 2);
-    light.position.set(3, 5, 2);
+    const light = new THREE.SpotLight(0xffdfb2, 110, 18, 0.65, 0.8, 1.6);
+    light.position.set(-3.5, 2.8, 5.2);
+    light.target.position.set(0, 0.6, 0);
     light.castShadow = true;
     light.shadow.mapSize.set(1024, 1024);
-    light.shadow.camera.left = light.shadow.camera.bottom = -4;
-    light.shadow.camera.right = light.shadow.camera.top = 4;
     light.shadow.camera.near = 0.1;
     light.shadow.camera.far = 20;
     light.shadow.normalBias = 0.01;
     light.shadow.bias = -0.0001;
-    this.scene.add(light);
-    const rim = new THREE.DirectionalLight(0x71cfe9, 1.1);
-    rim.position.set(-4, 2, -3);
+    this.scene.add(light, light.target);
+    const rim = new THREE.DirectionalLight(0x71cfe9, 0.7);
+    rim.position.set(4, 2.5, -3);
     this.scene.add(rim);
     createWorkshopStage(this.scene);
+    this.configureCar();
     this.scene.traverse((object) => {
-      if (object instanceof THREE.Mesh) object.receiveShadow = true;
+      if (object instanceof THREE.Mesh) {
+        object.receiveShadow = true;
+        if (object.position.y > 2.5) object.castShadow = false;
+      }
     });
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(host);
@@ -125,17 +128,39 @@ export class GaragePreview {
     this.appearanceKey = key;
     const old = this.car;
     this.car = createCar({ appearance, model });
+    this.configureCar();
     this.scene.remove(old.root);
     old.dispose();
     this.scene.add(this.car.root);
     this.positionWheels();
   }
+  private configureCar() {
+    this.car.root.traverse((o) => {
+      if (o instanceof THREE.SpotLight) o.intensity = 0;
+      if (o instanceof THREE.Mesh)
+        for (const material of Array.isArray(o.material)
+          ? o.material
+          : [o.material]) {
+          if (
+            material instanceof THREE.MeshPhysicalMaterial &&
+            material.name === 'vehicle-glass'
+          ) {
+            material.envMap = this.scene.environment;
+            material.envMapIntensity = 1.2;
+            material.clearcoat = 0.6;
+            material.clearcoatRoughness = 0.025;
+            material.roughness = 0.05;
+            material.needsUpdate = true;
+          }
+        }
+    });
+  }
   private positionWheels() {
-    this.car.root.position.y = 0.74;
+    this.car.root.position.y = 0.62;
     this.car.wheels.forEach((wheel, i) =>
       wheel.position.set(
         ((i % 2 ? 1 : -1) * this.car.spec.track) / 2,
-        -0.4,
+        -0.28,
         ((i < 2 ? 1 : -1) * this.car.spec.wheelbase) / 2,
       ),
     );
@@ -269,7 +294,7 @@ export class GaragePreview {
       const time = now / 1000,
         age = time - this.jumpAt;
       this.car.root.position.y =
-        0.74 +
+        0.62 +
         (age < 2 ? Math.abs(Math.sin(age * 6)) * Math.exp(-age * 2) * 0.65 : 0);
       this.car.animate(time, 0, false, this.pose);
       this.controls.update();

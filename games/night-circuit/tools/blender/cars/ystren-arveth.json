@@ -134,9 +134,9 @@
       "roof_half_width": 0.6681
     }
   ],
-  "cross_section_segments": 24,
+  "cross_section_segments": 48,
   "longitudinal_segments": 40,
-  "target_triangles": 6500,
+  "target_triangles": 7600,
   "ao_size": 256,
   "ao_samples": 8,
   "design": {

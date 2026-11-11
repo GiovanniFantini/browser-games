@@ -62,7 +62,16 @@ export function installBakedLighting(root: THREE.Object3D) {
           bounce=mix(bounce,texture2D(tunnelBake,clamp(tunnelUv,0.0,1.0)).rgb,covered);
           float poolEnergy=max(bounce.r,max(bounce.g,bounce.b));
           float staticShade=mix(1.0,mix(.08,1.0,smoothstep(.08,.6,poolEnergy)),covered);
-          totalEmissiveRadiance+=diffuseColor.rgb*bounce*2.2;
+          float verticalFalloff=exp(-max(0.,vBakeWorld.y-1.5)*.19);
+          totalEmissiveRadiance+=diffuseColor.rgb*bounce*2.2*verticalFalloff;
+          vec2 lampCell=mod(vBakeWorld.xz+60.0,120.0)-60.0;
+          float lampDistance=min(length(vec2(abs(lampCell.x)-14.0,60.0-abs(lampCell.y))),length(vec2(60.0-abs(lampCell.x),abs(lampCell.y)-14.0)));
+          float coneWidth=max(.3,14.0+(9.5-vBakeWorld.y)*.8);
+          float wallCone=exp(-pow(lampDistance/coneWidth,2.0))*(1.0-smoothstep(8.5,9.6,vBakeWorld.y));
+          float verticalWall=1.0-smoothstep(.4,.75,abs(inverseTransformDirection(normal,viewMatrix).y));
+          float lampHue=mod(floor((vBakeWorld.x+60.0)/120.0)+floor((vBakeWorld.z+60.0)/120.0),3.0);
+          vec3 lampTint=lampHue<1.0?vec3(.65,.32,.16):lampHue<2.0?vec3(.19,.37,.58):vec3(.51,.21,.35);
+          totalEmissiveRadiance+=diffuseColor.rgb*lampTint*wallCone*verticalWall*(1.0-covered);
           #include <lights_fragment_begin>`,
             )
             .replace(
@@ -73,7 +82,7 @@ export function installBakedLighting(root: THREE.Object3D) {
             reflectedLight.directSpecular*=mix(1.0,staticShade,covered);`,
             );
       };
-      m.customProgramCacheKey = () => key() + '-baked-city-v2';
+      m.customProgramCacheKey = () => key() + '-baked-city-v3';
       m.needsUpdate = true;
     }
   });

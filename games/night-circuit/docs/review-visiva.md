@@ -1,5 +1,29 @@
 # Revisione visiva con Opus locale
 
+## Nuovo ciclo dopo il rifiuto della versione pubblicata
+
+Giovanni ha respinto lo screenshot della precedente pubblicazione. I verdetti storici sotto non chiudono il nuovo requisito. Il ciclo in `artifacts/visual-review-v2` confronta immagini reali con entrambi i riferimenti forniti in chat: auto in derapata e strada urbana. I riferimenti restano esclusi da codice, repository e distribuzione.
+
+Le review 1-8 hanno restituito `non raggiunto`. La review 9, sulle catture round-21, ha restituito `raggiunto`: auto, edifici/profondità urbana e illuminazione/materiali almeno equivalenti al riferimento console, senza la precedente tolleranza di un punto. Il [testo del verdetto](verdetto-opus.md) è conservato nel progetto. La review 10 sulle catture round-prod-01 conferma `raggiunto` sul pacchetto statico con base GitHub Pages. La cattura verifica anche assenza di errori, di richieste a origini esterne e dell’interfaccia QA. Sono state abilitate le ombre sulla segnaletica stradale. Prima della pubblicazione è stato verificato anche l’aumento della luminosità della nuova lente posteriore durante la frenata. L'accettazione finale di Giovanni resta distinta dal giudizio del revisore.
+
+Correzioni principali:
+
+- Finestre con aperture, piedritti, architravi, davanzali e vetri arretrati. Interni dipinti, negozi differenziati, piani arretrati, cinema, padiglioni vetrati, insegne su palo, pensiline e arco del viale. Geometria e texture generate nel progetto.
+- Cielo nuvoloso, skyline, luce precalcolata con attenuazione in altezza e pozze sulle facciate. Riflesso planare della strada con maschera di bagnato; riflessi locali su vetri e metalli e panorama originale per la vernice. Eliminati le vecchie scie aggiunte al terreno e i contributi dei lampioni esterni sotto il tunnel. I muri strutturali ora occludono anche il passaggio di riflessione.
+- Loft regolare, normali continue e raccordi protetti dalla decimazione, UV e bake AO per tutte le 51 auto. Fanali con lente continua, proiettori anteriori, griglia con lamelle, diffusore e terminali cavi. Rifiniture condivise da strada e garage, compresi bordi dei pannelli e materiali della decalcomania.
+- Garage con luce laterale, controluce, ombre, pavimento a contatto delle gomme e plafoniere condivise con la mappa dei riflessi. Nessun riflesso fantasma del pavimento. Fumo attenuato vicino alla carrozzeria per mantenere leggibili le ruote.
+
+Verifiche completate nella candidata locale:
+
+- 23 file e 92 test unitari superati, compresa la regressione sul merge di geometrie con attributi diversi.
+- Prove browser per vinili, tuning, persistenza, foto, 51 GLB con parti/UV/AO/budget, volumi di visibilità e guida fisica. Ripetute dopo le correzioni. Tre prove texture per seed, cache e fallback senza IndexedDB.
+- Lint e TypeScript superati. Build Vite con base `/night-circuit/` superata: chunk principale circa 5,47 MB e 1,99 MB gzip; resta l'avviso dimensionale di Vite.
+- Catalogo ricostruito: 51 GLB, da 7.512 a 7.554 triangoli, compattati a circa 16,78 MB. Le versioni HTTP dei modelli derivano dal loro SHA-256.
+
+Le catture usano ANGLE Direct3D 11 sulla GPU virtuale VMware. Non certificano 60 fps su GPU integrata fisica. Una prima esecuzione del controllo sulle richieste esterne usava una porta diversa da quella fissata nel test; è stata ripetuta sulla porta prevista, con esito positivo. Non sono state modificate pipeline o configurazioni CI/CD.
+
+## Cronologia della versione precedente, respinta da Giovanni
+
 Richiesta successiva alla pubblicazione della prima revisione grafica: raggiungere il dettaglio e la resa del riferimento fornito in chat, con review ripetute di Claude Code locale, modello Opus. Il riferimento resta materiale di confronto nelle evidenze locali ignorate e non è un asset del gioco.
 
 Stato: soglia visiva approvata e versione pubblicata. Dopo otto review con `non raggiunto`, la nona restituisce `raggiunto`, senza difetti bloccanti. La decima conferma `raggiunto` sulla candidata finale e l'undicesima sulla guida in tempo reale della build di produzione, senza regressioni bloccanti. Il [testo conclusivo del revisore](verdetto-opus.md) è conservato nel repository. Il modello effettivo indicato da Claude Code è `claude-opus-5-5`. Il catalogo completo è rigenerato e verificato; la distribuzione pubblica è disponibile su [GitHub Pages](https://giovannifantini.github.io/night-circuit/).

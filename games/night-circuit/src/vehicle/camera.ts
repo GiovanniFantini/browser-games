@@ -48,12 +48,12 @@ export class ChaseCamera {
         .set(
           0,
           this.mode === 0 ? 1.18 : 4.3,
-          this.mode === 0 ? -5.5 - drift * 0.65 : -11,
+          this.mode === 0 ? -5.0 - drift * 0.65 : -11,
         )
         .applyQuaternion(this.direction)
         .add(root.position);
       this.target
-        .set(0, 1.0, 8.5 - drift * 6.5)
+        .set(0, 0.3, 4.5 - drift * 3)
         .applyQuaternion(this.direction)
         .add(root.position);
     } else {

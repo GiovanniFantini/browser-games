@@ -34,12 +34,36 @@ export class WorldLighting {
     power: 30,
   }));
   private readonly distances = new Float64Array(4);
+  // Enlarged emitter surfaces retain the luminaire shape in a small reflection probe.
+  // Layer 3 is visible only in the vehicle probe, never as floating street geometry.
+  private readonly emitters = Array.from({ length: 4 }, () => {
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(4.2, 0.45),
+      new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide,
+        toneMapped: false,
+      }),
+    );
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.layers.set(3);
+    mesh.name = 'luminaire-reflection-surface';
+    return mesh;
+  });
   private readonly picks = new Int32Array(4);
   private next = 0;
   private x = Infinity;
   private z = Infinity;
   private access = 0;
   constructor(scene: THREE.Scene) {
+    this.sources.push({
+      x: 24,
+      y: 3.4,
+      z: -177,
+      index: 0,
+      color: 0xffb86d,
+      power: 35,
+    });
     this.sources.push(...this.underpassSources);
     for (let index = 0; index < 4; index++) {
       const origin = ORIGINS[index];
@@ -67,12 +91,12 @@ export class WorldLighting {
                 z,
                 index,
                 color: cool ? 0x91cbd3 : 0xffd098,
-                power: 60,
+                power: 120,
               });
             }
           }
     }
-    scene.add(...this.lights);
+    scene.add(...this.lights, ...this.emitters);
   }
   update(x: number, y: number, z: number, time: number, unlocked: number) {
     if (
@@ -106,9 +130,12 @@ export class WorldLighting {
       const p = this.sources[this.picks[i]],
         light = this.lights[i];
       light.intensity = p ? p.power : 0;
+      this.emitters[i].visible = !!p;
       if (p) {
         light.position.set(p.x, p.y, p.z);
         light.color.setHex(p.color);
+        this.emitters[i].position.copy(light.position);
+        this.emitters[i].material.color.copy(light.color).multiplyScalar(5);
       }
     }
   }

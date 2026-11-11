@@ -1,13 +1,16 @@
 import * as THREE from 'three';
+import { workshopTubes, workshopTubeRadiance } from './workshop-fixtures';
 import { generatedMaterial } from '../gen/textures/library';
 /** The work bay sits inside a complete original workshop, visible through a full orbit. */
 export function createWorkshopStage(scene: THREE.Scene) {
   const concrete =
     generatedMaterial('concrete') ??
     new THREE.MeshStandardMaterial({ color: 0x686b60, roughness: 0.9 });
+  concrete.color.multiplyScalar(0.52);
   const brick =
     generatedMaterial('brick-dark') ??
     new THREE.MeshStandardMaterial({ color: 0x594b42, roughness: 0.9 });
+  brick.color.multiplyScalar(0.45);
   const metal =
     generatedMaterial('corrugated') ??
     new THREE.MeshStandardMaterial({
@@ -46,7 +49,7 @@ export function createWorkshopStage(scene: THREE.Scene) {
   };
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(26, 26), concrete);
   floor.rotation.x = -Math.PI / 2;
-  floor.position.y = -0.03;
+  floor.position.y = 0;
   floor.receiveShadow = true;
   scene.add(floor);
   const back = new THREE.Mesh(new THREE.PlaneGeometry(14, 5), brick);
@@ -76,17 +79,13 @@ export function createWorkshopStage(scene: THREE.Scene) {
   box(10.85, 1.7, 3.7, 0.1, 3.4, 4.2, shutter);
   for (const z of [-8, -4, 0, 4, 8]) {
     box(0, 5.7, z, 22, 0.18, 0.22, metal);
-    for (const x of [-6, 6])
-      box(
-        x,
-        5.55,
-        z,
-        2.6,
-        0.08,
-        0.28,
-        new THREE.MeshBasicMaterial({ color: 0xe1dec2 }),
-      );
   }
+  const tubeMaterial = new THREE.MeshBasicMaterial({
+    color: new THREE.Color().setRGB(...workshopTubeRadiance),
+    toneMapped: false,
+  });
+  for (const tube of workshopTubes)
+    box(tube.x, tube.y, tube.z, tube.width, 0.08, tube.depth, tubeMaterial);
   const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(22, 22), concrete);
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.y = 6;

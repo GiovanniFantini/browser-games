@@ -168,6 +168,8 @@ export function createFoundryUnderpass(
       batch.add('cylinder', 'iron', x, y - 0.88, z + d, 0.9, 0.12);
     }
   batch.flush();
+  // Structural walls must also occlude the road mirror and the vehicle probe.
+  group.traverse((object) => object.layers.enable(0));
   // Direction sign generated with the project's own font.
   if (typeof document !== 'undefined') {
     const canvas = document.createElement('canvas');

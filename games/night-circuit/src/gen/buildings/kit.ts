@@ -1,5 +1,11 @@
 import * as THREE from 'three';
 import { generatedMaterial } from '../textures/library';
+import {
+  roomMaterial,
+  shopSignMaterial,
+  storeMaterial,
+  verticalSignMaterial,
+} from './interiors';
 
 export const MODULES = [
   'plinth',
@@ -52,6 +58,20 @@ const materialCache = new Map<string, THREE.MeshStandardMaterial>();
 function material(key: string) {
   const cached = materialCache.get(key);
   if (cached) return cached;
+  if (key.startsWith('store-') || key.startsWith('vertical-')) {
+    const result = key.startsWith('store-')
+      ? storeMaterial(Number(key.slice(6)))
+      : verticalSignMaterial(Number(key.slice(9)));
+    materialCache.set(key, result);
+    return result;
+  }
+  if (key.startsWith('room-') || key.startsWith('brand-')) {
+    const result = key.startsWith('room-')
+      ? roomMaterial(Number(key.slice(5)))
+      : shopSignMaterial(Number(key.slice(6)));
+    materialCache.set(key, result);
+    return result;
+  }
   const texture =
     key === 'shop'
       ? 'storefront'
@@ -65,7 +85,7 @@ function material(key: string) {
               ? 'brick-russet'
               : key === 'sand'
                 ? 'brick-sand'
-                : key === 'stone'
+                : key === 'stone' || key === 'plaster'
                   ? 'concrete'
                   : key === 'floor'
                     ? 'facade-amber'
@@ -99,6 +119,18 @@ function material(key: string) {
   if (key === 'lit' || key === 'cyan') {
     result.emissive.copy(result.color);
     result.emissiveIntensity = key === 'lit' ? 1.3 : 1.6;
+  }
+  if (key === 'warm-panel') {
+    result.color.set(0xb3a28a);
+    result.emissive.set(0xffc07b);
+    result.emissiveIntensity = 0.35;
+  }
+  if (key === 'roof-glass') {
+    result.color.set(0x164253);
+    result.emissive.set(0x3b9eac);
+    result.emissiveIntensity = 2.2;
+    result.metalness = 0.25;
+    result.roughness = 0.24;
   }
   if (key === 'shop') {
     result.emissiveIntensity = 1.2;
@@ -164,6 +196,8 @@ export class KitBatch {
         mesh.setColorAt(i, item.color);
       });
       mesh.castShadow = key !== 'lit' && key !== 'cyan';
+      if (key === 'stone' || key === 'iron' || key === 'metal')
+        mesh.layers.set(1);
       mesh.receiveShadow = true;
       mesh.computeBoundingSphere();
       this.root.add(mesh);
@@ -183,11 +217,16 @@ export interface BuildingSpec {
 }
 export class BuildingKit {
   private facadeAxis = 0;
+  private floorScale = 1;
   private get w() {
-    return this.facadeAxis ? this.spec.depth : this.spec.width;
+    return (
+      (this.facadeAxis ? this.spec.depth : this.spec.width) * this.floorScale
+    );
   }
   private get d() {
-    return this.facadeAxis ? this.spec.width : this.spec.depth;
+    return (
+      (this.facadeAxis ? this.spec.width : this.spec.depth) * this.floorScale
+    );
   }
   private readonly wall: string;
   constructor(
@@ -216,7 +255,7 @@ export class BuildingKit {
     rz = 0,
   ) {
     this.batch.add(
-      'box',
+      key.startsWith('brand-') ? 'sign' : 'box',
       key,
       this.spec.x + (this.facadeAxis ? z : x),
       this.spec.y + y,
@@ -270,64 +309,117 @@ export class BuildingKit {
       case 'plaster-floor':
       case 'office-floor':
       case 'glass-floor': {
-        this.box(
-          id === 'brick-floor'
-            ? this.wall
-            : id === 'plaster-floor'
-              ? 'floor'
-              : id === 'office-floor'
-                ? 'rose'
-                : 'glass',
-          0,
-          y + 1.65,
-          0,
-          w,
-          3.3,
-          d,
-        );
+        this.box('roof', 0, y + 1.65, 0, w - 0.8, 3.3, d - 0.8);
         this.box('stone', 0, y + 0.05, 0, w + 0.12, 0.13, d + 0.12);
         for (const x of [-w / 2 + 0.15, w / 2 - 0.15])
           this.box(this.wall, x, y + 1.65, (side * d) / 2, 0.48, 3.3, 0.3);
-        if (id === 'brick-floor') {
-          const axis = this.facadeAxis;
-          for (let face = 0; face < 2; face++) {
-            this.facadeAxis = face;
-            for (const side of [-1, 1])
-              for (let x = -this.w / 2 + 2.5; x < this.w / 2 - 1; x += 4.5) {
-                const lit =
-                  (Math.floor(x * 3) + Math.floor(y) * 7 + this.spec.seed) % 5 <
-                  2;
+        const axis = this.facadeAxis;
+        for (let face = 0; face < 2; face++) {
+          this.facadeAxis = face;
+          for (const direction of [-1, 1]) {
+            const office = id === 'office-floor';
+            const count = Math.max(
+              2,
+              Math.floor(this.w / (office ? 5.5 : 3.6)),
+            );
+            const step = this.w / count;
+            const wall = id === 'plaster-floor' ? 'plaster' : this.wall;
+            const hh = office ? 2.3 : 1.85;
+            const lower = 1.75 - hh / 2,
+              upper = 1.75 + hh / 2;
+            const wallZ = direction * (this.d / 2 - 0.15);
+            this.box(wall, 0, y + lower / 2, wallZ, this.w, lower, 0.3);
+            this.box(
+              wall,
+              0,
+              y + (upper + 3.3) / 2,
+              wallZ,
+              this.w,
+              3.3 - upper,
+              0.3,
+            );
+            for (let i = 0; i < count; i++) {
+              const x = -this.w / 2 + (i + 0.5) * step;
+              let hash =
+                (Math.imul(this.spec.seed + Math.floor(y) * 911, 73856093) ^
+                  Math.imul(i + 17, 19349663) ^
+                  Math.imul(face * 3 + direction, 83492791)) >>>
+                0;
+              hash = Math.imul(hash ^ (hash >>> 13), 1274126177) >>> 0;
+              const variant = hash % 11 < 3 ? 1 + ((hash >>> 8) % 6) : 0;
+              const z = direction * (this.d / 2 + 0.04);
+              const ww = office ? step * 0.86 : Math.min(1.75, step * 0.58);
+              const gap = step - ww;
+              for (const edge of [-1, 1])
                 this.box(
-                  'iron',
-                  x,
-                  y + 1.8,
-                  side * (this.d / 2 + 0.04),
-                  1.9,
-                  1.9,
+                  wall,
+                  x + edge * (step / 2 - gap / 4),
+                  y + 1.75,
+                  wallZ,
+                  gap / 2,
+                  hh,
+                  0.3,
+                );
+              this.box(
+                'iron',
+                x,
+                y + 1.75,
+                z - direction * 0.31,
+                ww + 0.22,
+                hh + 0.22,
+                0.035,
+              );
+              this.box(
+                'room-' + variant,
+                x,
+                y + 1.75,
+                z - direction * 0.27,
+                ww,
+                hh,
+                0.025,
+              );
+              for (const edge of [-1, 1])
+                this.box(
+                  office ? 'iron' : 'stone',
+                  x + edge * (ww / 2 + 0.08),
+                  y + 1.75,
+                  z + direction * 0.15,
                   0.12,
+                  hh + 0.24,
+                  0.33,
                 );
+              this.box(
+                office ? 'iron' : 'stone',
+                x,
+                y + 0.76,
+                z + direction * 0.22,
+                ww + 0.44,
+                0.13,
+                0.55,
+              );
+              this.box(
+                this.wall,
+                x,
+                y + 2.79,
+                z + direction * 0.12,
+                ww + 0.3,
+                0.16,
+                0.29,
+              );
+              if ((hash >>> 16) % 7 === 0)
                 this.box(
-                  lit ? 'shop' : 'glass',
-                  x,
-                  y + 1.8,
-                  side * (this.d / 2 + 0.115),
-                  1.65,
-                  1.6,
-                  0.05,
+                  'metal',
+                  x + ww * 0.25,
+                  y + 1.04,
+                  z + direction * 0.35,
+                  0.75,
+                  0.43,
+                  0.6,
                 );
-                this.box(
-                  'stone',
-                  x,
-                  y + 0.95,
-                  side * (this.d / 2 + 0.18),
-                  2.05,
-                  0.09,
-                  0.4,
-                );
-              }
+            }
           }
-          this.facadeAxis = axis;
         }
+        this.facadeAxis = axis;
         break;
       }
       case 'stone-pier':
@@ -339,13 +431,20 @@ export class BuildingKit {
       case 'garage-door': {
         if (!this.facadeAxis && side === 1)
           this.box(this.wall, 0, 1.9, 0, w, 3.8, d);
-        const bays = Math.max(2, Math.floor(w / 5)),
+        const bays =
+            id === 'garage-door'
+              ? Math.max(2, Math.floor(w / 9))
+              : id === 'cafe-front'
+                ? 2
+                : Math.max(2, Math.floor(w / 6.5)),
           bay = w / bays;
         for (let i = 0; i < bays; i++) {
           const x = -w / 2 + (i + 0.5) * bay;
           this.box('iron', x, 1.75, edge, bay - 0.18, 3.25, 0.16);
           this.box(
-            id === 'garage-door' ? 'shutter' : 'shop',
+            id === 'garage-door'
+              ? 'shutter'
+              : 'store-' + ((this.spec.seed + i) % 6),
             x,
             1.55,
             edge + side * 0.1,
@@ -355,12 +454,12 @@ export class BuildingKit {
           );
           this.batch.add(
             'sign',
-            i % 2 ? 'sign-cyan' : 'sign-pink',
+            'brand-' + ((this.spec.seed + i * 7 + this.facadeAxis * 3) % 12),
             this.spec.x + (this.facadeAxis ? edge + side * 0.17 : x),
             this.spec.y + 3.0,
             this.spec.z + (this.facadeAxis ? -x : edge + side * 0.17),
             bay - 0.45,
-            0.56,
+            0.92,
             0.05,
             this.facadeAxis ? Math.PI / 2 : 0,
           );
@@ -511,7 +610,17 @@ export class BuildingKit {
         break;
       case 'blade-sign':
         this.box('iron', -w * 0.35, y, edge + side * 0.6, 0.1, 0.08, 1.3);
-        this.box('lit', -w * 0.35, y - 0.7, edge + side * 1.1, 0.16, 1.5, 1);
+        this.batch.add(
+          'sign',
+          'brand-' + ((this.spec.seed + 3) % 12),
+          this.spec.x - w * 0.35,
+          this.spec.y + y - 0.35,
+          this.spec.z + edge + side * 1.4,
+          2.7,
+          0.85,
+          0.12,
+          Math.PI / 2,
+        );
         break;
       case 'roof-billboard':
         for (const x of [-w * 0.27, w * 0.27])
@@ -574,8 +683,65 @@ export class BuildingKit {
           this.box('iron', x, 0.7, edge + side * 2.05, 0.25, 0.8, 0.12);
         break;
       case 'skylight':
-        this.box('iron', 0, y + 0.2, 0, w * 0.5, 0.45, 2.3);
-        this.box('glass', 0, y + 0.45, 0, w * 0.49, 0.08, 2.2);
+        for (const side of [-1, 1]) {
+          this.box(
+            'roof-glass',
+            side * w * 0.14,
+            y + 1.4,
+            0,
+            w * 0.3,
+            0.1,
+            d * 0.68,
+            0,
+            0,
+            -side * 0.45,
+          );
+          this.box(
+            'cyan',
+            side * w * 0.14,
+            y + 1.34,
+            0,
+            w * 0.3,
+            0.035,
+            d * 0.68,
+            0,
+            0,
+            -side * 0.45,
+          );
+        }
+        for (let x = -w * 0.28; x <= w * 0.28; x += 2.4)
+          this.box(
+            'iron',
+            x,
+            y + 1.46 + (w * 0.14 - Math.abs(x)) * Math.tan(0.45),
+            0,
+            0.1,
+            0.14,
+            d * 0.7,
+          );
+        this.box(
+          'iron',
+          0,
+          y + 1.46 + w * 0.14 * Math.tan(0.45),
+          0,
+          0.15,
+          0.15,
+          d * 0.7,
+        );
+        for (let z = -d * 0.32; z <= d * 0.33; z += 3)
+          for (const side of [-1, 1])
+            this.box(
+              'iron',
+              side * w * 0.14,
+              y + 1.47,
+              z,
+              w * 0.3,
+              0.1,
+              0.12,
+              0,
+              0,
+              -side * 0.45,
+            );
         break;
       case 'roof-vent':
         this.cylinder('metal', w * 0.3, y + 0.5, d * 0.25, 0.65, 1);
@@ -603,6 +769,7 @@ export class BuildingKit {
     }
   }
   get bodyHeight() {
+    if (this.spec.seed % 7 === 6) return 6.5;
     return this.spec.seed % 7 === 0 && this.spec.district !== 1
       ? 7
       : 3.8 + Math.max(1, Math.round((this.spec.height - 3.8) / 3.3)) * 3.3;
@@ -611,6 +778,31 @@ export class BuildingKit {
     const n = this.spec.seed,
       type = n % 7;
     this.module('plinth');
+    if (type === 6) {
+      for (let axis = 0; axis < 2; axis++) {
+        this.facadeAxis = axis;
+        for (const side of [-1, 1]) {
+          this.module('cafe-front', 0, side);
+          this.module('stone-pier', 0, side);
+        }
+      }
+      this.facadeAxis = 0;
+      this.module('cornice', 3.85);
+      this.module('flat-roof', 4.0);
+      this.module('skylight', 4.2);
+      this.cylinder('iron', -this.w * 0.42, 5, -this.d / 2 - 2, 0.18, 10);
+      this.box(
+        'brand-' + (n % 12),
+        -this.w * 0.42,
+        9.4,
+        -this.d / 2 - 2,
+        5.2,
+        1.6,
+        0.18,
+      );
+      this.module('blade-sign', 4.2);
+      return;
+    }
     if (type === 0 && this.spec.district !== 1) {
       this.module('warehouse');
       this.module('loading-dock');
@@ -634,10 +826,43 @@ export class BuildingKit {
         );
         this.module('doorway', 0, side);
         this.module('stone-pier', 0, side);
+        if (type === 5) {
+          const edge = side * (this.d / 2 + 0.1);
+          this.box(
+            'roof',
+            0,
+            3.85,
+            edge + side * 1.25,
+            this.w * 0.92,
+            0.2,
+            2.7,
+          );
+          this.box(
+            'warm-panel',
+            0,
+            3.72,
+            edge + side * 1.25,
+            this.w * 0.87,
+            0.04,
+            2.5,
+          );
+          this.box(
+            'brand-9',
+            0,
+            4.2,
+            edge + side * 2.5,
+            this.w * 0.82,
+            1.15,
+            0.12,
+          );
+        }
       }
     }
     this.facadeAxis = 0;
     for (let floor = 0; floor < floors; floor++) {
+      this.floorScale = Math.max(0.68, 1 - Math.floor(floor / 2) * 0.16);
+      if (floor > 0 && floor % 2 === 0)
+        this.module('cornice', 3.8 + floor * 3.3);
       this.module(
         this.spec.district === 1
           ? 'office-floor'
@@ -657,10 +882,56 @@ export class BuildingKit {
     if ((this.spec.district === 2 && type % 2) || type === 5)
       this.module('pitched-roof', top);
     else this.module('parapet', top);
-    this.module(type % 2 ? 'roof-chiller' : 'water-tank', top + 0.15);
+    if (type === 2 || type === 6) this.module('skylight', top + 0.15);
+    else this.module(type % 2 ? 'roof-chiller' : 'water-tank', top + 0.15);
     this.module('chimney', top);
     this.module('antenna', top);
     if (type % 3 === 0) this.module('roof-billboard', top);
+    if (type === 5 || type === 1) {
+      for (const side of [-1, 1]) {
+        this.box(
+          'iron',
+          -this.w * 0.4,
+          8,
+          side * (this.d / 2 + 1.4),
+          0.15,
+          8.3,
+          0.15,
+        );
+        this.box(
+          'vertical-' + (type % 2),
+          -this.w * 0.4,
+          8.8,
+          side * (this.d / 2 + 1.5),
+          2.1,
+          8,
+          0.22,
+        );
+        this.box(
+          'vertical-' + (type % 2),
+          side * (this.w / 2 + 1.5),
+          8.8,
+          this.d * 0.35,
+          2.1,
+          8,
+          0.22,
+          Math.PI / 2,
+        );
+      }
+    }
+    if (type === 4) {
+      this.module('skylight', top + 0.2);
+      for (const side of [-1, 1])
+        this.box(
+          'cyan',
+          0,
+          top + 0.45,
+          side * (this.d / 2 + 0.12),
+          this.w,
+          0.08,
+          0.15,
+        );
+    }
     if (type % 2 === 0) this.module('fire-escape', top);
     this.module('air-conditioner', 4.6);
     this.module('drainpipe', top);

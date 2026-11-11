@@ -1,3 +1,5 @@
+import { createStreetTrees } from './street-trees';
+import { lampStarTexture } from '../gen/textures/lamp-star';
 import * as THREE from 'three';
 import type { RoadGraph } from './graph';
 import RAPIER from '@dimforge/rapier3d-compat';
@@ -124,7 +126,7 @@ export function createStreetscape(
         color: i % 2 ? '#535a6a' : '#604a42',
         model: 'silex-c1',
       });
-      parked.root.position.set(side * 9.6, 0.74, z + 18);
+      parked.root.position.set(side * 9.6, 0.62, z + 18);
       parked.root.rotation.y = side > 0 ? Math.PI : 0;
       parked.root.traverse((o) => {
         if (o instanceof THREE.Sprite) o.visible = false;
@@ -147,6 +149,7 @@ export function createStreetscape(
     for (const side of [-1, 1]) {
       const lx = x + (vertical ? side * 14 : 0),
         lz = z + (vertical ? 0 : side * 14);
+      if (Math.abs(lx) < 24 && lz > -355 && lz < -250) continue;
       const warm = (i + (side > 0 ? 1 : 0)) % 3 !== 0;
       color.setHex(warm ? 0xffb56c : 0x94b7ff);
       positions.push(lx, 9.58, lz);
@@ -201,7 +204,7 @@ export function createStreetscape(
     geometry,
     new THREE.PointsMaterial({
       map: glow,
-      size: 6,
+      size: 8.5,
       vertexColors: true,
       transparent: true,
       depthWrite: false,
@@ -210,8 +213,24 @@ export function createStreetscape(
     }),
   );
   bulbs.name = 'street-lamp-halos';
+  const stars = new THREE.Points(
+    geometry,
+    new THREE.PointsMaterial({
+      map: lampStarTexture(),
+      size: 5.0,
+      vertexColors: true,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      toneMapped: false,
+    }),
+  );
+  stars.layers.set(1);
+  stars.name = 'street-lamp-optical-rays';
+  scene.add(stars);
   quads.name = 'wet-street-light-cards';
-  scene.add(bulbs, quads, planter, bin, ...trees);
+  scene.add(bulbs, planter, bin);
+  createStreetTrees(scene, graph);
   const hoods = new THREE.InstancedMesh(
     new THREE.CylinderGeometry(0.38, 0.68, 0.25, 8),
     new THREE.MeshStandardMaterial({

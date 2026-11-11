@@ -85,10 +85,11 @@ export class TireSmoke {
         resolution: { value: 600 },
         puff: { value: smokeTexture() },
         tailTint: { value: new THREE.Color(0xec2540) },
+        carPosition: { value: new THREE.Vector3() },
       },
       vertexShader: `attribute float opacity;attribute float diameter;attribute float ground;
     varying float fade;varying float seed;varying float aboveRoad;varying float span;
-    uniform float resolution;void main(){fade=opacity;seed=position.x+position.z;aboveRoad=position.y-ground;span=diameter;
+    uniform float resolution;uniform vec3 carPosition;void main(){fade=opacity*smoothstep(2.0,3.8,length(position.xz-carPosition.xz));seed=position.x+position.z;aboveRoad=position.y-ground;span=diameter;
     vec4 p=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*p;gl_PointSize=clamp(diameter*resolution/max(1.,-p.z),1.,resolution*.32);}`,
       fragmentShader: `uniform sampler2D puff;uniform vec3 tailTint;varying float fade;varying float seed;varying float aboveRoad;varying float span;
     void main(){float a=seed*1.13;vec2 uv=mat2(cos(a),-sin(a),sin(a),cos(a))*(gl_PointCoord-.5)+.5;
@@ -109,6 +110,7 @@ export class TireSmoke {
   }
   update(car: Vehicle, dt: number, handbrake: boolean) {
     this.material.uniforms.resolution.value = this.renderer.domElement.height;
+    this.material.uniforms.carPosition.value.copy(car.position);
     const slip = Math.abs(car.slip),
       speed = Math.hypot(car.speed, car.slip),
       emitting = car.grounded >= 2 && speed > 3 && (slip > 1.8 || handbrake);

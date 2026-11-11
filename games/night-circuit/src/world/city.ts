@@ -1,5 +1,8 @@
 import { BuildingKit, KitBatch } from '../gen/buildings/kit';
 import { createFoundryUnderpass } from '../gen/buildings/underpass';
+import { createStreetVenue } from '../gen/buildings/street-venue';
+import { createFoundryAvenue } from './avenue';
+import { roadPaintMaterial } from './road-paint';
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import defaultData from '../data/district.json';
@@ -79,10 +82,7 @@ export class City {
       cyan: new THREE.MeshBasicMaterial({ color: 0x77dbe5 }),
       pink: new THREE.MeshBasicMaterial({ color: 0xd47dad }),
       amber: new THREE.MeshBasicMaterial({ color: 0xedd594 }),
-      paint: new THREE.MeshStandardMaterial({
-        color: 0xa3bbc1,
-        roughness: 0.45,
-      }),
+      paint: roadPaintMaterial(0x7b817f),
     };
     this.box(this.scene, 1100, 1, 1100, 0, -0.55, 0, 'concrete');
     world.createCollider(
@@ -90,7 +90,10 @@ export class City {
     );
     this.roads(world);
     this.blocks(world);
-    if (this.openBorders) createFoundryUnderpass(this.scene, world);
+    if (this.openBorders) {
+      createFoundryUnderpass(this.scene, world);
+      createFoundryAvenue(this.scene, world);
+    }
     this.signalMeshes = new THREE.InstancedMesh(
       new THREE.SphereGeometry(0.27, 6, 4),
       new THREE.MeshBasicMaterial(),
@@ -156,10 +159,16 @@ export class City {
       this.materials.road,
       this.graph.edges.length + this.graph.nodes.length,
     );
+    const paintGeometry = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2);
     const markings = new THREE.InstancedMesh(
-      this.boxGeometry,
+      paintGeometry,
       this.materials.paint,
-      this.graph.edges.length * 8,
+      this.graph.edges.length * 16 + this.graph.nodes.length * 40,
+    );
+    const centreLines = new THREE.InstancedMesh(
+      paintGeometry,
+      roadPaintMaterial(0x99844c),
+      this.graph.edges.length * 2,
     );
     const lamps = new THREE.InstancedMesh(
       this.boxGeometry,
@@ -172,9 +181,12 @@ export class City {
       this.graph.edges.length * 2,
     );
     roads.receiveShadow = true;
+    markings.receiveShadow = true;
+    centreLines.receiveShadow = true;
     let r = 0,
       m = 0,
-      l = 0;
+      l = 0,
+      centre = 0;
     const place = (
       mesh: THREE.InstancedMesh,
       index: number,
@@ -244,19 +256,55 @@ export class City {
         const t = (j + 0.5) / 8;
         const px = a.x + (b.x - a.x) * t,
           pz = a.z + (b.z - a.z) * t;
-        place(
-          markings,
-          m++,
-          px,
-          0.016,
-          pz,
-          vertical ? 0.17 : 4.5,
-          0.015,
-          vertical ? 4.5 : 0.17,
-        );
+        for (const lane of [-1, 1])
+          place(
+            markings,
+            m++,
+            px + (vertical ? lane * 6 : 0),
+            0.007,
+            pz + (vertical ? 0 : lane * 6),
+            vertical ? 0.17 : 4.5,
+            0.015,
+            vertical ? 4.5 : 0.17,
+          );
       }
+      for (const side of [-1, 1])
+        place(
+          centreLines,
+          centre++,
+          x + (vertical ? side * 0.18 : 0),
+          0.007,
+          z + (vertical ? 0 : side * 0.18),
+          vertical ? 0.1 : span,
+          0.015,
+          vertical ? span : 0.1,
+        );
     }
     for (const node of this.graph.nodes) {
+      for (const side of [-1, 1])
+        for (let stripe = -5; stripe < 5; stripe++) {
+          const offset = (stripe + 0.5) * 1.8;
+          place(
+            markings,
+            m++,
+            node.x + offset,
+            0.007,
+            node.z + side * 15,
+            0.65,
+            0.015,
+            3.5,
+          );
+          place(
+            markings,
+            m++,
+            node.x + side * 15,
+            0.007,
+            node.z + offset,
+            3.5,
+            0.015,
+            0.65,
+          );
+        }
       place(roads, r++, node.x, -0.02, node.z, roadWidth, 0.05, roadWidth);
       this.box(
         this.scene,
@@ -299,7 +347,7 @@ export class City {
         'building',
       );
     }
-    this.scene.add(roads, markings, lamps, bulbs);
+    this.scene.add(roads, markings, centreLines, lamps, bulbs);
     if (!this.openBorders)
       for (const side of [-1, 1]) {
         const bound = size / 2 + 20;
@@ -413,12 +461,20 @@ export class City {
           continue;
         }
         for (let i = 0; i < 4; i++) {
+          if (cx === 60 && cz === -180 && i === 2) continue;
+          if (cx === 60 && cz === -180 && i === 0) {
+            createStreetVenue(this.scene, world, 37, -177);
+            continue;
+          }
           const bx = cx + (i % 2 ? 23 : -23),
             bz = cz + (i < 2 ? -23 : 23),
-            w = 24 + random() * 10,
-            d = 24 + random() * 9;
-          const n = Math.floor(random() * 100000),
-            h = 7 + Math.floor(random() * 5) * 3.3;
+            w = 19 + random() * 15,
+            d = 20 + random() * 13;
+          let n = Math.floor(random() * 100000);
+          if (i === 0 && (x + z) % 2 === 0) n = n - (n % 7) + 6;
+          if (i === 3 && (x + z) % 2 !== 0) n = n - (n % 7) + 5;
+          const h =
+            7 + Math.floor(random() * 6) * 3.3 + (n % 11 === 0 ? 23.1 : 0);
           const building = new BuildingKit(sector.batch, {
             x: bx,
             y: 0,
