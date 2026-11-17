@@ -1,6 +1,6 @@
 # Review delle ottimizzazioni del 17 novembre 2026
 
-Review locale richiesta da Giovanni con Claude Code, modello Opus. Comprende il rendering modificato e una seconda lettura di gare, risultati, torneo, fantasma, economia, carriera, importazioni e migrazioni. Non pubblica né aggiorna il gioco online.
+Review locale richiesta da Giovanni con Claude Code, modello Opus. Comprende il rendering modificato e una seconda lettura di gare, risultati, torneo, fantasma, economia, carriera, importazioni e migrazioni. La successiva richiesta di commit e pubblicazione è stata completata il 17 novembre 2026, come registrato in [pubblicazione](pubblicazione.md).
 
 ## Segnalazioni e decisioni
 
@@ -68,4 +68,4 @@ Verdetto concorde di Codex e Opus: `READY TO GO IN PROD`. Conservazione e correz
 
 Sono corretti cinque bug funzionali preesistenti (coppa, fantasma, presa tetto, personalizzazioni delle monoposto e UV del vinile tetto), oltre al 404 cosmetico dell'icona. I problemi dei test sono separati dai difetti del prodotto nella tabella. Restano i limiti facoltativi e ambientali esplicitamente condivisi, senza garanzie di FPS sull'hardware fisico non disponibile.
 
-Il verdetto riguarda la build locale verificata. Non sono stati eseguiti commit, push, pubblicazione o modifiche CI/CD.
+Il verdetto è stato espresso sulla build locale verificata. Successivamente Giovanni ha autorizzato commit e pubblicazione: sorgenti `c10cd11585aea0f4aff9b893748f5c1409876751`, distribuzione `5eac5e4cdf807ba21fe24d0195e9444be07036a4`, verificata dal dominio pubblico il 17 novembre 2026. Nessuna modifica a pipeline o configurazioni CI/CD.

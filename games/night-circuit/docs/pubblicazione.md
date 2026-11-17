@@ -2,6 +2,18 @@
 
 ## Pubblicazione attuale: GitHub Pages
 
+### Aggiornamento del 17 novembre 2026
+
+Ottimizzazioni del rendering e cinque fix funzionali approvate nella review 7 con Opus sono pubblicate su https://giovannifantini.github.io/night-circuit/. Commit dei sorgenti: `c10cd11585aea0f4aff9b893748f5c1409876751`. Commit della distribuzione pubblica: `5eac5e4cdf807ba21fe24d0195e9444be07036a4`. Pages ha raggiunto stato `built` per questo commit alle 20:07:32 UTC.
+
+La verifica sul dominio pubblico si è conclusa alle 20:10:35 UTC (21:10:35 italiane): avvio a qualità media, accelerazione reale oltre 20 km/h, passaggi bassa/alta/media con preferenze persistenti, garage, acquisto e applicazione della presa sul tetto. Nessun errore JavaScript, WebGL o console, nessuna risposta HTTP fallita e nessuna richiesta verso origini esterne. Interfacce QA e diagnostiche di sviluppo assenti anche con `?qa=race`.
+
+`release.json` online indica il commit sorgente atteso. Il bundle `/night-circuit/assets/index-D0iRjSOX.js` ha SHA-256 `30be26d9a3a586ba92c221155c669819e8e22d77a9a879e47f2796aa7ecb435f`, identico alla candidata locale. Anche il modello iniziale corrisponde: SHA-256 `9dfbe09c12b2dd7a374a3409ff203c0613e9bea8c8d6b95c46c720a0e0feac69`. Le risorse del gioco vengono caricate sotto `/night-circuit/`.
+
+Build con base Pages e smoke locale superati prima del push. Il primo tentativo del nuovo script di smoke usava il timeout standalone di 5 s durante il cambio qualità; il controllo è stato riallineato alle attese della verifica browser, senza cambiare il prodotto. Candidata e sito pubblico hanno poi superato la stessa sequenza. I vecchi bundle con hash restano disponibili per compatibilità con le pagine già nella cache dei browser.
+
+Evidenze locali ignorate in `artifacts/release/optimized-approved-2026-11-17/`: `candidate-report.json`, `online-report.json`, `pages-build.json` e screenshot `online-*`. Nessuna pipeline o configurazione CI/CD è stata modificata. Il verdetto completo e i limiti di misura restano nella [review delle ottimizzazioni](review-ottimizzazione.md).
+
 Giovanni ha autorizzato l'accesso pubblico. Il gioco aggiornato è disponibile senza accesso ChatGPT su https://giovannifantini.github.io/night-circuit/.
 
 Il repository pubblico https://github.com/GiovanniFantini/night-circuit contiene soltanto il gioco compilato e gli asset. Il repository dei sorgenti https://github.com/GiovanniFantini/BrowserGames resta privato, come verificato tramite GitHub. Gli script dei generatori e i file Blender di sviluppo restano separati dalla distribuzione pubblica.

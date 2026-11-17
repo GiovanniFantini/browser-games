@@ -1,6 +1,6 @@
 # Ottimizzazione del rendering del 17 novembre 2026
 
-Modifiche implementate e verificate localmente. La versione online non viene aggiornata da questo lavoro.
+Modifiche implementate e verificate localmente, poi pubblicate il 17 novembre 2026 su autorizzazione di Giovanni. Commit e prove sul dominio pubblico sono nella [pubblicazione verificata](pubblicazione.md).
 
 ## Risultato misurato
 
@@ -59,6 +59,6 @@ Claude Code locale, modello `claude-opus-5-5`, ha esaminato codice, immagini e m
 
 Le evidenze locali ignorate sono in `artifacts/perf-optimization/`: `results-performance.json` contiene i dieci campioni definitivi e i singoli frame; `summary.json` le statistiche; `image-diff.json`, i PNG e i JSON di debug i nove confronti; `opus-acceptance.txt` il verdetto finale. `results-prewarmup-experiment.json` conserva le misure della variante sperimentale scartata e non va confuso con il risultato definitivo. Il banco, le copie del baseline e gli script di confronto non fanno parte della distribuzione.
 
-Nessuna pipeline, pubblicazione o push è stato eseguito.
+Il ciclo di misure non comprendeva la pubblicazione. La successiva richiesta di Giovanni ha autorizzato commit e aggiornamento online, completati e verificati il 17 novembre 2026. Nessuna pipeline o configurazione CI/CD è stata modificata.
 
 La successiva [review completa](review-ottimizzazione.md) distingue segnalazioni, correzioni del gameplay preesistente, verifiche aggiuntive e limiti confermati con Opus.
