@@ -43,14 +43,27 @@ export class GhostRecorder {
     if (!this.valid || this.count < 2 || duration > settings.ghost.maxDuration)
       return null;
     const frames: number[][] = [];
-    for (let i = 0; i < this.count; i++)
-      frames.push(
-        Array.from(
-          this.buffer.subarray(i * 8, i * 8 + 8),
-          (v) => Math.round(v * 10000) / 10000,
-        ),
+    for (let i = 0; i < this.count; i++) {
+      const frame = Array.from(
+        this.buffer.subarray(i * 8, i * 8 + 8),
+        (v) => Math.round(v * 10000) / 10000,
       );
-    return { version: settings.ghost.version, event, duration, frames };
+      // A forced finish sample can round to the preceding sample's timestamp.
+      // Keep the final pose without emitting two frames at the same instant.
+      if (frames.at(-1)?.[0] === frame[0]) frames[frames.length - 1] = frame;
+      else frames.push(frame);
+    }
+    try {
+      return parseGhost({
+        version: settings.ghost.version,
+        event,
+        duration,
+        frames,
+      });
+    } catch {
+      // An unusable recording must never invalidate the race reward transaction.
+      return null;
+    }
   }
 }
 export function parseGhost(value: unknown): GhostRecord | null {

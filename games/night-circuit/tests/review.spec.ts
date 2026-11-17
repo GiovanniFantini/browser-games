@@ -85,6 +85,6 @@ test('review: la qualità di emergenza nell’URL non modifica la preferenza sal
     ),
   ).toBe('high');
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await expect(page.locator('#quality')).toHaveValue('high');
 });

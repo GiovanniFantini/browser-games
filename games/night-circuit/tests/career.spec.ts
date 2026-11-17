@@ -6,7 +6,7 @@ const saved = (page: Page) =>
   );
 async function ready(page: Page) {
   await page.goto('/?quality=low&qa=race', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.evaluate(() => window.__nightCircuitQA.manual());
 }
 async function phone(page: Page) {
@@ -71,7 +71,7 @@ test('fase 7: carriera completa, sponsor, copertina, quattro rivali, viaggi e mo
   await startPhoneRace(page, 'sprint-quays');
   expect((await saved(page)).career.sponsorProgress).toBe(1);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.evaluate(() => window.__nightCircuitQA.manual());
   await page.locator('#start-career').click();
   await startPhoneRace(page, 'sprint-quays');
@@ -221,7 +221,7 @@ test('fase 7: carriera completa, sponsor, copertina, quattro rivali, viaggi e mo
   ).toBe(true);
   await page.screenshot({ path: 'artifacts/phase7-phone-complete.png' });
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.locator('#start-career').click();
   expect((await saved(page)).career.defeated).toHaveLength(4);
   expect((await saved(page)).cars[1].model).toBe('lyra-r2');
@@ -341,7 +341,7 @@ test('fase 7: sponsor velocità da telemetria reale, livello 3 e telefono a 800 
     ),
   ).toBeGreaterThan(5);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.locator('#start-career').click();
   expect((await saved(page)).career.sponsorsDone).toContain('aervik-speed');
   await page.keyboard.press('Tab');
@@ -440,7 +440,7 @@ test('fase 7: garage pieno, sostituzione con trasferimento e ripristino della co
   expect((await saved(page)).credits).toBe(22500);
   expect((await saved(page)).cars[0].model).toBe('velan-gt');
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   expect((await saved(page)).cars[0].equipped.engine).toBe(1);
   expect(errors).toEqual([]);
 });

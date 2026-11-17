@@ -432,6 +432,15 @@ test('fase 8: tetto e vinile della monoposto aderenti alla copertura posteriore 
   page,
 }) => {
   test.setTimeout(600000);
+  // Share the same module cache for the preload and car factory after Vite HMR.
+  await page.route('**/src/**', async (route) => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace(
+      /(\/src\/[^"'\s?]+)\?t=\d+/g,
+      '$1',
+    );
+    await route.fulfill({ response, body });
+  });
   await setup(page, 'old-docks', true, 'drevalyn-rhelix');
   await page.keyboard.press('h');
   await page.locator('#garage-mode').click();
@@ -450,26 +459,88 @@ test('fase 8: tetto e vinile della monoposto aderenti alla copertura posteriore 
   const allBounds = await page.evaluate(async () => {
     const path = '/src/vehicle/model.ts',
       mod = await import(/* @vite-ignore */ path),
+      generatedPath = '/src/vehicle/generated.ts',
+      generated = await import(/* @vite-ignore */ generatedPath),
+      threePath = '/node_modules/three/build/three.module.js',
+      THREE = await import(/* @vite-ignore */ threePath),
       p = JSON.parse(localStorage.getItem('night-circuit:v2:auto')!).cars[0],
-      catalogPath = '/src/data/career.json',
+      catalogPath = '/src/data/career.json?import',
       catalog = (await import(/* @vite-ignore */ catalogPath)).default;
-    return catalog.models.map((model: { id: string }) => {
+    await generated.prepareDetailedCarModels(
+      catalog.models.map((m: { id: string }) => m.id),
+    );
+    type Resource = {
+      addEventListener(type: 'dispose', listener: () => void): void;
+    };
+    type MeshResources = {
+      isMesh?: boolean;
+      geometry: Resource;
+      material: Resource | Resource[];
+    };
+    const disposeChecked = (car: {
+      root: { traverse(fn: (object: MeshResources) => void): void };
+      dispose(): void;
+    }) => {
+      const resources = new Set<Resource>(),
+        released = new Set<Resource>();
+      car.root.traverse((object) => {
+        if (!object.isMesh) return;
+        resources.add(object.geometry);
+        for (const material of Array.isArray(object.material)
+          ? object.material
+          : [object.material])
+          resources.add(material);
+      });
+      for (const resource of resources)
+        resource.addEventListener('dispose', () => released.add(resource));
+      car.dispose();
+      return resources.size === released.size;
+    };
+    return catalog.models.map((model: { id: string; family: string }) => {
       const car = mod.createCar({ appearance: p.appearance, model: model.id });
       car.root.updateMatrixWorld(true);
       const cover = car.root.getObjectByName('roof-surface'),
         decal = car.root.getObjectByName('vinyl-roof');
-      cover.geometry.computeBoundingBox();
-      decal.geometry.computeBoundingBox();
-      const c = cover.geometry.boundingBox
-          .clone()
-          .applyMatrix4(cover.matrixWorld),
-        v = decal.geometry.boundingBox.clone().applyMatrix4(decal.matrixWorld),
-        result = {
-          model: model.id,
-          cover: { min: c.min, max: c.max },
-          decal: { min: v.min, max: v.max },
-        };
-      car.dispose();
+      if (!cover || !decal)
+        throw Error(`Superficie o vinile mancanti nel GLB ${model.id}`);
+      const surfaceVertices = cover.geometry.attributes.position,
+        decalVertices = decal.geometry.attributes.position,
+        uv = decal.geometry.attributes.uv;
+      let surfaceError = 0,
+        uvMin = Infinity,
+        uvMax = -Infinity;
+      for (let i = 0; i < surfaceVertices.count; i++) {
+        surfaceError = Math.max(
+          surfaceError,
+          Math.abs(surfaceVertices.getX(i) - decalVertices.getX(i)),
+          Math.abs(surfaceVertices.getY(i) - decalVertices.getY(i)),
+          Math.abs(surfaceVertices.getZ(i) - decalVertices.getZ(i)),
+        );
+        uvMin = Math.min(uvMin, uv.getX(i), uv.getY(i));
+        uvMax = Math.max(uvMax, uv.getX(i), uv.getY(i));
+      }
+      const result = {
+        model: model.id,
+        family: model.family,
+        parent: cover.parent.name,
+        source: car.root.userData.assetSource,
+        sameParent: cover.parent === decal.parent,
+        surfaceError,
+        sameVertices: surfaceVertices.count === decalVertices.count,
+        transformError: Math.max(
+          ...cover.matrix.elements.map((v: number, i: number) =>
+            Math.abs(v - decal.matrix.elements[i]),
+          ),
+        ),
+        polygonOffset:
+          decal.material.polygonOffset &&
+          decal.material.polygonOffsetFactor < 0,
+        depthWrite: decal.material.depthWrite,
+        carbon: cover.material.color.getHex(),
+        uvMin,
+        uvMax,
+      };
+      const surfaceReleased = disposeChecked(car);
       const ventCar = mod.createCar({
         appearance: {
           ...p.appearance,
@@ -480,38 +551,63 @@ test('fase 8: tetto e vinile della monoposto aderenti alla copertura posteriore 
       ventCar.root.updateMatrixWorld(true);
       const vent = ventCar.root.getObjectByName('roof-intake'),
         surface = ventCar.root.getObjectByName('roof-surface');
-      vent.geometry.computeBoundingBox();
-      surface.geometry.computeBoundingBox();
-      const ventBox = vent.geometry.boundingBox
-          .clone()
-          .applyMatrix4(vent.matrixWorld),
-        surfaceBox = surface.geometry.boundingBox
-          .clone()
-          .applyMatrix4(surface.matrixWorld);
+      if (!vent || !surface) throw Error(`Presa mancante nel GLB ${model.id}`);
+      const vertices = vent.geometry.attributes.position,
+        normals = vent.geometry.attributes.normal,
+        ray = new THREE.Raycaster(),
+        point = new THREE.Vector3(),
+        down = new THREE.Vector3(0, -1, 0);
+      let gap = 0,
+        contacts = 0;
+      for (let i = 0; i < vertices.count; i++) {
+        if (normals.getY(i) > -0.5) continue;
+        point.fromBufferAttribute(vertices, i).applyMatrix4(vent.matrixWorld);
+        const y = point.y;
+        point.y += 1;
+        ray.set(point, down);
+        const hit = ray.intersectObject(surface, false)[0];
+        if (!hit) throw Error(`Base fuori dalla superficie ${model.id}`);
+        gap = Math.max(gap, Math.abs(y - hit.point.y));
+        contacts++;
+      }
       const intake = {
         attached: vent.parent === surface,
-        gap: ventBox.min.y - surfaceBox.max.y,
+        gap,
+        contacts,
+        material: vent.material.name,
+        surfaceMaterial: surface.material.name,
+        source: ventCar.root.userData.assetSource,
       };
-      ventCar.dispose();
-      return { ...result, intake };
+      const intakeReleased = disposeChecked(ventCar);
+      return { ...result, intake, surfaceReleased, intakeReleased };
     });
   });
   expect(allBounds).toHaveLength(51);
   for (const bounds of allBounds) {
+    expect(bounds.source, bounds.model).toContain(
+      `/models/${bounds.model}.glb`,
+    );
+    if (bounds.family === 'single')
+      expect(bounds.parent, bounds.model).toBe('portellone-pivot');
+    expect(bounds.intake.source, bounds.model).toBe(bounds.source);
     expect(bounds.intake.attached, bounds.model).toBe(true);
-    expect(Math.abs(bounds.intake.gap), bounds.model).toBeLessThan(0.001);
-    if (bounds.model === 'drevalyn-rhelix')
-      expect(bounds.cover.max.y).toBeLessThan(0.3);
-    expect(bounds.decal.min.y - bounds.cover.max.y).toBeGreaterThan(0);
-    expect(bounds.decal.min.y - bounds.cover.max.y).toBeLessThan(0.03);
-    for (const axis of ['x', 'z'] as const) {
-      expect(bounds.decal.min[axis]).toBeGreaterThanOrEqual(
-        bounds.cover.min[axis] - 0.01,
-      );
-      expect(bounds.decal.max[axis]).toBeLessThanOrEqual(
-        bounds.cover.max[axis] + 0.01,
-      );
-    }
+    expect(bounds.surfaceReleased, bounds.model).toBe(true);
+    expect(bounds.intakeReleased, bounds.model).toBe(true);
+    expect(bounds.intake.contacts, bounds.model).toBeGreaterThanOrEqual(4);
+    expect(bounds.intake.gap, bounds.model).toBeLessThan(0.001);
+    expect(bounds.intake.material, bounds.model).not.toBe('vehicle-glass');
+    expect(bounds.intake.surfaceMaterial, bounds.model).not.toBe(
+      'vehicle-glass',
+    );
+    expect(bounds.sameParent, bounds.model).toBe(true);
+    expect(bounds.sameVertices, bounds.model).toBe(true);
+    expect(bounds.surfaceError, bounds.model).toBeLessThan(1e-7);
+    expect(bounds.transformError, bounds.model).toBeLessThan(1e-7);
+    expect(bounds.polygonOffset, bounds.model).toBe(true);
+    expect(bounds.depthWrite, bounds.model).toBe(false);
+    expect(bounds.carbon, bounds.model).toBe(0x27312f);
+    expect(bounds.uvMin, bounds.model).toBeCloseTo(0, 6);
+    expect(bounds.uvMax, bounds.model).toBeCloseTo(1, 6);
   }
   await page.keyboard.press('Escape');
   await expect

@@ -114,6 +114,7 @@ test('revisione visiva: guida nel sottopasso e fuori, modello GLB reale', async 
   page.on('console', (m) => {
     if (m.type() === 'error') errors.push(m.text());
   });
+  // Chrome requests a tab icon independently of the game's asset loading.
   await page.goto('/?qa=race&quality=low', { waitUntil: 'domcontentloaded' });
   await page.getByLabel('Densità traffico').selectOption('0');
   await page.locator('#start').click({ timeout: 180000 });

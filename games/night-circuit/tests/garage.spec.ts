@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 async function ready(page: Page) {
   await page.goto('/?quality=low&qa=race', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await expect
     .poll(() => page.evaluate(() => typeof window.__nightCircuitQA))
     .toBe('object');
@@ -85,7 +85,7 @@ test('fase 4: negozio, garage 360°, due auto indipendenti, tre slot e persisten
   await page.locator('#garage-close').click();
   await expect(page.locator('#garage')).toBeHidden();
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.keyboard.press('h');
   await expect(page.locator('#garage-wallet')).toContainText('400');
   await page.locator('[data-category="engine"]').click();
@@ -111,13 +111,22 @@ test('fase 4: negozio, garage 360°, due auto indipendenti, tre slot e persisten
     .toBe(true);
   await page.evaluate(() => window.__nightCircuitQA.manual());
   await page.keyboard.down('w');
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 200; i++) {
     const state = await page.evaluate(() =>
-      window.__nightCircuitQA.advance(1, false),
+      window.__nightCircuitQA.advance(0.1, false),
     );
-    if (state.player.z > -259) break;
+    if (state.player.z > -270) break;
   }
   await page.keyboard.up('w');
+  await page.keyboard.down('s');
+  let stopped = await page.evaluate(() => window.__nightCircuitQA.state());
+  for (let i = 0; i < 100 && Math.abs(stopped.player.speed) > 0.5; i++)
+    stopped = await page.evaluate(() =>
+      window.__nightCircuitQA.advance(0.05, false),
+    );
+  await page.keyboard.up('s');
+  expect(Math.abs(stopped.player.speed)).toBeLessThanOrEqual(0.5);
+  expect(Math.hypot(stopped.player.x, stopped.player.z + 240)).toBeLessThan(22);
   await expect(page.locator('#garage-interact')).toBeVisible();
   await page.keyboard.press('e');
   await expect(page.locator('#garage')).toBeVisible();

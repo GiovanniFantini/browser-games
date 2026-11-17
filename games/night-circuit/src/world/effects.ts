@@ -8,6 +8,9 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { preferences as p, graphicsQuality } from '../core/preferences';
 export class Effects {
+  // Runs inside the shadow autoUpdate guard: a reflection can reuse its shadow
+  // pass for the main scene, and render() restores the flag even after errors.
+  beforeSceneRender?: () => void;
   private composer?: EffectComposer;
   private sizeKey = '';
   private bloom?: UnrealBloomPass;
@@ -51,6 +54,30 @@ export class Effects {
   refreshMaterials() {
     installBakedLighting(this.scene);
     installHeightFog(this.scene);
+  }
+  async prepare() {
+    if (graphicsQuality() !== 'low' && !this.composer) this.setup();
+    const renderer = this.renderer;
+    const target = renderer.getRenderTarget(),
+      face = renderer.getActiveCubeFace(),
+      mip = renderer.getActiveMipmapLevel();
+    // Compile the same linear HDR variant used by RenderPass, rather than the
+    // direct-to-canvas tone-mapped variant used only by low quality.
+    renderer.setRenderTarget(this.composer?.readBuffer ?? null);
+    try {
+      this.scene.traverseVisible((object) => {
+        if (!(object instanceof THREE.Mesh)) return;
+        for (const material of Array.isArray(object.material)
+          ? object.material
+          : [object.material])
+          for (const value of Object.values(material))
+            if (value instanceof THREE.Texture && !value.isRenderTargetTexture)
+              renderer.initTexture(value);
+      });
+      await renderer.compileAsync(this.scene, this.camera);
+    } finally {
+      renderer.setRenderTarget(target, face, mip);
+    }
   }
   private setup() {
     this.composer = new EffectComposer(this.renderer);
@@ -143,17 +170,23 @@ export class Effects {
     }
     if (this.scene.fog instanceof THREE.FogExp2)
       this.scene.fog.density = 0.0038 + (p.rain ? 0.0008 : 0);
-    if (graphicsQuality() === 'low')
-      this.renderer.render(this.scene, this.camera);
-    else {
-      if (!this.composer) this.setup();
-      this.bloom!.enabled = p.bloom;
-      const motion = boost
-        ? 1
-        : Math.min(0.3, Math.max(0, (Math.abs(speed) - 30) / 80));
-      this.radial!.enabled = motion > 0;
-      this.radial!.uniforms.boost.value = motion;
-      this.composer!.render();
+    const shadowAutoUpdate = this.renderer.shadowMap.autoUpdate;
+    try {
+      this.beforeSceneRender?.();
+      if (graphicsQuality() === 'low')
+        this.renderer.render(this.scene, this.camera);
+      else {
+        if (!this.composer) this.setup();
+        this.bloom!.enabled = p.bloom;
+        const motion = boost
+          ? 1
+          : Math.min(0.3, Math.max(0, (Math.abs(speed) - 30) / 80));
+        this.radial!.enabled = motion > 0;
+        this.radial!.uniforms.boost.value = motion;
+        this.composer!.render();
+      }
+    } finally {
+      this.renderer.shadowMap.autoUpdate = shadowAutoUpdate;
     }
   }
 }

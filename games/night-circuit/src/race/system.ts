@@ -766,7 +766,7 @@ export class RaceSystem {
       }
       if (this.cupActive && this.cup) {
         advanceCup(this.cup, s.ranking);
-        this.ui.cupProgress(this.cup, true);
+        this.ui.cupProgress(this.cup, true, true);
       }
     }
     if (
@@ -791,13 +791,15 @@ export class RaceSystem {
       (!p.ghost || this.newGhost.duration < p.ghost.duration)
     ) {
       p.ghost = this.newGhost;
-      this.bestGhost = this.newGhost;
     }
     if (this.cupActive)
       p.cup =
         this.cup && this.cup.round < settings.cup.rounds.length
           ? structuredClone(this.cup)
           : null;
+  }
+  confirmProgress(p: Profile) {
+    this.bestGhost = p.ghost;
   }
   get settlementId() {
     return this.cupActive && this.cup

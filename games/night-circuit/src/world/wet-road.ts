@@ -38,6 +38,13 @@ export class WetRoad {
   private mirror?: Reflector;
   private readonly noise = puddleMask();
   private readonly anchor = new THREE.Vector3();
+  private readonly frustum = new THREE.Frustum();
+  private readonly projection = new THREE.Matrix4();
+  private refreshCamera = false;
+  private renderMirror?: (
+    renderer: THREE.WebGLRenderer,
+    camera: THREE.Camera,
+  ) => void;
   constructor(
     private readonly scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
@@ -46,15 +53,22 @@ export class WetRoad {
     camera.layers.enable(2);
   }
   update(position: THREE.Vector3) {
-    const low =
-      graphicsQuality() === 'low' ||
-      districtIndex(position.x, position.z) === 2;
-    if (low) {
+    if (graphicsQuality() === 'low') {
       if (this.mirror) {
         this.scene.remove(this.mirror);
         this.mirror.geometry.dispose();
         this.mirror.dispose();
         this.mirror = undefined;
+        this.renderMirror = undefined;
+      }
+      return;
+    }
+    // Retain the same probe when crossing the hilly district. Low quality still
+    // releases its render target, as it does for the other postprocessing effects.
+    if (districtIndex(position.x, position.z) === 2) {
+      if (this.mirror) {
+        this.mirror.visible = false;
+        this.refreshCamera = true;
       }
       return;
     }
@@ -100,21 +114,32 @@ export class WetRoad {
       gl_FragColor=vec4(base.rgb*.8,road*fade*(.10+.42*puddle));`,
           );
       material.needsUpdate = true;
-      const renderReflection = mirror.onBeforeRender.bind(mirror);
-      mirror.onBeforeRender = (
-        renderer,
-        scene,
-        camera,
-        geometry,
-        mat,
-        group,
-      ) => {
-        mirror.getReflectionCamera(camera).layers.set(0);
-        renderReflection(renderer, scene, camera, geometry, mat, group);
+      // The pinned Reflector implementation consumes only these three arguments.
+      const renderReflection = mirror.onBeforeRender.bind(mirror) as (
+        renderer: THREE.WebGLRenderer,
+        scene: THREE.Scene,
+        camera: THREE.Camera,
+      ) => void;
+      this.renderMirror = (renderer, camera) => {
+        const reflection = mirror.getReflectionCamera(camera);
+        if (this.refreshCamera) {
+          // Recreating Reflector used to capture the current FOV/aspect here.
+          // Retain that view state while reusing its geometry and render target.
+          reflection.projectionMatrixInverse.copy(
+            camera.projectionMatrixInverse,
+          );
+          this.refreshCamera = false;
+        }
+        reflection.layers.set(0);
+        renderReflection(renderer, this.scene, camera);
       };
+      // The reflection is rendered explicitly before the main scene, keeping
+      // Three.js at the same render-state depth for both passes.
+      mirror.onBeforeRender = () => {};
       this.scene.add(mirror);
       this.mirror = mirror;
     }
+    this.mirror.visible = true;
     this.anchor.copy(position);
     this.mirror.position.set(
       position.x,
@@ -122,5 +147,38 @@ export class WetRoad {
         (districtIndex(position.x, position.z) === 0 ? 0.01 : 0.03),
       position.z,
     );
+  }
+
+  renderReflection(renderer: THREE.WebGLRenderer, camera: THREE.Camera) {
+    const mirror = this.mirror;
+    if (!mirror?.visible || !this.renderMirror) return;
+    camera.updateMatrixWorld();
+    this.projection.multiplyMatrices(
+      camera.projectionMatrix,
+      camera.matrixWorldInverse,
+    );
+    this.frustum.setFromProjectionMatrix(this.projection);
+    if (
+      !camera.layers.test(mirror.layers) ||
+      !this.frustum.intersectsObject(mirror)
+    )
+      return;
+
+    const shadows = renderer.shadowMap;
+    const renderShadows = shadows.render;
+    // Reflector normally runs after the main camera's shadow pass. Preserve
+    // that exact shadow coverage and freshness when moving it before the scene.
+    if (shadows.autoUpdate) shadows.needsUpdate = true;
+    shadows.render = (lights, scene) => {
+      renderShadows.call(shadows, lights, scene, camera);
+    };
+    try {
+      this.renderMirror(renderer, camera);
+      // Effects restores autoUpdate after the main render. Avoid drawing the
+      // same shadows twice; a skipped reflection leaves needsUpdate for it.
+      shadows.autoUpdate = false;
+    } finally {
+      shadows.render = renderShadows;
+    }
   }
 }

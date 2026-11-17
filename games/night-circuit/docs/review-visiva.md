@@ -1,5 +1,11 @@
 # Revisione visiva con Opus locale
 
+## Ottimizzazione locale del 17 novembre 2026
+
+La successiva richiesta riguarda la fluidità conservando la grafica. Il ciclo prestazionale con Claude Code locale, modello `claude-opus-5-5`, ha chiuso i blocchi delle prime due review con il verdetto conclusivo `raggiunto`. I nove confronti controllati del canvas finale hanno zero pixel differenti; il test di guida reale verifica anche ombre, riflessi, qualità e ritorno da Hillcrest dopo resize. La variante con render aggiuntivi di preriscaldamento è stata scartata. Le misure, gli esperimenti e i limiti della GPU virtuale sono descritti in [prestazioni del rendering](prestazioni-rendering.md). Questa verifica riguarda modifiche locali e non costituisce una nuova pubblicazione o una certificazione di 60 FPS su hardware fisico.
+
+La successiva [review completa delle ottimizzazioni](review-ottimizzazione.md) si è chiusa al settimo giro con Codex e Opus concordi su `READY TO GO IN PROD` e `raggiunto`. Dieci confronti standard e tre auto di serie sono identici al pixel; sei personalizzazioni del tetto ripristinate sono state approvate a vista da Opus. Il rapporto distingue i cinque bug funzionali corretti, i difetti dei test, i rinvii concordati e le ripetizioni necessarie dopo un'anomalia temporale di VMware. Nessuna nuova pubblicazione.
+
 ## Nuovo ciclo dopo il rifiuto della versione pubblicata
 
 Giovanni ha respinto lo screenshot della precedente pubblicazione. I verdetti storici sotto non chiudono il nuovo requisito. Il ciclo in `artifacts/visual-review-v2` confronta immagini reali con entrambi i riferimenti forniti in chat: auto in derapata e strada urbana. I riferimenti restano esclusi da codice, repository e distribuzione.

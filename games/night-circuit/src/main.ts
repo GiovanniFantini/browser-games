@@ -689,6 +689,7 @@ async function boot() {
           void beginRace('duel-docks', races.ui.options, true);
       };
       races.ui.onNextCup = () => {
+        if (races!.session?.phase !== 'finished') return;
         void beginRace('cup-docks', races!.options);
       };
       races.ui.onResetCup = () => {
@@ -720,6 +721,7 @@ async function boot() {
             );
             races!.writeProgress(p);
           });
+          races!.confirmProgress(store.profile);
           races!.ui.setReward(
             `Premio: ${reward.toLocaleString(preferences.language === 'en' ? 'en-GB' : 'it-IT')} CR. Saldo: ${store.profile.credits.toLocaleString(preferences.language === 'en' ? 'en-GB' : 'it-IT')} CR. +${store.profile.career.fame - previousFame} REP. ${store.status}`,
           );
@@ -893,6 +895,8 @@ async function boot() {
     const tireSmoke = new TireSmoke(scene, renderer);
     const carReflections = new CarReflections(renderer, scene);
     const wetRoad = new WetRoad(scene, camera);
+    effects.beforeSceneRender = () =>
+      wetRoad.renderReflection(renderer, camera);
     visualEffects = effects;
     window.addEventListener('resize', () => effects.resize());
     const previousSettingsChange = settings.onChange;
@@ -1058,41 +1062,52 @@ async function boot() {
         vehicle.position.z + 30,
       );
       moon.target.position.copy(vehicle.position);
-      if (!garage?.open) carReflections.update(vehicle.model.root, time);
-      audio.update(
-        vehicle.power.rpm,
-        input.state.throttle,
-        vehicle.grounded ? Math.abs(vehicle.slip) : 0,
-        vehicle.power.boosting,
-        vehicle.speed,
-        vehicle.collided,
-        preferences.rain,
-        vehicle.impactSpeed,
-      );
-      vehicle.impactSpeed = 0;
-      debugGeometry?.update(
-        vehicle,
-        hud.showDebug,
-        races?.session?.route.points,
-      );
-      if (!garage?.open)
-        effects.render(
-          vehicle.position.x,
-          vehicle.position.y,
-          vehicle.position.z,
-          time,
+      const matrixWorldAutoUpdate = scene.matrixWorldAutoUpdate;
+      // Low quality has a single scene pass. Keep its original update order,
+      // including disposal of the local environment before world transforms.
+      if (graphicsQuality() !== 'low') {
+        scene.updateMatrixWorld();
+        scene.matrixWorldAutoUpdate = false;
+      }
+      try {
+        if (!garage?.open) carReflections.update(vehicle.model.root, time);
+        audio.update(
+          vehicle.power.rpm,
+          input.state.throttle,
+          vehicle.grounded ? Math.abs(vehicle.slip) : 0,
           vehicle.power.boosting,
           vehicle.speed,
+          vehicle.collided,
+          preferences.rain,
+          vehicle.impactSpeed,
         );
-      hud.update(
-        vehicle,
-        dt,
-        input.device,
-        chase.names[chase.mode],
-        fps,
-        renderer.info.render.calls,
-        renderer.info.render.triangles,
-      );
+        vehicle.impactSpeed = 0;
+        debugGeometry?.update(
+          vehicle,
+          hud.showDebug,
+          races?.session?.route.points,
+        );
+        if (!garage?.open)
+          effects.render(
+            vehicle.position.x,
+            vehicle.position.y,
+            vehicle.position.z,
+            time,
+            vehicle.power.boosting,
+            vehicle.speed,
+          );
+        hud.update(
+          vehicle,
+          dt,
+          input.device,
+          chase.names[chase.mode],
+          fps,
+          renderer.info.render.calls,
+          renderer.info.render.triangles,
+        );
+      } finally {
+        scene.matrixWorldAutoUpdate = matrixWorldAutoUpdate;
+      }
     });
     if (
       import.meta.env.DEV &&
@@ -1112,7 +1127,7 @@ async function boot() {
       );
     setLanguage(preferences.language);
     city?.enabled(Math.hypot(vehicle.position.x, vehicle.position.z) < 1120);
-    await renderer.compileAsync(scene, camera);
+    await effects.prepare();
     ready = true;
     hud.ready();
     // Render the actual scene behind the start panel while physics remains paused.

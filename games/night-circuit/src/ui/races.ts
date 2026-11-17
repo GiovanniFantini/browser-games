@@ -137,7 +137,7 @@ export class RaceUI {
   challengeNearby(near: boolean) {
     this.root.querySelector<HTMLElement>('#street-challenge')!.hidden = !near;
   }
-  cupProgress(cup: CupState | null, active: boolean) {
+  cupProgress(cup: CupState | null, active: boolean, settled = false) {
     this.cup = cup;
     this.cupActive = active;
     this.root.querySelector('#cup-progress')!.textContent =
@@ -147,6 +147,7 @@ export class RaceUI {
     this.root.querySelector<HTMLElement>('#cup-reset')!.hidden =
       !cup || cup.round >= modes.cup.rounds.length;
     this.root.querySelector<HTMLElement>('#cup-next')!.hidden =
+      !settled ||
       !active ||
       !cup ||
       cup.round === 0 ||

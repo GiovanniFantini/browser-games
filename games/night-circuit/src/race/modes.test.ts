@@ -3,7 +3,8 @@ import * as THREE from 'three';
 import { DriftScore } from './drift';
 import { newCup, advanceCup, parseCup } from './tournament';
 import { GhostRecorder, parseGhost } from './ghost';
-import { freshProfile, parseProfile } from '../progression/profile';
+import { freshProfile, parseProfile, settleRace } from '../progression/profile';
+import { ProfileStore } from '../progression/storage';
 import {
   updatePowertrain,
   shiftGear,
@@ -151,6 +152,46 @@ describe('regole delle modalità aggiuntive', () => {
     ).toThrow();
     recorder.valid = false;
     expect(recorder.finish('ghost-foundry', 2)).toBeNull();
+  });
+  it('conserva il premio e la posa finale quando due tempi del fantasma arrotondano allo stesso istante', () => {
+    const recorder = new GhostRecorder(),
+      position = new THREE.Vector3(),
+      rotation = new THREE.Quaternion(),
+      duration = 0.20002;
+    recorder.capture(0, position, rotation);
+    position.z = 10;
+    recorder.capture(0.2, position, rotation);
+    position.z = 20;
+    recorder.capture(duration, position, rotation, true);
+    const ghost = recorder.finish('ghost-foundry', duration)!;
+    expect(parseGhost(ghost)).toEqual(ghost);
+    expect(ghost.frames).toHaveLength(2);
+    expect(ghost.frames.at(-1)![3]).toBe(20);
+    const store = new ProfileStore(null),
+      credits = store.profile.credits;
+    store.commit((p) => {
+      settleRace(
+        p,
+        {
+          id: 'rounded-ghost',
+          event: 'ghost-foundry',
+          position: 1,
+          time: duration,
+        },
+        1,
+      );
+      p.ghost = ghost;
+    });
+    expect(store.profile.credits).toBeGreaterThan(credits);
+    expect(store.profile.ghost).toEqual(ghost);
+    expect(store.profile.results[0].id).toBe('rounded-ghost');
+  });
+  it('scarta una registrazione inutilizzabile senza compromettere il risultato gara', () => {
+    const recorder = new GhostRecorder(),
+      rotation = new THREE.Quaternion();
+    recorder.capture(0, new THREE.Vector3(), rotation);
+    recorder.capture(1, new THREE.Vector3(NaN, 0, 0), rotation, true);
+    expect(recorder.finish('ghost-foundry', 1)).toBeNull();
   });
   it('somma il torneo, risolve i pari punti col tempo e conserva la tappa nel profilo', () => {
     const cup = newCup(1, 0.5),

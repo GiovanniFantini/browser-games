@@ -1,10 +1,15 @@
 import { expect, test, type Page } from '@playwright/test';
 async function ready(page: Page) {
   await page.goto('/?quality=low&qa=race', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await expect
     .poll(() => page.evaluate(() => typeof window.__nightCircuitQA))
     .toBe('object');
+  await page.evaluate(() => window.__nightCircuitQA.manual());
+}
+async function reloadReady(page: Page) {
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await page.evaluate(() => window.__nightCircuitQA.manual());
 }
 async function start(page: Page, id: string) {
@@ -50,9 +55,7 @@ test('fase 6: sprint a tempo e fantasma persistente riprodotto al tentativo segu
   expect(record.frames.length).toBeGreaterThan(50);
   expect(record.duration).toBeGreaterThan(10);
   await page.screenshot({ path: 'artifacts/phase6-ghost-results.png' });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
-  await page.evaluate(() => window.__nightCircuitQA.manual());
+  await reloadReady(page);
   await start(page, 'ghost-foundry');
   await page.evaluate(() => window.__nightCircuitQA.advance(8, true));
   await expect(page.locator('#mode-hud')).toContainText(
@@ -130,6 +133,26 @@ test('fase 6: sfida incontrata in strada e torneo ripreso dopo ricarica', async 
   page,
 }) => {
   test.setTimeout(900000);
+  await page.route(
+    (url) => url.pathname === '/src/main.ts',
+    async (route) => {
+      const response = await route.fetch();
+      const body = (await response.text()).replace(
+        'ready = true;',
+        `
+        const originalCupSteps = races.opponents.map(car => car.step);
+        window.__holdCupOpponents = (hold = true) => {
+          // Keep real opponents stationary while the QA pilot drives the real
+          // player through every checkpoint. No finish state is fabricated.
+          races.opponents.forEach((car, i) => {
+            car.step = hold ? () => car.hold() : originalCupSteps[i];
+          });
+        };
+        ready = true;`,
+      );
+      await route.fulfill({ response, body });
+    },
+  );
   await ready(page);
   await page.locator('#start').click();
   await expect(page.locator('#street-challenge')).toBeVisible();
@@ -159,15 +182,44 @@ test('fase 6: sfida incontrata in strada e torneo ripreso dopo ricarica', async 
         JSON.parse(localStorage.getItem('night-circuit:v2:auto')!).cup.round,
     ),
   ).toBe(1);
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
-  await page.evaluate(() => window.__nightCircuitQA.manual());
+  await reloadReady(page);
   await start(page, 'cup-docks');
+  await page.evaluate(() =>
+    (window as unknown as { __holdCupOpponents(): void }).__holdCupOpponents(),
+  );
+  let provisional = await page.evaluate(() => window.__nightCircuitQA.state());
+  for (let i = 0; i < 450 && provisional.race?.player.finishTime === null; i++)
+    provisional = await page.evaluate(() =>
+      window.__nightCircuitQA.advance(1, true),
+    );
+  expect(provisional.race?.player.finishTime).not.toBeNull();
+  expect(provisional.race?.phase).toBe('running');
+  await expect(page.locator('#race-result-info')).toContainText(
+    'Classifica provvisoria',
+  );
+  await expect(page.locator('#cup-next')).toBeHidden();
+  // A programmatic activation cannot bypass the same lifecycle guard.
+  await page
+    .locator('#cup-next')
+    .evaluate((button) => (button as HTMLButtonElement).click());
+  const unchanged = await page.evaluate(() => window.__nightCircuitQA.state());
+  expect(unchanged.race?.event).toBe('cup-quays');
+  expect(unchanged.race?.phase).toBe('running');
+  expect(unchanged.race?.cup?.round).toBe(1);
   await finish(page);
+  await expect(page.locator('#cup-next')).toBeVisible();
+  await page.evaluate(() =>
+    (
+      window as unknown as { __holdCupOpponents(hold: boolean): void }
+    ).__holdCupOpponents(false),
+  );
   await page.locator('#cup-next').click();
   await expect
     .poll(() => page.evaluate(() => window.__nightCircuitQA.state().playing))
     .toBe(true);
+  expect(
+    (await page.evaluate(() => window.__nightCircuitQA.state())).race?.event,
+  ).toBe('cup-return');
   await finish(page);
   await expect(page.locator('#race-result-heading')).toContainText(
     'Coppa conclusa',

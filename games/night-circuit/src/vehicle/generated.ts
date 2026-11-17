@@ -18,6 +18,7 @@ import {
   type Appearance,
 } from '../tuning/appearance';
 import { vinylTexture } from '../tuning/vinyl';
+import { createRoofIntake } from './roof-intake';
 import { installBakedLighting } from '../gen/lighting/lightmaps';
 import { installHeightFog } from '../world/height-fog';
 import type { StudioPose } from './model';
@@ -663,8 +664,14 @@ export function createDetailedCar(
       new THREE.Vector3(spec.width * 0.45, 0.04, spec.length * 0.13),
     ),
   ];
-  const roof = byName('tetto');
-  if (roof) roof.name = 'roof-surface';
+  const roof = byName(spec.family === 'single' ? 'portellone' : 'tetto');
+  if (
+    roof &&
+    (spec.family !== 'single' ||
+      a.parts.roof > 0 ||
+      a.vinyls.some((v) => v.side === 'roof'))
+  )
+    roof.name = 'roof-surface';
   const windshield = byName('cristallo_ant');
   if (windshield) windshield.name = 'front-glazing';
   const rearGlass = byName('cristallo_post');
@@ -728,8 +735,6 @@ export function createDetailedCar(
     attach(byName('specchio_' + side), doors[i]);
     attach(byName('maniglia_' + side), doors[i]);
   }
-  if (roof instanceof THREE.Mesh && a.parts.roof === 1)
-    roof.material = glassMaterial;
   const engineParts: THREE.Object3D[] = [];
   root.traverse((o) => {
     if (o.name === 'motore' || o.name.startsWith('collettore_'))
@@ -866,6 +871,11 @@ export function createDetailedCar(
     roughness: 0.7,
   });
   ownedMaterial.add(trimMaterial);
+  if (!simple && roof instanceof THREE.Mesh && a.parts.roof === 1) {
+    const intake = createRoofIntake(roof, trimMaterial);
+    roof.add(intake);
+    ownedGeometry.add(intake.geometry);
+  }
   const addPart = (
     geometry: THREE.BufferGeometry,
     material: THREE.Material,
@@ -1184,15 +1194,23 @@ export function createDetailedCar(
       const geometry = base.geometry.clone(),
         position = geometry.attributes.position,
         uv = new Float32Array(position.count * 2);
+      geometry.computeBoundingBox();
+      const bounds = geometry.boundingBox!;
       for (let i = 0; i < position.count; i++) {
         uv[i * 2] =
           side === 'left' || side === 'right'
             ? position.getZ(i) / spec.length + 0.5
-            : position.getX(i) / spec.width + 0.5;
+            : side === 'roof'
+              ? (position.getX(i) - bounds.min.x) /
+                Math.max(0.001, bounds.max.x - bounds.min.x)
+              : position.getX(i) / spec.width + 0.5;
         uv[i * 2 + 1] =
           side === 'left' || side === 'right'
             ? (position.getY(i) + 0.53) / 0.8
-            : position.getZ(i) / spec.length + 0.5;
+            : side === 'roof'
+              ? (position.getZ(i) - bounds.min.z) /
+                Math.max(0.001, bounds.max.z - bounds.min.z)
+              : position.getZ(i) / spec.length + 0.5;
       }
       geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
       const m = new THREE.MeshPhysicalMaterial({
@@ -1214,6 +1232,7 @@ export function createDetailedCar(
         m.customProgramCacheKey = paint.customProgramCacheKey;
       }
       const decal = new THREE.Mesh(geometry, m);
+      decal.name = 'vinyl-' + side;
       decal.position.copy(base.position);
       decal.quaternion.copy(base.quaternion);
       decal.scale.copy(base.scale);
@@ -1236,6 +1255,11 @@ export function createDetailedCar(
     'minigonna_sx',
     'minigonna_dx',
     'roof-surface',
+    'roof-intake',
+    'vinyl-left',
+    'vinyl-right',
+    'vinyl-hood',
+    'vinyl-roof',
     'front-glazing',
     'rear-glazing',
     'scarico_sx',

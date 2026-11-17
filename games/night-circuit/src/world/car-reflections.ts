@@ -34,6 +34,8 @@ export class CarReflections {
         this.camera = undefined;
         this.bound = new WeakSet();
       }
+      this.face = 0;
+      this.next = 0;
       return;
     }
     if (time < this.next) return;

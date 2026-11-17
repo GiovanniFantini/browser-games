@@ -30,6 +30,10 @@ Per avviare direttamente la qualità bassa aggiungere `?quality=low`, oppure `?w
 
 ## Revisione grafica
 
+Il 17 novembre 2026 è stata verificata localmente un'ottimizzazione del rendering che mantiene modelli, texture, ombre e riflessi. I nove confronti controllati hanno zero pixel differenti. Le misure sulla GPU virtuale mostrano un miglioramento del tempo per fotogramma; risultati, metodologia, limiti e review Opus sono in [prestazioni del rendering](docs/prestazioni-rendering.md). Questa modifica locale non aggiorna la versione online.
+
+La successiva [review delle ottimizzazioni](docs/review-ottimizzazione.md) si è chiusa al settimo giro con Codex e Opus concordi su READY TO GO IN PROD per la build locale verificata. Registra le correzioni a coppa, fantasma e personalizzazioni del tetto, i confronti prima/dopo, i controlli di regressione e i limiti condivisi. La versione online resta distinta da queste modifiche locali.
+
 Dopo il rifiuto della precedente resa pubblicata, il nuovo ciclo con Claude Code locale, modello Opus, ha ottenuto `raggiunto` alla nona review. Il confronto usa entrambi i riferimenti di Giovanni e richiede qualità almeno equivalente nei tre assi auto, edifici e illuminazione, senza tolleranza di un punto. Le catture comprendono guida reale, drift, sottopasso, vista lontana e garage. Il giudizio del revisore non sostituisce l'accettazione di Giovanni. La review 10 ha confermato il risultato anche sul pacchetto statico. La nuova versione è pubblicata su GitHub Pages e verificata nel browser dal dominio pubblico.
 
 La [review visiva](docs/review-visiva.md) descrive il ciclo e le verifiche; il [verdetto Opus](docs/verdetto-opus.md) conserva il testo del revisore. Sono stati rifatti aperture e rientranze delle finestre, vetrine e insegne, padiglioni e cinema, arredi del viale, skyline e nuvole, riflessi del bagnato, carrozzerie e gruppi ottici. I 51 GLB contengono da 7.512 a 7.554 triangoli. La compattazione genera anche le versioni dei modelli, così un file nuovo non riusa la cache HTTP di quello precedente.

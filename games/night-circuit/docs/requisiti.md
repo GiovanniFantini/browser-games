@@ -1,5 +1,9 @@
 # Requisiti e percorso di realizzazione
 
+## Ottimizzazione autorizzata il 17 novembre 2026
+
+Giovanni richiede di provare le ottimizzazioni proposte dalla review Opus e misurarne il risultato conservando la grafica. La versione locale mantiene contenuti, parametri e risoluzione degli effetti; separa il riflesso planare dalla scena principale, riusa matrici e Reflector, precompila sul target corretto e ripristina la sonda dopo i cambi di qualità. I render aggiuntivi di preriscaldamento sono stati scartati perché alteravano due confronti visivi. Tutti i nove confronti della versione finale hanno zero pixel differenti. Il [resoconto prestazionale](prestazioni-rendering.md) distingue le misure nella GPU virtuale dalla verifica ancora non disponibile sul PC reale. Non è stata introdotta una nuova architettura di streaming.
+
 ## Obiettivo completo confermato
 
 NIGHT CIRCUIT: Neon Streets è un racing arcade a mondo aperto nella città inventata Port Riders, sempre di notte. Il giocatore esplora, trova gare e negozi, guadagna crediti e reputazione, personalizza auto originali e affronta rivali. La personalizzazione costituisce il centro del progetto.
@@ -75,5 +79,11 @@ I riferimenti visivi forniti da Giovanni dopo la prima verifica texture chiarisc
 Giovanni ha chiesto di continuare fino a raggiungere almeno il dettaglio e la grafica dell’ultimo riferimento, che mostra una strada sotto una struttura ad archi con luce calda, materiali articolati e auto dettagliata. Questa richiesta sostituisce le pause di approvazione fra i passi. Procedere autonomamente con edifici, illuminazione, auto e rifinitura; verificare scene reali nel browser, mantenendo contenuti e asset originali generati nel repository. Il confronto visivo resta necessario, non basta il superamento dei test.
 
 ## Nuovo ciclo dopo il rifiuto della resa pubblicata
+
+La review locale delle ottimizzazioni del 17 novembre 2026 preserva la grafica e verifica le regressioni anche nel gameplay. La coppa rende disponibile Prossima tappa soltanto a classifica definitiva. La quantizzazione dei campioni del fantasma non deve invalidare la transazione del premio; una registrazione inutilizzabile viene scartata. Classificazioni e verifiche sono in `review-ottimizzazione.md`.
+
+Le personalizzazioni del tetto devono funzionare sui 51 GLB: Presa sul tetto crea una presa fisica aderente, Fibra cambia il materiale e i vinili coprono la superficie scelta senza ritagliare la texture sulle dimensioni dell'intera auto. Sulle quattro monoposto le tre funzioni riguardano la copertura dietro il sedile e ne seguono il perno. La configurazione di serie conserva l'aspetto precedente.
+
+Limite conservato della coppa: uscire dalla classifica provvisoria o ricaricare la pagina conserva l'ultima tappa salvata e non assegna il premio della tappa in corso. La cancellazione delle tappe salvate avviene con Abbandona torneo. Un'eventuale regola diversa richiede una decisione di prodotto e uno stato persistente della tappa iniziata.
 
 Il criterio corrente richiede qualità almeno equivalente a entrambi i riferimenti, senza la vecchia tolleranza. La review Opus 9 sulle catture round-21 ha restituito `raggiunto` nei tre assi. Il loft usa campionamento fitto e rilassamento, con scocca e normali protette: la semplificazione riguarda i dettagli. Le rifiniture ottiche sono generate in codice e condivise da studio e strada. Verifiche del pacchetto e pubblicazione sono registrate nella review visiva; il verdetto del revisore non sostituisce l’accettazione di Giovanni.

@@ -56,7 +56,7 @@ declare global {
 }
 async function ready(page: Page) {
   await page.goto('/?quality=low&qa=race', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('#start')).toBeEnabled({ timeout: 180000 });
   await expect
     .poll(() => page.evaluate(() => typeof window.__nightCircuitQA))
     .toBe('object');

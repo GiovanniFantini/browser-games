@@ -200,6 +200,7 @@ export class KitBatch {
         mesh.layers.set(1);
       mesh.receiveShadow = true;
       mesh.computeBoundingSphere();
+      mesh.matrixAutoUpdate = false;
       this.root.add(mesh);
     }
     this.entries.clear();
