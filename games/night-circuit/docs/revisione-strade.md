@@ -1,6 +1,6 @@
 # Revisione della rete stradale
 
-Richiesta del 17 novembre 2026: ridurre la regolarità della mappa, introdurre strade più naturali e dislivelli, rendere visibili le strisce. Revisione locale successiva alla pubblicazione delle ottimizzazioni. Non pubblicata.
+Richiesta del 17 novembre 2026: ridurre la regolarità della mappa, introdurre strade più naturali e dislivelli, rendere visibili le strisce. Revisione successiva alla pubblicazione delle ottimizzazioni. Pubblicata e verificata sul dominio pubblico il 18 novembre 2026.
 
 ## Modifiche
 
@@ -25,6 +25,6 @@ La review tecnica Opus del secondo giro conferma tutti i dodici bug corretti e i
 
 ## Esito
 
-Revisione locale pronta, con Codex e Opus concordi sul via libera tecnico e visivo. Sono conservati i precedenti effetti e le ottimizzazioni approvate del rendering. Nessun file di pipeline o CI/CD è stato modificato. Il 18 novembre Giovanni ha autorizzato commit e pubblicazione di questa revisione. La distribuzione viene verificata separatamente; stato e identificativi sono registrati in pubblicazione.md.
+Revisione pubblicata, con Codex e Opus concordi sul via libera tecnico e visivo. Sono conservati i precedenti effetti e le ottimizzazioni approvate del rendering. Nessun file di pipeline o CI/CD è stato modificato. Il 18 novembre Giovanni ha autorizzato commit e pubblicazione di questa revisione. La distribuzione è stata verificata prima sul pacchetto statico e poi sul dominio pubblico: guida, nuova mappa, tre qualità grafiche, garage, personalizzazione e migrazione dei record precedenti, senza errori o asset esterni. Stato e identificativi sono registrati in pubblicazione.md.
 
 I vecchi record restano disponibili nel garage sotto Record mappa precedente. I nuovi tempi e punteggi sono separati perché lunghezze e pendenze cambiano. Carriera, inventari, premi, risultati e coppa vengono conservati. Le versioni di Node precedenti al supporto nativo TypeScript richiedono un aggiornamento per rigenerare le lightmap; l'ambiente verificato è Node 24.20.0.

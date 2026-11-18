@@ -4,11 +4,11 @@ Racing arcade 3D per browser desktop. Città, auto e contenuti creativi original
 
 Gioca alla [versione online su GitHub Pages](https://giovannifantini.github.io/night-circuit/), senza account ChatGPT. Il [repository della distribuzione](https://github.com/GiovanniFantini/night-circuit) è pubblico; i sorgenti di sviluppo restano nel repository privato BrowserGames. Per trasferire i progressi fra PC o dal precedente sito usare Esporta e Importa salvataggio nel gioco.
 
-## Nuova rete stradale locale
+## Nuova rete stradale online
 
 La revisione richiesta il 17 novembre aggiunge curve, collegamenti diagonali, incroci a T e isolati di dimensioni diverse. Il terreno segue la strada con quote reali, usate anche da collisioni, gare, traffico e GPS. Tutti i quartieri hanno linee centrali, separazione delle corsie, bordi e attraversamenti pedonali. Il viale del drag, il sottopasso e gli accessi ai ponti mantengono la loro geometria dedicata.
 
-Questa revisione è locale. Il sito online contiene ancora la versione ottimizzata descritta sopra. Verifiche e confronto visivo sono in [revisione delle strade](docs/revisione-strade.md).
+Questa revisione è pubblicata su GitHub Pages dal 18 novembre 2026, insieme alle ottimizzazioni del rendering e alle fix approvate da Opus. Verifiche e confronto visivo sono in [revisione delle strade](docs/revisione-strade.md).
 
 ## Avvio
 

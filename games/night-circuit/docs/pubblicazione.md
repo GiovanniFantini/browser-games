@@ -2,6 +2,18 @@
 
 ## Pubblicazione attuale: GitHub Pages
 
+### Nuova mappa pubblicata il 18 novembre 2026
+
+Strade curve e diagonali, incroci a T, dislivelli reali e segnaletica dei quattro quartieri sono pubblicati su https://giovannifantini.github.io/night-circuit/, con le fix approvate da Opus nei due giri tecnici e visivi. Commit sorgenti: `ac1297d2d99cec61da855fa7b31e3671d1e7bf7f`. Commit distribuzione: `6bc38e316167943a1a4cfe1a3ab7823c68c15eef`. Pages ha raggiunto stato `built` alle 07:21:39 UTC (08:21:39 italiane).
+
+Pacchetto locale e sito pubblico hanno superato la stessa verifica: guida reale oltre 20 km/h, nuova mappa, qualità bassa/alta/media con preferenze persistenti, garage e acquisto/applicazione della presa sul tetto. Un profilo precedente senza recordsLayout è stato caricato dalla vera build, mostrato sotto Record mappa precedente e salvato con una normale azione nel garage: tempi e punteggi precedenti conservati separatamente e nuovi record vuoti. Carriera e inventari sono conservati dal parser verificato.
+
+Il controllo online termina a `2026-11-18T07:33:05.860Z`. Nessun errore JavaScript/WebGL/console, risposta HTTP fallita o richiesta verso origini esterne. API QA e diagnostiche di sviluppo assenti anche con `?qa=race`. `release.json` indica il commit corretto e il bundle `/night-circuit/assets/index-CD2M04mQ.js` ha SHA-256 `3759b283f6ecfaf0be64c84ea25872ff41ae0b55f44d6e3da16eb2e74cb67d3c`, identico alla candidata. Il GLB iniziale mantiene SHA-256 `9dfbe09c12b2dd7a374a3409ff203c0613e9bea8c8d6b95c46c720a0e0feac69`.
+
+La prima prova della candidata ha anticipato il comando pausa durante il rientro dalla mappa. Lo script è stato corretto mettendo la cattura della mappa alla fine della sequenza; nessuna modifica al gioco. Nel primo controllo dei record online il collaudo ha inoltre anticipato il clic sul garage prima che il gioco fosse pronto; è stata aggiunta l’attesa del pulsante di avvio abilitato. La sequenza completa è poi passata sia in locale sia online, senza modificare il prodotto. Tutti i 66 file runtime copiati corrispondono alla candidata; i vecchi bundle restano disponibili per le pagine già nella cache.
+
+Evidenze ignorate: artifacts/release/street-map-2026-11-18, con report, build Pages e screenshot candidate/online. La review funzionale precedente comprende 101 test unitari e 19 prove browser; i 191 file dell'implementazione sono invariati rispetto alla revisione approvata. Nessuna pipeline o configurazione CI/CD modificata. Sorgenti privati in BrowserGames, sola distribuzione e asset nel repository pubblico night-circuit.
+
 ### Aggiornamento del 17 novembre 2026
 
 Ottimizzazioni del rendering e cinque fix funzionali approvate nella review 7 con Opus sono pubblicate su https://giovannifantini.github.io/night-circuit/. Commit dei sorgenti: `c10cd11585aea0f4aff9b893748f5c1409876751`. Commit della distribuzione pubblica: `5eac5e4cdf807ba21fe24d0195e9444be07036a4`. Pages ha raggiunto stato `built` per questo commit alle 20:07:32 UTC.

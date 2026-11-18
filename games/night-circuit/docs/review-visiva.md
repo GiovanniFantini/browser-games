@@ -97,9 +97,9 @@ La prima prova online ha evidenziato un ritardo della telecamera durante lo spos
 La verifica finale sul dominio pubblico è conclusa l'11 novembre 2026 alle 18:33, ora italiana. Screenshot e rapporto tecnico sono nelle evidenze locali `artifacts/release/public-live-*`. Il campo speed del rapporto è un campione successivo alla prima cattura, non una telemetria sincronizzata a ciascuna immagine. Il precedente sito Sites conserva la versione precedente. Il repository pubblico contiene solo distribuzione compilata, asset originali generati e licenze delle librerie; non contiene le immagini di riferimento della chat.
 
 
-## Revisione delle strade del 17 novembre 2026, locale
+## Revisione delle strade del 17 novembre 2026, pubblicata il 18
 
-La richiesta successiva riguarda rete troppo quadrata, assenza di dislivelli percepibili e strisce poco leggibili. Questa nuova revisione non è coperta automaticamente dai precedenti verdetti e non è ancora pubblicata.
+La richiesta successiva riguarda rete troppo quadrata, assenza di dislivelli percepibili e strisce poco leggibili. Questa nuova revisione non è coperta automaticamente dai precedenti verdetti. Ha ottenuto una nuova approvazione ed è stata pubblicata e verificata su GitHub Pages il 18 novembre.
 
 Sono stati eseguiti due giri tecnici e due giri visivi con Claude Code locale, modello Opus. Il primo giro ha individuato problemi di quota nei ripristini, buffer GPS, marciapiedi e segnaletica alle diagonali, lampioni nei volumi coperti, collisione delle scorciatoie, fronte dei moli e confronto con record della mappa precedente. Le correzioni sono state riverificate al secondo giro, con via libera tecnico e consenso sulla classificazione dei suggerimenti non bloccanti.
 

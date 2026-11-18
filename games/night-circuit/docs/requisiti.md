@@ -2,7 +2,7 @@
 
 ## Revisione stradale richiesta il 17 novembre 2026
 
-Giovanni richiede una mappa meno regolare: curve e isolati irregolari, dislivelli come su una strada reale e segnaletica orizzontale leggibile. La revisione locale usa percorsi campionati comuni a rendering, collisioni, traffico, gare e GPS; curve e quote non devono restare un effetto della sola minimappa. Conservare la qualità grafica e verificare il gioco nel browser. Il rettilineo del drag e gli accessi dedicati restano coerenti con le rispettive modalità. Il 18 novembre Giovanni ha autorizzato commit e pubblicazione online della nuova mappa e delle fix approvate da Opus. Esiti in revisione-strade.md.
+Giovanni richiede una mappa meno regolare: curve e isolati irregolari, dislivelli come su una strada reale e segnaletica orizzontale leggibile. La revisione pubblicata usa percorsi campionati comuni a rendering, collisioni, traffico, gare e GPS; curve e quote non devono restare un effetto della sola minimappa. Conservare la qualità grafica e verificare il gioco nel browser. Il rettilineo del drag e gli accessi dedicati restano coerenti con le rispettive modalità. Il 18 novembre Giovanni ha autorizzato commit e pubblicazione online della nuova mappa e delle fix approvate da Opus. Esiti in revisione-strade.md.
 
 ## Ottimizzazione autorizzata il 17 novembre 2026
 
