@@ -2,11 +2,11 @@
   "game": "NIGHT CIRCUIT",
   "generated_assets": true,
   "base": "/night-circuit/",
-  "source_commit": "c10cd11585aea0f4aff9b893748f5c1409876751",
+  "source_commit": "ac1297d2d99cec61da855fa7b31e3671d1e7bf7f",
   "visual_review": "raggiunto",
-  "code_review": "READY TO GO IN PROD",
+  "code_review": "pronto dal punto di vista tecnico",
   "reviewer": "Claude Code locale / claude-opus-5-5",
-  "review_cycle": "rendering optimization / review-07",
+  "review_cycle": "street map / technical-02 / visual-02",
   "hero_sha256": "9dfbe09c12b2dd7a374a3409ff203c0613e9bea8c8d6b95c46c720a0e0feac69",
-  "generated_at": "2026-11-17T20:00:09.3429916Z"
+  "generated_at": "2026-11-18T07:10:19.124053+00:00"
 }
