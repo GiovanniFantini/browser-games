@@ -1,3 +1,4 @@
+import { streetSpawn } from '../src/world/street-layout';
 import { test, expect, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 const perf = JSON.parse(await readFile('src/data/performance.json', 'utf8'));
@@ -116,7 +117,7 @@ test('fase 8: ponte continuo Old Docks Airport, gate carriera e reset nel quarti
   await expect(page.locator('#gps-info')).toContainText('Garage del bacino');
   await page.keyboard.press('r');
   s = await page.evaluate(() => window.__nightCircuitQA.state());
-  expect(s.player.z).toBeCloseTo(770, 0);
+  expect(s.player.z).toBeCloseTo(streetSpawn(-4.5, 770)[2], 0);
   await page.screenshot({ path: 'artifacts/phase8-airport.png' });
   expect(errors).toEqual([]);
   await page.evaluate(() => localStorage.clear());

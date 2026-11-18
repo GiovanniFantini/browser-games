@@ -95,3 +95,16 @@ La prova del pacchetto statico locale e quella sul dominio pubblico sono entramb
 La prima prova online ha evidenziato un ritardo della telecamera durante lo spostamento continuo, non visibile nelle catture con avanzamento manuale. La telecamera ora compensa la traslazione del corpo mantenendo la distanza, con interpolazione dell'orientamento. Un test dedicato protegge questa proprietà. Opus ha rivalutato città, derapata e garage della build di produzione con guida in tempo reale, confermando `raggiunto`.
 
 La verifica finale sul dominio pubblico è conclusa l'11 novembre 2026 alle 18:33, ora italiana. Screenshot e rapporto tecnico sono nelle evidenze locali `artifacts/release/public-live-*`. Il campo speed del rapporto è un campione successivo alla prima cattura, non una telemetria sincronizzata a ciascuna immagine. Il precedente sito Sites conserva la versione precedente. Il repository pubblico contiene solo distribuzione compilata, asset originali generati e licenze delle librerie; non contiene le immagini di riferimento della chat.
+
+
+## Revisione delle strade del 17 novembre 2026, locale
+
+La richiesta successiva riguarda rete troppo quadrata, assenza di dislivelli percepibili e strisce poco leggibili. Questa nuova revisione non è coperta automaticamente dai precedenti verdetti e non è ancora pubblicata.
+
+Sono stati eseguiti due giri tecnici e due giri visivi con Claude Code locale, modello Opus. Il primo giro ha individuato problemi di quota nei ripristini, buffer GPS, marciapiedi e segnaletica alle diagonali, lampioni nei volumi coperti, collisione delle scorciatoie, fronte dei moli e confronto con record della mappa precedente. Le correzioni sono state riverificate al secondo giro, con via libera tecnico e consenso sulla classificazione dei suggerimenti non bloccanti.
+
+Il secondo giro visivo restituisce `raggiunto`. Approva etichette della mappa, bordi e rete meno uniformi, strisce senza interferenze, discesa visibile oltre la cresta e qualità grafica conservata nei quattro quartieri rispetto al riferimento e alla versione pubblicata. Hillcrest senza specchio planare, tetti emissivi e risoluzione del riflesso sono comportamenti precedenti, conservati e riconosciuti dal revisore.
+
+Verifica finale: build e lint, 101 test unitari e 19 prove browser superate. Su 1.680 raycast stradali lo scarto massimo rispetto alla quota prevista è 5 mm. Guida reale dal sottopasso a 94 km/h, salita fisica di 3,4 m in quattro secondi, quattro ruote a contatto e nessun errore di console nelle catture. Rendering verificato con riflesso separato, ombre correnti e ritorno dei target dopo cambio di qualità e zona. Nessuna certificazione prestazionale sul PC NVIDIA dell'utente.
+
+Evidenze ignorate in artifacts/street-revision, resoconto in [revisione-strade.md](revisione-strade.md). Il confronto usa screenshot reali; le viste aeree sono pose QA della stessa scena. Questa approvazione del revisore non equivale all'accettazione di Giovanni.

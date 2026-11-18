@@ -1,3 +1,4 @@
+import { streetPoint, coveredStreet } from './street-layout';
 import * as THREE from 'three';
 import { atlasPois, districtIndex, roadHeight, ORIGINS } from './atlas';
 /** Four persistent uniforms, even when no sign is close enough to contribute light. */
@@ -81,16 +82,24 @@ export class WorldLighting {
               [a + side * 14, b],
               [b, a + side * 14],
             ]) {
-              const x = origin.x + lx,
-                z = origin.z + lz;
+              const p = streetPoint(origin.x + lx, origin.z + lz),
+                x = p.x,
+                z = p.z;
               if (index === 0 && Math.abs(x) < 24 && z > -355 && z < -250)
                 continue;
               this.sources.push({
                 x,
-                y: roadHeight(x, z) + 9.4,
+                y:
+                  roadHeight(x, z) +
+                  (index === 3 && coveredStreet(x, z) ? 7.8 : 9.4),
                 z,
                 index,
-                color: cool ? 0x91cbd3 : 0xffd098,
+                color:
+                  index === 3 && coveredStreet(x, z)
+                    ? 0xffd3a1
+                    : cool
+                      ? 0x91cbd3
+                      : 0xffd098,
                 power: 120,
               });
             }

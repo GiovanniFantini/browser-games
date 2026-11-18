@@ -15,7 +15,7 @@ export class HillCourse {
     )!,
     platforms = true,
   ) {
-    const route = new RaceRoute(definition),
+    const route = new RaceRoute(definition, true),
       vertices: number[] = [],
       indices: number[] = [];
     const width = config.hill.width / 2;

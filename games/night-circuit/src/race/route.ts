@@ -1,4 +1,10 @@
 import data from '../data/races.json';
+import {
+  streetPoint,
+  streetHeight,
+  streetDistrict,
+  STREET_ORIGINS,
+} from '../world/street-layout';
 
 export interface Point {
   x: number;
@@ -39,7 +45,10 @@ export class RaceRoute {
   readonly closed: boolean;
   length = 0;
 
-  constructor(readonly definition: RaceDefinition) {
+  constructor(
+    readonly definition: RaceDefinition,
+    streets = false,
+  ) {
     this.closed = definition.closed ?? definition.mode === 'circuit';
     const nodes = definition.points.map(([x, z, y = 0]) => ({ x, z, y }));
     const count = nodes.length;
@@ -110,6 +119,26 @@ export class RaceRoute {
       }
     }
     if (this.closed) line(this.points[0]);
+    if (streets) {
+      this.length = 0;
+      for (let i = 0; i < this.points.length; i++) {
+        const p = this.points[i],
+          o = STREET_ORIGINS[streetDistrict(p.x, p.z)];
+        const urban = Math.abs(p.x - o.x) <= 480 && Math.abs(p.z - o.z) <= 480;
+        const mapped = streetPoint(p.x, p.z);
+        p.x = mapped.x;
+        p.z = mapped.z;
+        if (urban) p.y = streetHeight(p.x, p.z);
+        const previous = this.points[i - 1];
+        if (previous) {
+          const length = Math.hypot(p.x - previous.x, p.z - previous.z);
+          previous.dx = (p.x - previous.x) / length;
+          previous.dz = (p.z - previous.z) / length;
+          this.length += length;
+        }
+        p.distance = this.length;
+      }
+    }
     const last = this.points.at(-1)!,
       before = this.points.at(-2)!;
     last.dx = before.dx;

@@ -3,7 +3,7 @@ import { calculateStats, stockLevels } from '../progression/catalog';
 import { defaultAppearance } from '../tuning/appearance';
 import * as THREE from 'three';
 import type RAPIER from '@dimforge/rapier3d-compat';
-import catalog from '../data/races.json';
+import { worldRaces as catalog } from '../world/world-data';
 import type { DriveInput } from '../core/input';
 import { Vehicle } from '../vehicle/vehicle';
 import type { Traffic } from '../traffic/traffic';
@@ -33,7 +33,7 @@ export class RaceSystem {
   private readonly publicEvents = catalog.events.filter(
     (e) => !('hidden' in e && e.hidden),
   );
-  readonly routes = catalog.events.map((event) => new RaceRoute(event));
+  readonly routes = catalog.events.map((event) => new RaceRoute(event, true));
   readonly opponents: Vehicle[] = [];
   readonly drivers: RaceDriver[] = [];
   readonly cars: Vehicle[] = [];
@@ -110,7 +110,7 @@ export class RaceSystem {
       simple: true,
       color: catalog.drivers[0].color,
     });
-    this.roamRoute = new RaceRoute({ ...catalog.events[0], laps: 9999 });
+    this.roamRoute = new RaceRoute({ ...catalog.events[0], laps: 9999 }, true);
     this.roamSession = new RaceSession(this.roamRoute, [
       { id: 'player', name: 'Nemi', position: this.roamer.position },
     ]);
@@ -190,7 +190,7 @@ export class RaceSystem {
         const p = this.roamRoute.sample(
           this.roamSession.player.projection.distance - 20 + d,
         );
-        points.push([p.x, p.z]);
+        points.push([p.x, p.z, p.y ?? 0]);
       }
       route = new RaceRoute({ ...route.definition, points });
     }
@@ -525,7 +525,7 @@ export class RaceSystem {
         const p = this.roamRoute.sample(
           this.roamSession.player.projection.distance,
         );
-        this.roamer.place(p.x, 1.15, p.z, Math.atan2(p.dx, p.dz));
+        this.roamer.place(p.x, (p.y ?? 0) + 1.15, p.z, Math.atan2(p.dx, p.dz));
         this.roamSession.resetPosition('player', this.roamer.position);
         this.roamDriver.reset();
       }
@@ -788,7 +788,9 @@ export class RaceSystem {
       p.bestScores[id] = Math.max(p.bestScores[id] ?? 0, s.drift.banked);
     if (
       this.newGhost &&
-      (!p.ghost || this.newGhost.duration < p.ghost.duration)
+      (!p.ghost ||
+        p.ghost.layout !== 2 ||
+        this.newGhost.duration < p.ghost.duration)
     ) {
       p.ghost = this.newGhost;
     }

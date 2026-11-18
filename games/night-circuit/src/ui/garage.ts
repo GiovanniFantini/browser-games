@@ -366,7 +366,24 @@ export class GarageUI {
             `<li>${races.events.find((e) => e.id === id)!.name}: ${score} punti</li>`,
         )
         .join('') || '<li>Nessun punteggio registrato.</li>'
-    }</ul><p>${p.ghost ? `Fantasma disponibile: ${formatRaceTime(p.ghost.duration)}.` : ''}</p><p>${p.results.length} risultati recenti conservati. Premi e record vengono assegnati alla classifica finale. Un ritiro non dà crediti.</p></section>`;
+    }</ul>${
+      Object.keys(p.previousRecords.bestTimes).length ||
+      Object.keys(p.previousRecords.bestScores).length
+        ? `<h4>Record mappa precedente</h4><ul>${Object.entries(
+            p.previousRecords.bestTimes,
+          )
+            .map(
+              ([id, time]) =>
+                `<li>${races.events.find((e) => e.id === id)!.name}: ${formatRaceTime(time)}</li>`,
+            )
+            .join('')}${Object.entries(p.previousRecords.bestScores)
+            .map(
+              ([id, score]) =>
+                `<li>${races.events.find((e) => e.id === id)!.name}: ${score} punti</li>`,
+            )
+            .join('')}</ul>`
+        : ''
+    }<p>${p.ghost ? `Fantasma disponibile: ${formatRaceTime(p.ghost.duration)}.` : ''}</p><p>${p.results.length} risultati recenti conservati. Premi e record vengono assegnati alla classifica finale. Un ritiro non dà crediti.</p></section>`;
     this.attachPreview(oldHost);
     const buttons = (
       selector: string,

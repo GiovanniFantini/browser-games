@@ -1,3 +1,5 @@
+import { edgeFrame } from './street-network';
+import { streetHeight } from './street-layout';
 import { createStreetTrees } from './street-trees';
 import { lampStarTexture } from '../gen/textures/lamp-star';
 import * as THREE from 'three';
@@ -114,11 +116,10 @@ export function createStreetscape(
     color = new THREE.Color();
   let lamp = 0;
   graph.edges.forEach((edge, i) => {
-    const a = graph.nodes[edge.a],
-      b = graph.nodes[edge.b],
-      vertical = a.x === b.x;
-    const x = (a.x + b.x) / 2,
-      z = (a.z + b.z) / 2;
+    const f = edgeFrame(graph, edge),
+      x = f.x,
+      z = f.z,
+      vertical = Math.abs(f.dz) > Math.abs(f.dx);
     if (vertical && x === 0 && z > -240 && z < 240) {
       const side = i % 2 ? 1 : -1;
       const parked = createCar({
@@ -147,12 +148,12 @@ export function createStreetscape(
       );
     }
     for (const side of [-1, 1]) {
-      const lx = x + (vertical ? side * 14 : 0),
-        lz = z + (vertical ? 0 : side * 14);
+      const lx = x + f.dz * side * ((edge.width ?? 24) / 2 + 2),
+        lz = z - f.dx * side * ((edge.width ?? 24) / 2 + 2);
       if (Math.abs(lx) < 24 && lz > -355 && lz < -250) continue;
       const warm = (i + (side > 0 ? 1 : 0)) % 3 !== 0;
       color.setHex(warm ? 0xffb56c : 0x94b7ff);
-      positions.push(lx, 9.58, lz);
+      positions.push(lx, streetHeight(lx, lz) + 9.58, lz);
       colors.push(color.r * 2, color.g * 2, color.b * 2);
       dummy.position.set(
         lx - (vertical ? side * 3 : 0),
@@ -176,21 +177,25 @@ export function createStreetscape(
       quads.setColorAt(lamp++, color);
     }
     const side = i % 2 ? 1 : -1,
-      tx = x + (vertical ? side * 19 : 13),
-      tz = z + (vertical ? 13 : side * 19);
+      tx = x + f.dz * side * ((edge.width ?? 24) / 2 + 7) + f.dx * 13,
+      tz = z - f.dx * side * ((edge.width ?? 24) / 2 + 7) + f.dz * 13;
     for (let n = 0; n < 3; n++) {
-      dummy.position.set(tx, 5, tz);
+      dummy.position.set(tx, streetHeight(tx, tz) + 5, tz);
       dummy.rotation.set(0, (n * Math.PI) / 3, 0);
       dummy.scale.setScalar(0.7 + rand() * 0.3);
       dummy.updateMatrix();
       trees[n].setMatrixAt(i, dummy.matrix);
     }
-    dummy.position.set(tx, 0.25, tz);
+    dummy.position.set(tx, streetHeight(tx, tz) + 0.25, tz);
     dummy.rotation.set(0, 0, 0);
     dummy.scale.setScalar(1);
     dummy.updateMatrix();
     planter.setMatrixAt(i, dummy.matrix);
-    dummy.position.set(tx + (vertical ? 0 : 3), 0.65, tz + (vertical ? 3 : 0));
+    dummy.position.set(
+      tx + (vertical ? 0 : 3),
+      streetHeight(tx, tz) + 0.65,
+      tz + (vertical ? 3 : 0),
+    );
     dummy.updateMatrix();
     bin.setMatrixAt(i, dummy.matrix);
   });
@@ -241,7 +246,11 @@ export function createStreetscape(
     positions.length / 3,
   );
   for (let i = 0; i < positions.length / 3; i++) {
-    dummy.position.set(positions[i * 3], 9.72, positions[i * 3 + 2]);
+    dummy.position.set(
+      positions[i * 3],
+      positions[i * 3 + 1] + 0.14,
+      positions[i * 3 + 2],
+    );
     dummy.rotation.set(0, 0, 0);
     dummy.scale.set(1.2, 1, 0.65);
     dummy.updateMatrix();
@@ -283,7 +292,11 @@ export function createStreetscape(
     positions.length / 3,
   );
   for (let i = 0; i < positions.length / 3; i++) {
-    dummy.position.set(positions[i * 3], 0.132, positions[i * 3 + 2]);
+    dummy.position.set(
+      positions[i * 3],
+      positions[i * 3 + 1] - 9.58 + 0.132,
+      positions[i * 3 + 2],
+    );
     dummy.rotation.set(-Math.PI / 2, 0, 0);
     dummy.scale.setScalar(1);
     dummy.updateMatrix();

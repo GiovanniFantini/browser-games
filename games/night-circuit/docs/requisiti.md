@@ -1,5 +1,9 @@
 # Requisiti e percorso di realizzazione
 
+## Revisione stradale richiesta il 17 novembre 2026
+
+Giovanni richiede una mappa meno regolare: curve e isolati irregolari, dislivelli come su una strada reale e segnaletica orizzontale leggibile. La revisione locale usa percorsi campionati comuni a rendering, collisioni, traffico, gare e GPS; curve e quote non devono restare un effetto della sola minimappa. Conservare la qualità grafica e verificare il gioco nel browser. Il rettilineo del drag e gli accessi dedicati restano coerenti con le rispettive modalità. Il 18 novembre Giovanni ha autorizzato commit e pubblicazione online della nuova mappa e delle fix approvate da Opus. Esiti in revisione-strade.md.
+
 ## Ottimizzazione autorizzata il 17 novembre 2026
 
 Giovanni richiede di provare le ottimizzazioni proposte dalla review Opus e misurarne il risultato conservando la grafica. La versione locale mantiene contenuti, parametri e risoluzione degli effetti; separa il riflesso planare dalla scena principale, riusa matrici e Reflector, precompila sul target corretto e ripristina la sonda dopo i cambi di qualità. I render aggiuntivi di preriscaldamento sono stati scartati perché alteravano due confronti visivi. Tutti i nove confronti della versione finale hanno zero pixel differenti. Il [resoconto prestazionale](prestazioni-rendering.md) distingue le misure nella GPU virtuale dalla verifica ancora non disponibile sul PC reale. Non è stata introdotta una nuova architettura di streaming.

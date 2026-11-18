@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { graphicsQuality } from '../core/preferences';
-import { districtIndex, roadHeight } from './atlas';
+import { atlasGraph, districtIndex, roadHeight } from './atlas';
 
 function puddleMask() {
   let seed = 59371;
@@ -33,10 +33,45 @@ function puddleMask() {
   return map;
 }
 
+function streetMask() {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 1024;
+  const ctx = canvas.getContext('2d')!,
+    scale = 1024 / 3200;
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, 1024, 1024);
+  ctx.strokeStyle = '#fff';
+  ctx.lineCap = ctx.lineJoin = 'round';
+  const graph = atlasGraph();
+  for (const edge of graph.edges) {
+    ctx.lineWidth = ((edge.width ?? 24) - 1) * scale;
+    ctx.beginPath();
+    const path = edge.path ?? [graph.nodes[edge.a], graph.nodes[edge.b]];
+    path.forEach((p, i) => {
+      if (i) ctx.lineTo((p.x + 600) * scale, (p.z + 600) * scale);
+      else ctx.moveTo((p.x + 600) * scale, (p.z + 600) * scale);
+    });
+    ctx.stroke();
+  }
+  const map = new THREE.CanvasTexture(canvas);
+  map.flipY = false;
+  map.generateMipmaps = false;
+  map.minFilter = map.magFilter = THREE.LinearFilter;
+  return map;
+}
+
 /** Scene reflections are masked by generated puddles, keeping the diffuse asphalt visible. */
 export class WetRoad {
   private mirror?: Reflector;
   private readonly noise = puddleMask();
+  private readonly roads = streetMask();
+  private readonly surfaceAnchor = new THREE.Vector3(
+    Infinity,
+    Infinity,
+    Infinity,
+  );
+  private readonly surfacePoint = new THREE.Vector3();
+  private readonly surfaceInverse = new THREE.Quaternion();
   private readonly anchor = new THREE.Vector3();
   private readonly frustum = new THREE.Frustum();
   private readonly projection = new THREE.Matrix4();
@@ -73,7 +108,7 @@ export class WetRoad {
       return;
     }
     if (!this.mirror) {
-      const mirror = new Reflector(new THREE.PlaneGeometry(180, 180), {
+      const mirror = new Reflector(new THREE.PlaneGeometry(180, 180, 16, 16), {
         textureWidth: 384,
         textureHeight: 256,
         clipBias: 0.002,
@@ -86,6 +121,7 @@ export class WetRoad {
       material.transparent = true;
       material.depthWrite = false;
       material.uniforms.wetMask = { value: this.noise };
+      material.uniforms.streetMask = { value: this.roads };
       material.uniforms.anchor = { value: this.anchor };
       material.vertexShader =
         'varying vec3 vWetWorld;\n' +
@@ -94,7 +130,7 @@ export class WetRoad {
           'vUv = textureMatrix * vec4( position, 1.0 );vWetWorld=(modelMatrix*vec4(position,1.)).xyz;',
         );
       material.fragmentShader =
-        'varying vec3 vWetWorld;uniform sampler2D wetMask;uniform vec3 anchor;\n' +
+        'varying vec3 vWetWorld;uniform sampler2D wetMask;uniform sampler2D streetMask;uniform vec3 anchor;\n' +
         material.fragmentShader
           .replace(
             'vec4 base = texture2DProj( tDiffuse, vUv );',
@@ -107,8 +143,7 @@ export class WetRoad {
           )
           .replace(
             'gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );',
-            `vec2 grid=abs(mod(vWetWorld.xz+60.,120.)-60.);
-      float road=1.-smoothstep(10.8,11.8,min(grid.x,grid.y));
+            `float road=texture2D(streetMask,(vWetWorld.xz+600.)/3200.).r;
       float puddle=smoothstep(.34,.70,texture2D(wetMask,vWetWorld.xz*.03).r);
       float fade=1.-smoothstep(55.,85.,distance(vWetWorld.xz,anchor.xz));
       gl_FragColor=vec4(base.rgb*.8,road*fade*(.10+.42*puddle));`,
@@ -138,15 +173,52 @@ export class WetRoad {
       mirror.onBeforeRender = () => {};
       this.scene.add(mirror);
       this.mirror = mirror;
+      this.surfaceAnchor.set(Infinity, Infinity, Infinity);
     }
     this.mirror.visible = true;
     this.anchor.copy(position);
-    this.mirror.position.set(
-      position.x,
-      roadHeight(position.x, position.z) +
-        (districtIndex(position.x, position.z) === 0 ? 0.01 : 0.03),
-      position.z,
-    );
+    if (this.surfaceAnchor.distanceToSquared(position) > 4) {
+      this.surfaceAnchor.copy(position);
+      const height = roadHeight(position.x, position.z) + 0.022;
+      const gx =
+        (roadHeight(position.x + 1, position.z) -
+          roadHeight(position.x - 1, position.z)) /
+        2;
+      const gz =
+        (roadHeight(position.x, position.z + 1) -
+          roadHeight(position.x, position.z - 1)) /
+        2;
+      this.mirror.position.set(position.x, height, position.z);
+      this.mirror.quaternion.setFromUnitVectors(
+        this.surfacePoint.set(0, 0, 1),
+        new THREE.Vector3(-gx, 1, -gz).normalize(),
+      );
+      this.surfaceInverse.copy(this.mirror.quaternion).invert();
+      const vertices = this.mirror.geometry.getAttribute(
+        'position',
+      ) as THREE.BufferAttribute;
+      for (let row = 0; row <= 16; row++)
+        for (let col = 0; col <= 16; col++) {
+          const x = position.x + (col / 16 - 0.5) * 180,
+            z = position.z + (row / 16 - 0.5) * 180;
+          this.surfacePoint
+            .set(
+              x - position.x,
+              roadHeight(x, z) + 0.022 - height,
+              z - position.z,
+            )
+            .applyQuaternion(this.surfaceInverse);
+          vertices.setXYZ(
+            row * 17 + col,
+            this.surfacePoint.x,
+            this.surfacePoint.y,
+            this.surfacePoint.z,
+          );
+        }
+      vertices.needsUpdate = true;
+      this.mirror.geometry.computeVertexNormals();
+      this.mirror.geometry.computeBoundingSphere();
+    }
   }
 
   renderReflection(renderer: THREE.WebGLRenderer, camera: THREE.Camera) {

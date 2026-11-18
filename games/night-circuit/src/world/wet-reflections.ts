@@ -1,3 +1,5 @@
+import { edgeFrame } from './street-network';
+import { streetHeight } from './street-layout';
 import * as THREE from 'three';
 import type { RoadGraph } from './graph';
 import { lightTexture } from './streetscape';
@@ -33,16 +35,15 @@ export class WetReflections {
   private readonly previous = new THREE.Vector3(Infinity, Infinity, Infinity);
   constructor(scene: THREE.Scene, graph: RoadGraph) {
     graph.edges.forEach((edge, i) => {
-      const a = graph.nodes[edge.a],
-        b = graph.nodes[edge.b],
-        vertical = a.x === b.x,
-        x = (a.x + b.x) / 2,
-        z = (a.z + b.z) / 2;
+      const f = edgeFrame(graph, edge),
+        vertical = Math.abs(f.dz) > Math.abs(f.dx),
+        x = f.x,
+        z = f.z;
       for (const side of [-1, 1]) {
         if (Math.abs(x) < 24 && z > -355 && z < -250) continue;
         this.sources.push({
-          x: x + (vertical ? side * 14 : 0),
-          z: z + (vertical ? 0 : side * 14),
+          x: x + f.dz * side * ((edge.width ?? 24) / 2 + 2),
+          z: z - f.dx * side * ((edge.width ?? 24) / 2 + 2),
           y: 9.6,
           color: i % 3 ? 0xffbc78 : 0x86b5ef,
           wide: false,
@@ -71,7 +72,7 @@ export class WetReflections {
     this.previous.copy(camera.position);
     const cx = camera.position.x,
       cz = camera.position.z,
-      cy = Math.max(0.5, camera.position.y);
+      cy = Math.max(0.5, camera.position.y - streetHeight(cx, cz));
     this.sources.forEach((s, i) => {
       this.distance[i] = (s.x - cx) ** 2 + (s.z - cz) ** 2;
     });
@@ -85,7 +86,9 @@ export class WetReflections {
         dx = source.x - cx,
         dz = source.z - cz;
       const centre = (t + 0.9) * 0.5;
-      this.dummy.position.set(cx + dx * centre, 0.042, cz + dz * centre);
+      const rx = cx + dx * centre,
+        rz = cz + dz * centre;
+      this.dummy.position.set(rx, streetHeight(rx, rz) + 0.042, rz);
       this.dummy.rotation.set(-Math.PI / 2, 0, Math.atan2(-dx, -dz));
       this.dummy.scale.set(
         source.wide ? 1.1 : 0.7,

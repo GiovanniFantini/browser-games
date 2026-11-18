@@ -1,14 +1,16 @@
+import { signalPositions } from './street-network';
+import { createStreetTerrain, createStreetSurfaces } from './street-surfaces';
+import { streetPoint, streetHeight } from './street-layout';
+import { nearestRoad } from './graph';
 import { BuildingKit, KitBatch } from '../gen/buildings/kit';
 import { createFoundryUnderpass } from '../gen/buildings/underpass';
 import { createStreetVenue } from '../gen/buildings/street-venue';
 import { createFoundryAvenue } from './avenue';
-import { roadPaintMaterial } from './road-paint';
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import defaultData from '../data/district.json';
 import type { RoadGraph } from './graph';
 import { signalColor } from '../traffic/signals';
-import { asphaltMaterial } from './asphalt';
 import { generatedMaterial } from '../gen/textures/library';
 
 interface Chunk {
@@ -22,6 +24,7 @@ export class City {
   private readonly colliders: RAPIER.Collider[] = [];
   private readonly chunks: Chunk[] = [];
   private readonly signalMeshes: THREE.InstancedMesh;
+  private readonly signalPoints: ReturnType<typeof signalPositions>[];
   private readonly dummy = new THREE.Object3D();
   private readonly color = new THREE.Color();
   private readonly boxGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -42,6 +45,7 @@ export class City {
     const previous = new Set<number>();
     world.forEachCollider((c) => previous.add(c.handle));
     this.low = low;
+    this.signalPoints = graph.nodes.map((n) => signalPositions(graph, n.id));
     this.materials = {
       concrete:
         generatedMaterial('concrete', 3) ??
@@ -78,16 +82,11 @@ export class City {
         roughness: 0.16,
         clearcoat: 1,
       }),
-      road: asphaltMaterial(),
       cyan: new THREE.MeshBasicMaterial({ color: 0x77dbe5 }),
       pink: new THREE.MeshBasicMaterial({ color: 0xd47dad }),
       amber: new THREE.MeshBasicMaterial({ color: 0xedd594 }),
-      paint: roadPaintMaterial(0x7b817f),
     };
-    this.box(this.scene, 1100, 1, 1100, 0, -0.55, 0, 'concrete');
-    world.createCollider(
-      RAPIER.ColliderDesc.cuboid(550, 0.5, 550).setTranslation(0, -0.55, 0),
-    );
+    createStreetTerrain(this.scene, world, 0);
     this.roads(world);
     this.blocks(world);
     if (this.openBorders) {
@@ -101,6 +100,22 @@ export class City {
     );
     this.signalMeshes.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     scene.add(this.signalMeshes);
+    const signalPoles = new THREE.InstancedMesh(
+      this.boxGeometry,
+      new THREE.MeshStandardMaterial({ color: 0x465361, roughness: 0.7 }),
+      graph.nodes.length * 2,
+    );
+    this.signalPoints.forEach((pair, id) =>
+      pair.forEach((p, axis) => {
+        this.dummy.position.set(p.x, p.y + 2.8, p.z);
+        this.dummy.rotation.set(0, 0, 0);
+        this.dummy.scale.set(0.15, 5.6, 0.15);
+        this.dummy.updateMatrix();
+        signalPoles.setMatrixAt(id * 2 + axis, this.dummy.matrix);
+      }),
+    );
+    scene.add(signalPoles);
+
     this.landmarks();
     for (const [key, matrices] of this.batches) {
       const mesh = new THREE.InstancedMesh(
@@ -151,241 +166,7 @@ export class City {
   }
 
   private roads(world: RAPIER.World) {
-    const roadWidth = this.data.roadWidth,
-      size = this.data.coordinates.at(-1)! - this.data.coordinates[0];
-    // Each road strip is derived from an edge; intersection squares close their joins.
-    const roads = new THREE.InstancedMesh(
-      this.boxGeometry,
-      this.materials.road,
-      this.graph.edges.length + this.graph.nodes.length,
-    );
-    const paintGeometry = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2);
-    const markings = new THREE.InstancedMesh(
-      paintGeometry,
-      this.materials.paint,
-      this.graph.edges.length * 16 + this.graph.nodes.length * 40,
-    );
-    const centreLines = new THREE.InstancedMesh(
-      paintGeometry,
-      roadPaintMaterial(0x99844c),
-      this.graph.edges.length * 2,
-    );
-    const lamps = new THREE.InstancedMesh(
-      this.boxGeometry,
-      this.materials.concrete,
-      this.graph.edges.length * 2,
-    );
-    const bulbs = new THREE.InstancedMesh(
-      this.boxGeometry,
-      this.materials.amber,
-      this.graph.edges.length * 2,
-    );
-    roads.receiveShadow = true;
-    markings.receiveShadow = true;
-    centreLines.receiveShadow = true;
-    let r = 0,
-      m = 0,
-      l = 0,
-      centre = 0;
-    const place = (
-      mesh: THREE.InstancedMesh,
-      index: number,
-      x: number,
-      y: number,
-      z: number,
-      w: number,
-      h: number,
-      d: number,
-    ) => {
-      this.dummy.position.set(x, y, z);
-      this.dummy.rotation.set(0, 0, 0);
-      this.dummy.scale.set(w, h, d);
-      this.dummy.updateMatrix();
-      mesh.setMatrixAt(index, this.dummy.matrix);
-    };
-    for (const edge of this.graph.edges) {
-      const a = this.graph.nodes[edge.a],
-        b = this.graph.nodes[edge.b];
-      const vertical = a.x === b.x;
-      const x = (a.x + b.x) / 2,
-        z = (a.z + b.z) / 2,
-        span = edge.length - roadWidth;
-      place(
-        roads,
-        r++,
-        x,
-        -0.02,
-        z,
-        vertical ? roadWidth : span,
-        0.05,
-        vertical ? span : roadWidth,
-      );
-      for (const side of [-1, 1]) {
-        const sx = x + (vertical ? side * (roadWidth / 2 + 2) : 0);
-        const sz = z + (vertical ? 0 : side * (roadWidth / 2 + 2));
-        this.box(
-          this.scene,
-          vertical ? 4 : span,
-          0.17,
-          vertical ? span : 4,
-          sx,
-          0.04,
-          sz,
-          'sidewalk',
-        );
-        world.createCollider(
-          RAPIER.ColliderDesc.cuboid(
-            vertical ? 2 : span / 2,
-            0.085,
-            vertical ? span / 2 : 2,
-          ).setTranslation(sx, 0.04, sz),
-        );
-        place(lamps, l, sx, 4.8, sz, 0.22, 9.6, 0.22);
-        place(
-          bulbs,
-          l++,
-          sx,
-          9.6,
-          sz,
-          vertical ? 1.05 : 0.45,
-          0.13,
-          vertical ? 0.45 : 1.05,
-        );
-      }
-      for (let j = 0; j < 8; j++) {
-        const t = (j + 0.5) / 8;
-        const px = a.x + (b.x - a.x) * t,
-          pz = a.z + (b.z - a.z) * t;
-        for (const lane of [-1, 1])
-          place(
-            markings,
-            m++,
-            px + (vertical ? lane * 6 : 0),
-            0.007,
-            pz + (vertical ? 0 : lane * 6),
-            vertical ? 0.17 : 4.5,
-            0.015,
-            vertical ? 4.5 : 0.17,
-          );
-      }
-      for (const side of [-1, 1])
-        place(
-          centreLines,
-          centre++,
-          x + (vertical ? side * 0.18 : 0),
-          0.007,
-          z + (vertical ? 0 : side * 0.18),
-          vertical ? 0.1 : span,
-          0.015,
-          vertical ? span : 0.1,
-        );
-    }
-    for (const node of this.graph.nodes) {
-      for (const side of [-1, 1])
-        for (let stripe = -5; stripe < 5; stripe++) {
-          const offset = (stripe + 0.5) * 1.8;
-          place(
-            markings,
-            m++,
-            node.x + offset,
-            0.007,
-            node.z + side * 15,
-            0.65,
-            0.015,
-            3.5,
-          );
-          place(
-            markings,
-            m++,
-            node.x + side * 15,
-            0.007,
-            node.z + offset,
-            3.5,
-            0.015,
-            0.65,
-          );
-        }
-      place(roads, r++, node.x, -0.02, node.z, roadWidth, 0.05, roadWidth);
-      this.box(
-        this.scene,
-        0.18,
-        6,
-        0.18,
-        node.x - 13,
-        3,
-        node.z - 13,
-        'concrete',
-      );
-      this.box(
-        this.scene,
-        0.18,
-        6,
-        0.18,
-        node.x + 13,
-        3,
-        node.z + 13,
-        'concrete',
-      );
-      this.box(
-        this.scene,
-        1.1,
-        1.5,
-        0.65,
-        node.x - 13,
-        5.8,
-        node.z - 13,
-        'building',
-      );
-      this.box(
-        this.scene,
-        0.65,
-        1.5,
-        1.1,
-        node.x + 13,
-        5.8,
-        node.z + 13,
-        'building',
-      );
-    }
-    this.scene.add(roads, markings, centreLines, lamps, bulbs);
-    if (!this.openBorders)
-      for (const side of [-1, 1]) {
-        const bound = size / 2 + 20;
-        this.box(
-          this.scene,
-          1.5,
-          1.5,
-          size + 42,
-          side * bound,
-          0.75,
-          0,
-          'concrete',
-        );
-        this.box(
-          this.scene,
-          size + 42,
-          1.5,
-          1.5,
-          0,
-          0.75,
-          side * bound,
-          'concrete',
-        );
-        world.createCollider(
-          RAPIER.ColliderDesc.cuboid(
-            0.75,
-            0.75,
-            (size + 42) / 2,
-          ).setTranslation(side * bound, 0.75, 0),
-        );
-        world.createCollider(
-          RAPIER.ColliderDesc.cuboid(
-            (size + 42) / 2,
-            0.75,
-            0.75,
-          ).setTranslation(0, 0.75, side * bound),
-        );
-      }
+    createStreetSurfaces(this.scene, world, this.graph, 0);
   }
 
   private blocks(world: RAPIER.World) {
@@ -410,8 +191,7 @@ export class City {
           this.chunks.push({
             group,
             detail,
-            x: coords[sx * 2] + 120,
-            z: coords[sz * 2] + 120,
+            ...streetPoint(coords[sx * 2] + 120, coords[sz * 2] + 120),
           });
           sector = { batch: new KitBatch(group), detail: new KitBatch(detail) };
           sectors.set(key, sector);
@@ -466,10 +246,19 @@ export class City {
             createStreetVenue(this.scene, world, 37, -177);
             continue;
           }
-          const bx = cx + (i % 2 ? 23 : -23),
-            bz = cz + (i < 2 ? -23 : 23),
+          const location = streetPoint(
+              cx + (i % 2 ? 23 : -23),
+              cz + (i < 2 ? -23 : 23),
+            ),
+            bx = location.x,
+            bz = location.z,
+            base = streetHeight(bx, bz),
             w = 19 + random() * 15,
             d = 20 + random() * 13;
+          const road = nearestRoad(this.graph, bx, bz);
+          if (Math.hypot(road.x - bx, road.z - bz) < Math.hypot(w, d) / 2 + 15)
+            continue;
+          sector.batch.add('box', 'stone', bx, base - 1.5, bz, w, 3, d);
           let n = Math.floor(random() * 100000);
           if (i === 0 && (x + z) % 2 === 0) n = n - (n % 7) + 6;
           if (i === 3 && (x + z) % 2 !== 0) n = n - (n % 7) + 5;
@@ -477,7 +266,7 @@ export class City {
             7 + Math.floor(random() * 6) * 3.3 + (n % 11 === 0 ? 23.1 : 0);
           const building = new BuildingKit(sector.batch, {
             x: bx,
-            y: 0,
+            y: base,
             z: bz,
             width: w,
             depth: d,
@@ -490,9 +279,9 @@ export class City {
           world.createCollider(
             RAPIER.ColliderDesc.cuboid(
               w / 2,
-              bodyHeight / 2,
+              (bodyHeight + 3) / 2,
               d / 2,
-            ).setTranslation(bx, bodyHeight / 2, bz),
+            ).setTranslation(bx, base + bodyHeight / 2 - 1.5, bz),
           );
         }
       }
@@ -523,7 +312,16 @@ export class City {
         z = poi.z + 18;
       if (this.openBorders && Math.abs(x) < 35 && z > -355 && z < -250)
         continue;
-      this.box(this.scene, 0.25, 5.5, 0.25, x, 2.75, z, 'metal');
+      this.box(
+        this.scene,
+        0.25,
+        5.5,
+        0.25,
+        x,
+        streetHeight(x, z) + 2.75,
+        z,
+        'metal',
+      );
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 128;
@@ -546,7 +344,11 @@ export class City {
       });
       for (const direction of [0, Math.PI]) {
         const sign = new THREE.Mesh(new THREE.PlaneGeometry(5, 1.3), material);
-        sign.position.set(x, 5, z + (direction ? -0.05 : 0.05));
+        sign.position.set(
+          x,
+          streetHeight(x, z) + 5,
+          z + (direction ? -0.05 : 0.05),
+        );
         sign.rotation.y = direction;
         this.scene.add(sign);
       }
@@ -567,11 +369,8 @@ export class City {
     }
     for (const node of this.graph.nodes)
       for (let axis = 0; axis < 2; axis++) {
-        this.dummy.position.set(
-          node.x + (axis ? 13 : -13),
-          5.8,
-          node.z + (axis ? 13 : -13),
-        );
+        const p = this.signalPoints[node.id][axis];
+        this.dummy.position.set(p.x, p.y + 5.8, p.z);
         this.dummy.rotation.set(0, 0, 0);
         this.dummy.scale.set(1, 1, 1);
         this.dummy.updateMatrix();

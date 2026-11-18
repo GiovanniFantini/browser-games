@@ -10,6 +10,8 @@ export interface RoadEdge {
   a: number;
   b: number;
   length: number;
+  path?: RoadPosition[];
+  width?: number;
 }
 export interface RoadGraph {
   nodes: RoadNode[];
@@ -64,33 +66,56 @@ export function nearestNode(graph: RoadGraph, x: number, z: number) {
   return best;
 }
 
+function projectRoad(graph: RoadGraph, x: number, z: number) {
+  let best = Infinity,
+    bestEndpoint = false,
+    result = { edge: graph.edges[0], segment: 0, t: 0, x, z, along: 0 };
+  for (const edge of graph.edges) {
+    const points = edge.path ?? [graph.nodes[edge.a], graph.nodes[edge.b]];
+    let along = 0;
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1],
+        b = points[i],
+        dx = b.x - a.x,
+        dz = b.z - a.z,
+        length = Math.hypot(dx, dz);
+      if (length < 1e-8) continue;
+      const t = Math.max(
+        0,
+        Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (length * length)),
+      );
+      const px = a.x + dx * t,
+        pz = a.z + dz * t,
+        d = (px - x) ** 2 + (pz - z) ** 2;
+      const endpoint =
+        (i === 1 && t < 1e-8) || (i === points.length - 1 && t > 1 - 1e-8);
+      if (
+        d < best - 1e-10 ||
+        (Math.abs(d - best) < 1e-10 && endpoint && !bestEndpoint)
+      ) {
+        best = d;
+        bestEndpoint = endpoint;
+        result = {
+          edge,
+          segment: i - 1,
+          t,
+          x: px,
+          z: pz,
+          along: along + length * t,
+        };
+      }
+      along += length;
+    }
+  }
+  return result;
+}
 export function nearestRoad(
   graph: RoadGraph,
   x: number,
   z: number,
 ): RoadPosition {
-  let best = Infinity,
-    resultX = x,
-    resultZ = z;
-  for (const edge of graph.edges) {
-    const a = graph.nodes[edge.a],
-      b = graph.nodes[edge.b];
-    const dx = b.x - a.x,
-      dz = b.z - a.z;
-    const t = Math.max(
-      0,
-      Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz)),
-    );
-    const px = a.x + dx * t,
-      pz = a.z + dz * t;
-    const distance = (px - x) ** 2 + (pz - z) ** 2;
-    if (distance < best) {
-      best = distance;
-      resultX = px;
-      resultZ = pz;
-    }
-  }
-  return { x: resultX, z: resultZ };
+  const p = projectRoad(graph, x, z);
+  return { x: p.x, z: p.z };
 }
 
 export function findPath(
@@ -99,6 +124,15 @@ export function findPath(
   goal: number,
 ): number[] {
   if (!graph.nodes[start] || !graph.nodes[goal]) return [];
+  const weights = new Map(
+    graph.edges.flatMap(
+      (e) =>
+        [
+          [`${e.a}:${e.b}`, e.length],
+          [`${e.b}:${e.a}`, e.length],
+        ] as const,
+    ),
+  );
   const open = new Set([start]),
     cameFrom = new Map<number, number>();
   const cost = new Map([[start, 0]]),
@@ -132,7 +166,8 @@ export function findPath(
         neighbor = graph.nodes[next];
       const candidate =
         cost.get(current)! +
-        Math.hypot(node.x - neighbor.x, node.z - neighbor.z);
+        (weights.get(`${current}:${next}`) ??
+          Math.hypot(node.x - neighbor.x, node.z - neighbor.z));
       if (candidate < (cost.get(next) ?? Infinity)) {
         cameFrom.set(next, current);
         cost.set(next, candidate);
@@ -150,49 +185,78 @@ export function routeFromPosition(
   position: RoadPosition,
   target: RoadPosition,
 ): RoadPosition[] {
-  const start = nearestRoad(graph, position.x, position.z),
-    end = nearestRoad(graph, target.x, target.z);
-  const nodes = graph.nodes.slice();
+  if (!graph.edges.length) return [];
+  const start = projectRoad(graph, position.x, position.z),
+    end = projectRoad(graph, target.x, target.z);
+  const nodes = graph.nodes.map((n) => ({ ...n, neighbors: [...n.neighbors] })),
+    edges = [...graph.edges];
   const startId = nodes.length,
     endId = startId + 1;
   nodes.push(
-    { id: startId, ...start, neighbors: [] },
-    { id: endId, ...end, neighbors: [] },
+    { id: startId, x: start.x, z: start.z, neighbors: [] },
+    { id: endId, x: end.x, z: end.z, neighbors: [] },
   );
-  const includes = (edge: RoadEdge, point: RoadPosition) => {
-    const a = nodes[edge.a],
-      b = nodes[edge.b];
-    return (
-      Math.abs(
-        Math.hypot(point.x - a.x, point.z - a.z) +
-          Math.hypot(point.x - b.x, point.z - b.z) -
-          edge.length,
-      ) < 0.01
-    );
-  };
-  const connect = (a: number, b: number) => {
-    if (nodes[a] === graph.nodes[a])
-      nodes[a] = { ...nodes[a], neighbors: [...nodes[a].neighbors] };
-    if (nodes[b] === graph.nodes[b])
-      nodes[b] = { ...nodes[b], neighbors: [...nodes[b].neighbors] };
+  const connect = (
+    a: number,
+    b: number,
+    path: RoadPosition[],
+    length: number,
+  ) => {
     nodes[a].neighbors.push(b);
     nodes[b].neighbors.push(a);
+    edges.push({ a, b, path, length });
   };
-  for (const edge of graph.edges) {
-    const hasStart = includes(edge, start),
-      hasEnd = includes(edge, end);
-    if (hasStart) {
-      connect(startId, edge.a);
-      connect(startId, edge.b);
-    }
-    if (hasEnd) {
-      connect(endId, edge.a);
-      connect(endId, edge.b);
-    }
-    if (hasStart && hasEnd) connect(startId, endId);
+  for (const [p, id] of [
+    [start, startId],
+    [end, endId],
+  ] as const) {
+    const path = p.edge.path ?? [graph.nodes[p.edge.a], graph.nodes[p.edge.b]],
+      point = { x: p.x, z: p.z };
+    connect(
+      id,
+      p.edge.a,
+      [point, ...path.slice(0, p.segment + 1).reverse()],
+      p.along,
+    );
+    connect(
+      id,
+      p.edge.b,
+      [point, ...path.slice(p.segment + 1)],
+      p.edge.length - p.along,
+    );
   }
-  return findPath({ nodes, edges: graph.edges }, startId, endId).map((id) => ({
-    x: nodes[id].x,
-    z: nodes[id].z,
-  }));
+  if (start.edge === end.edge) {
+    const path = start.edge.path ?? [
+        graph.nodes[start.edge.a],
+        graph.nodes[start.edge.b],
+      ],
+      forward = start.along <= end.along;
+    const between = forward
+      ? path.slice(start.segment + 1, end.segment + 1)
+      : path.slice(end.segment + 1, start.segment + 1).reverse();
+    connect(
+      startId,
+      endId,
+      [{ x: start.x, z: start.z }, ...between, { x: end.x, z: end.z }],
+      Math.abs(end.along - start.along),
+    );
+  }
+  const ids = findPath({ nodes, edges }, startId, endId),
+    result: RoadPosition[] = [];
+  for (let i = 1; i < ids.length; i++) {
+    const a = ids[i - 1],
+      b = ids[i],
+      edge = edges.find(
+        (e) => (e.a === a && e.b === b) || (e.a === b && e.b === a),
+      )!;
+    const points = edge.path ?? [nodes[edge.a], nodes[edge.b]],
+      path = edge.a === a ? points : [...points].reverse();
+    for (const p of path)
+      if (
+        !result.length ||
+        Math.hypot(p.x - result.at(-1)!.x, p.z - result.at(-1)!.z) > 0.001
+      )
+        result.push({ x: p.x, z: p.z });
+  }
+  return result;
 }

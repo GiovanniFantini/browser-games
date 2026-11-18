@@ -2,7 +2,7 @@ import { t } from './translation';
 import { roadHeight, ORIGINS } from '../world/atlas';
 import districts from '../data/career.json';
 import * as THREE from 'three';
-import data from '../data/district.json';
+import { worldDistrict as data } from '../world/world-data';
 import {
   nearestRoad,
   routeFromPosition,
@@ -162,10 +162,10 @@ export class Navigation {
           (this.collected.has(p.id) ? 'RACCOLTO · ' : '') + p.description;
     }
   }
-  private allocateRouteBuffer() {
+  private allocateRouteBuffer(segments = this.graph.nodes.length + 2) {
     this.line.geometry.dispose();
     this.line.geometry = new THREE.BufferGeometry();
-    this.routeVertices = new Float32Array((this.graph.nodes.length + 2) * 18);
+    this.routeVertices = new Float32Array(segments * 18);
     this.line.geometry.setAttribute(
       'position',
       new THREE.BufferAttribute(this.routeVertices, 3).setUsage(
@@ -275,6 +275,8 @@ export class Navigation {
         this.route[i].x - this.route[i - 1].x,
         this.route[i].z - this.route[i - 1].z,
       );
+    if ((this.route.length - 1) * 18 > this.routeVertices.length)
+      this.allocateRouteBuffer(this.route.length + 32);
     const vertices = this.routeVertices;
     let cursor = 0;
     for (let i = 1; i < this.route.length; i++) {
@@ -376,18 +378,6 @@ export class Navigation {
       mini ? -this.position.x : -centerX,
       mini ? -this.position.z : -centerZ,
     );
-    if (!mini && this.mapSpan > 1080) {
-      for (let i = 0; i < this.unlocked; i++) {
-        const o = ORIGINS[i];
-        if (!o) continue;
-        ctx.strokeStyle = '#7b9baa';
-        ctx.lineWidth = 1 / scale;
-        ctx.strokeRect(o.x - 480, o.z - 480, 960, 960);
-        ctx.fillStyle = '#d3ec7b';
-        ctx.font = `700 ${18 / scale}px "Circuit Grid"`;
-        ctx.fillText(districts.districts[i].name, o.x - 400, o.z - 440);
-      }
-    }
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = '#344b5c';
@@ -397,7 +387,7 @@ export class Navigation {
       const a = this.graph.nodes[edge.a],
         b = this.graph.nodes[edge.b];
       ctx.moveTo(a.x, a.z);
-      ctx.lineTo(b.x, b.z);
+      for (const p of edge.path ?? [b]) ctx.lineTo(p.x, p.z);
     }
     ctx.stroke();
     const path = this.racePath ?? this.route;
@@ -439,6 +429,27 @@ export class Navigation {
       ctx.beginPath();
       ctx.arc(this.target.x, this.target.z, 11 / scale, 0, Math.PI * 2);
       ctx.stroke();
+    }
+    if (!mini && this.mapSpan > 1080) {
+      for (let i = 0; i < this.unlocked; i++) {
+        const o = ORIGINS[i];
+        if (!o) continue;
+        const label = districts.districts[i].name,
+          x = o.x - 405,
+          y = o.z - 345;
+        ctx.font = `700 ${16 / scale}px "Circuit Grid"`;
+        ctx.textAlign = 'left';
+        const width = ctx.measureText(label).width;
+        ctx.fillStyle = '#07111eee';
+        ctx.fillRect(
+          x - 5 / scale,
+          y - 18 / scale,
+          width + 10 / scale,
+          25 / scale,
+        );
+        ctx.fillStyle = '#d3ec7b';
+        ctx.fillText(label, x, y);
+      }
     }
     ctx.translate(this.position.x, this.position.z);
     ctx.rotate(-this.yaw);

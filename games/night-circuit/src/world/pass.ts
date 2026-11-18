@@ -3,11 +3,14 @@ import races from '../data/races.json';
 import { RaceRoute } from '../race/route';
 import type { RoadGraph } from './graph';
 export const passRoutes = [
-  new RaceRoute(data.passLinks[0]),
-  new RaceRoute(races.events.find((e) => e.id === 'drift-hills')!),
-  new RaceRoute(data.passLinks[1]),
+  new RaceRoute(data.passLinks[0], true),
+  new RaceRoute(
+    races.events.find((e) => e.id === 'drift-hills')!,
+    true,
+  ),
+  new RaceRoute(data.passLinks[1], true),
 ];
-export const interchangeRoute = new RaceRoute(data.airportInterchange);
+export const interchangeRoute = new RaceRoute(data.airportInterchange, true);
 export function passHeight(x: number, z: number) {
   let best = 64,
     height = 0;

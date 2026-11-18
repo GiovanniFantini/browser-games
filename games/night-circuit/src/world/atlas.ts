@@ -1,64 +1,39 @@
-import raceCatalog from '../data/races.json';
+import rawDistrict from '../data/district.json';
+import { STREET_ORIGINS, streetHeight, streetPoint } from './street-layout';
+import { districtGraph } from './street-network';
+import {
+  worldRaces as raceCatalog,
+  worldDistrict as district,
+  worldExploration as exploration,
+} from './world-data';
 import {
   passHeight,
   appendPassGraph,
   interchangeHeight,
   appendInterchangeGraph,
 } from './pass';
-import exploration from '../data/exploration.json';
 import data from '../data/career.json';
-import district from '../data/district.json';
-import { createGraph, type RoadGraph } from './graph';
-export const ORIGINS = [
-  { x: 0, z: 0 },
-  { x: 1080, z: 0 },
-  { x: 1080, z: 1080 },
-  { x: 0, z: 1080 },
-] as const;
+import type { RoadGraph } from './graph';
+export const ORIGINS = STREET_ORIGINS;
 export function districtIndex(x: number, z: number) {
   return z > 540 ? (x > 540 ? 2 : 3) : x > 540 ? 1 : 0;
 }
-const elevations = Array.from(
-  { length: 81 },
-  (_, i) =>
-    55 *
-    Math.sin(((i % 9) / 8) * Math.PI) *
-    Math.sin((Math.floor(i / 9) / 8) * Math.PI),
-);
 export function roadHeight(x: number, z: number) {
   if (districtIndex(x, z) === 3 && z >= 1560) return interchangeHeight(x, z);
-  if (districtIndex(x, z) !== 2) return 0;
-  const lx = x - 1080,
-    lz = z - 1080;
-  if (lx > 480) return passHeight(x, z);
-  if (Math.abs(lx) > 480 || Math.abs(lz) > 480) return 0;
-  // Piecewise planar interpolation follows the physical terrain triangles.
-  const step = 120,
-    ax = Math.max(-480, Math.min(360, Math.floor(lx / step) * step)),
-    az = Math.max(-480, Math.min(360, Math.floor(lz / step) * step));
-  const n = ((az + 480) / 120) * 9 + (ax + 480) / 120;
-  const tx = (lx - ax) / step,
-    tz = (lz - az) / step;
-  const a = elevations[n],
-    b = elevations[n + 1],
-    c = elevations[n + 9],
-    d = elevations[n + 10];
-  return tx + tz <= 1
-    ? a + (b - a) * tx + (c - a) * tz
-    : d + (c - d) * (1 - tx) + (b - d) * (1 - tz);
+  if (districtIndex(x, z) === 2 && x > 1560) return passHeight(x, z);
+  return streetHeight(x, z);
 }
 export function atlasGraph(unlocked = 4): RoadGraph {
   const graph: RoadGraph = { nodes: [], edges: [] };
   for (let i = 0; i < Math.min(4, unlocked); i++) {
-    const local = createGraph(),
-      offset = graph.nodes.length,
-      o = ORIGINS[i];
+    const local = districtGraph(i),
+      offset = graph.nodes.length;
     for (const n of local.nodes)
       graph.nodes.push({
         ...n,
         id: n.id + offset,
-        x: n.x + o.x,
-        z: n.z + o.z,
+        x: n.x,
+        z: n.z,
         neighbors: n.neighbors.map((id) => id + offset),
       });
     for (const e of local.edges)
@@ -80,8 +55,8 @@ export function atlasGraph(unlocked = 4): RoadGraph {
       a = graph.nodes.length,
       b = a + 1;
     graph.nodes.push(
-      { id: a, ...passage.a, neighbors: [] },
-      { id: b, ...passage.b, neighbors: [] },
+      { id: a, ...streetPoint(passage.a.x, passage.a.z), neighbors: [] },
+      { id: b, ...streetPoint(passage.b.x, passage.b.z), neighbors: [] },
     );
     for (const [from, to] of [
       [a, offset + 36],
@@ -122,8 +97,7 @@ export function districtPois(index: number) {
         id: p.id,
         name: p.name,
         type: 'landmark',
-        x: (p.a.x + p.b.x) / 2,
-        z: p.a.z,
+        ...streetPoint((p.a.x + p.b.x) / 2, p.a.z),
         description:
           'Scorciatoia percorribile attraverso il centro dell’isolato.',
       })),
@@ -132,15 +106,14 @@ export function districtPois(index: number) {
   const o = ORIGINS[index],
     name = data.districts[index].name;
   return [
-    ...district.pois
+    ...rawDistrict.pois
       .filter((p) =>
         ['home', 'workshop', 'paint', 'body', 'dealer'].includes(p.id),
       )
       .map((p) => ({
         ...p,
         id: `${index}-${p.id}`,
-        x: p.x + o.x,
-        z: p.z + o.z,
+        ...streetPoint(p.x + o.x, p.z + o.z),
       })),
     {
       id: 'career-' + data.districts[index].id,
@@ -183,13 +156,7 @@ export const atlasPois = () =>
   data.districts.flatMap((_, i) => districtPois(i));
 
 export function localGraph(index: number) {
-  const g = createGraph(),
-    o = ORIGINS[index];
-  for (const n of g.nodes) {
-    n.x += o.x;
-    n.z += o.z;
-  }
-  return g;
+  return districtGraph(index);
 }
 export const accessCount = (defeated: readonly string[]) =>
   Math.min(4, defeated.length + 1);

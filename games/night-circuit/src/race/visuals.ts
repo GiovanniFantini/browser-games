@@ -1,7 +1,8 @@
 import { t } from '../ui/translation';
 import { preferences } from '../core/preferences';
 import * as THREE from 'three';
-import catalog from '../data/races.json';
+import { worldRaces as catalog } from '../world/world-data';
+import { roadHeight } from '../world/atlas';
 import type { RaceRoute } from './route';
 
 export class RaceVisuals {
@@ -70,7 +71,11 @@ export class RaceVisuals {
         }),
       );
       circle.rotation.x = Math.PI;
-      circle.position.set(event.meeting.x + 9, 0.9, event.meeting.z);
+      circle.position.set(
+        event.meeting.x + 9,
+        roadHeight(event.meeting.x + 9, event.meeting.z) + 0.9,
+        event.meeting.z,
+      );
       circle.userData.district =
         'district' in event ? event.district : 'old-docks';
       this.meetings.add(circle);

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { atlasGraph, roadHeight, ORIGINS } from './atlas';
 import { findPath, routeFromPosition } from './graph';
 import exploration from '../data/exploration.json';
+import { streetPoint } from './street-layout';
 describe('città continua', () => {
   it('collega ogni nodo dei soli quartieri aperti e include passaggi reali', () => {
     for (let count = 1; count <= 4; count++) {
@@ -17,14 +18,19 @@ describe('città continua', () => {
             queue.push(n);
           }
       expect(visited.size).toBe(g.nodes.length);
-      for (const e of g.edges)
+      for (const e of g.edges) {
+        const points = e.path ?? [g.nodes[e.a], g.nodes[e.b]];
         expect(e.length).toBeCloseTo(
-          Math.hypot(
-            g.nodes[e.a].x - g.nodes[e.b].x,
-            g.nodes[e.a].z - g.nodes[e.b].z,
-          ),
+          points
+            .slice(1)
+            .reduce(
+              (sum, p, i) =>
+                sum + Math.hypot(p.x - points[i].x, p.z - points[i].z),
+              0,
+            ),
           6,
         );
+      }
     }
   });
   it('calcola un GPS fra quartieri attraverso i ponti e usa le scorciatoie', () => {
@@ -38,9 +44,11 @@ describe('città continua', () => {
     ).toBe(true);
     for (let i = 0; i < 4; i++) {
       const s = exploration.shortcuts[i],
-        route = routeFromPosition(g, s.a, s.b);
-      expect(route[0]).toEqual(s.a);
-      expect(route.at(-1)).toEqual(s.b);
+        a = streetPoint(s.a.x, s.a.z),
+        b = streetPoint(s.b.x, s.b.z),
+        route = routeFromPosition(g, a, b);
+      expect(route[0]).toEqual(a);
+      expect(route.at(-1)).toEqual(b);
       expect(
         route.reduce(
           (sum, p, i) =>
@@ -48,11 +56,12 @@ describe('città continua', () => {
             (i ? Math.hypot(p.x - route[i - 1].x, p.z - route[i - 1].z) : 0),
           0,
         ),
-      ).toBeCloseTo(120, 3);
+      ).toBeCloseTo(Math.hypot(b.x - a.x, b.z - a.z), 3);
     }
   });
   it('ha quote continue e pendenze fisiche limitate, con accessi piani ai ponti', () => {
-    expect(roadHeight(1080, 1080)).toBeCloseTo(55);
+    expect(roadHeight(1080, 1080)).toBeGreaterThan(50);
+    expect(roadHeight(1080, 1080)).toBeLessThan(65);
     for (const p of ORIGINS) expect(roadHeight(p.x, p.z - 480)).toBeCloseTo(0);
     for (let z = 600; z < 1560; z += 15)
       for (let x = 600; x < 1560; x += 15) {

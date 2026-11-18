@@ -1,3 +1,7 @@
+import { createStreetTerrain, createStreetSurfaces } from './street-surfaces';
+import { districtGraph, signalPositions } from './street-network';
+import { streetPoint } from './street-layout';
+import { nearestRoad } from './graph';
 import { BuildingKit, KitBatch } from '../gen/buildings/kit';
 import { landmark } from './landmarks';
 import exploration from '../data/exploration.json';
@@ -8,7 +12,6 @@ import { passRoutes } from './pass';
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import data from '../data/career.json';
-import { createGraph } from './graph';
 import { ORIGINS, roadHeight, districtIndex, districtPois } from './atlas';
 import { asphaltMaterial } from './asphalt';
 import { signalColor } from '../traffic/signals';
@@ -55,40 +58,9 @@ export class MetroWorld {
         root = new THREE.Group(),
         colliders: RAPIER.Collider[] = [];
       scene.add(root);
-      const vertices: number[] = [],
-        triangles: number[] = [];
-      for (let z = -480; z <= 480; z += 120)
-        for (let x = -480; x <= 480; x += 120)
-          vertices.push(x + o.x, roadHeight(x + o.x, z + o.z) - 0.05, z + o.z);
-      for (let z = 0; z < 8; z++)
-        for (let x = 0; x < 8; x++) {
-          const n = z * 9 + x;
-          triangles.push(n, n + 9, n + 1, n + 1, n + 9, n + 10);
-        }
-      const ground = new THREE.BufferGeometry();
-      ground.setAttribute(
-        'position',
-        new THREE.Float32BufferAttribute(vertices, 3),
-      );
-      ground.setIndex(triangles);
-      ground.computeVertexNormals();
-      root.add(
-        new THREE.Mesh(
-          ground,
-          new THREE.MeshStandardMaterial({
-            color: index === 2 ? 0x20382d : 0x293440,
-            roughness: 0.85,
-          }),
-        ),
-      );
-      colliders.push(
-        world.createCollider(
-          RAPIER.ColliderDesc.trimesh(
-            new Float32Array(vertices),
-            new Uint32Array(triangles),
-          ),
-        ),
-      );
+      colliders.push(createStreetTerrain(root, world, index));
+      const graph = districtGraph(index),
+        signalPoints = graph.nodes.map((n) => signalPositions(graph, n.id));
       const borderMat = new THREE.MeshStandardMaterial({
         color: index === 2 ? 0x20382d : 0x293440,
         roughness: 0.85,
@@ -137,12 +109,26 @@ export class MetroWorld {
                 lights.setMatrixAt(id * 4 + row, this.dummy.matrix);
               continue;
             }
-            const bx = o.x - 420 + x * 120 + (k % 2 ? 23 : -23),
-              bz = o.z - 420 + z * 120 + (k < 2 ? -23 : 23),
+            const location = streetPoint(
+                o.x - 420 + x * 120 + (k % 2 ? 23 : -23),
+                o.z - 420 + z * 120 + (k < 2 ? -23 : 23),
+              ),
+              bx = location.x,
+              bz = location.z,
               w = 24 + random() * 9,
               d = 24 + random() * 9,
               h = info.theme.heightMin + random() * info.theme.heightRange,
               y = roadHeight(bx, bz);
+            const road = nearestRoad(graph, bx, bz);
+            if (
+              Math.hypot(road.x - bx, road.z - bz) <
+              Math.hypot(w, d) / 2 + (index === 3 ? 19 : 14)
+            ) {
+              this.dummy.matrix.makeScale(0, 0, 0);
+              buildings.setMatrixAt(id, this.dummy.matrix);
+              continue;
+            }
+            architecture.add('box', 'stone', bx, y - 1.5, bz, w, 3, d);
             this.dummy.position.set(bx, y + h / 2, bz);
             this.dummy.scale.set(w, h, d);
             this.dummy.rotation.set(0, 0, 0);
@@ -164,9 +150,9 @@ export class MetroWorld {
               world.createCollider(
                 RAPIER.ColliderDesc.cuboid(
                   w / 2,
-                  bodyHeight / 2,
+                  (bodyHeight + 3) / 2,
                   d / 2,
-                ).setTranslation(bx, y + bodyHeight / 2, bz),
+                ).setTranslation(bx, y + bodyHeight / 2 - 1.5, bz),
               ),
             );
             for (let row = 0; row < 4; row++) {
@@ -220,21 +206,27 @@ export class MetroWorld {
         roofs.setMatrixAt(id, this.dummy.matrix);
       }
       roofs.dispose();
-      for (const lot of info.architecture)
+      for (const lot of info.architecture) {
+        const p = streetPoint(o.x + lot.x, o.z + lot.z);
         landmark(
           root,
           world,
           colliders,
           lot.style,
-          o.x + lot.x,
-          roadHeight(o.x + lot.x, o.z + lot.z),
-          o.z + lot.z,
+          p.x,
+          roadHeight(p.x, p.z),
+          p.z,
           info.color,
         );
+      }
       if (index === 2) {
         for (let n = 0; n < 128; n++) {
-          const x = o.x - 420 + (n % 8) * 120,
-            z = o.z - 420 + Math.floor(n / 8) * 60;
+          const p = streetPoint(
+              o.x - 420 + (n % 8) * 120,
+              o.z - 420 + Math.floor(n / 8) * 60,
+            ),
+            x = p.x,
+            z = p.z;
           this.dummy.position.set(x, roadHeight(x, z) + 4, z);
           this.dummy.rotation.set(0, 0, 0);
           this.dummy.scale.setScalar(1);
@@ -243,119 +235,18 @@ export class MetroWorld {
         }
         root.add(trees);
       }
-      for (let i = 0; i < info.zones.length; i++)
+      for (let i = 0; i < info.zones.length; i++) {
+        const p = streetPoint(o.x - 240 + i * 240, o.z - 120);
         this.sign(
           root,
           info.zones[i],
-          o.x - 240 + i * 240,
-          roadHeight(o.x - 240 + i * 240, o.z - 120) + 9,
-          o.z - 120,
+          p.x,
+          roadHeight(p.x, p.z) + 9,
+          p.z,
           info.color,
         );
-      const graph = createGraph(),
-        roadVerts: number[] = [],
-        roadIndices: number[] = [];
-      const width = index === 1 ? 18 : index === 3 ? 36 : 24;
-      for (const e of graph.edges) {
-        const a = graph.nodes[e.a],
-          b = graph.nodes[e.b],
-          dx = (b.x - a.x) / e.length,
-          dz = (b.z - a.z) / e.length,
-          n = roadVerts.length / 3;
-        for (const [p, s] of [
-          [a, -1],
-          [a, 1],
-          [b, -1],
-          [b, 1],
-        ] as const) {
-          const x = p.x + o.x + ((dz * width) / 2) * s,
-            z = p.z + o.z - ((dx * width) / 2) * s;
-          roadVerts.push(x, roadHeight(x, z) + 0.025, z);
-        }
-        roadIndices.push(n, n + 2, n + 1, n + 1, n + 2, n + 3);
       }
-      // Intersection pads leave every spline turn on a physical surface.
-      for (const p of graph.nodes) {
-        const n = roadVerts.length / 3;
-        for (const [x, z] of [
-          [-width / 2, -width / 2],
-          [width / 2, -width / 2],
-          [-width / 2, width / 2],
-          [width / 2, width / 2],
-        ])
-          roadVerts.push(
-            p.x + o.x + x,
-            roadHeight(p.x + o.x + x, p.z + o.z + z) + 0.026,
-            p.z + o.z + z,
-          );
-        roadIndices.push(n, n + 2, n + 1, n + 1, n + 2, n + 3);
-      }
-      const roads = new THREE.BufferGeometry();
-      roads.setAttribute(
-        'position',
-        new THREE.Float32BufferAttribute(roadVerts, 3),
-      );
-      roads.setIndex(roadIndices);
-      roads.setAttribute(
-        'uv',
-        new THREE.Float32BufferAttribute(
-          roadVerts.flatMap((v, i) => (i % 3 === 1 ? [] : [v / 120])),
-          2,
-        ),
-      );
-      roads.computeVertexNormals();
-      const roadMaterial = asphaltMaterial();
-      roadMaterial.side = THREE.DoubleSide;
-      roadMaterial.clearcoat = 0.35;
-      roadMaterial.roughness = 0.8;
-      root.add(new THREE.Mesh(roads, roadMaterial));
-      const pavement: number[] = [],
-        pavementIndices: number[] = [];
-      for (const edge of graph.edges) {
-        const a = graph.nodes[edge.a],
-          b = graph.nodes[edge.b],
-          dx = (b.x - a.x) / edge.length,
-          dz = (b.z - a.z) / edge.length;
-        for (const side of [-1, 1]) {
-          const n = pavement.length / 3;
-          for (const [along, offset] of [
-            [width / 2 + 1, width / 2 + 0.5],
-            [width / 2 + 1, width / 2 + 3.5],
-            [edge.length - width / 2 - 1, width / 2 + 0.5],
-            [edge.length - width / 2 - 1, width / 2 + 3.5],
-          ]) {
-            const x = o.x + a.x + dx * along + dz * offset * side,
-              z = o.z + a.z + dz * along - dx * offset * side;
-            pavement.push(x, roadHeight(x, z) + 0.13, z);
-          }
-          pavementIndices.push(n, n + 2, n + 1, n + 1, n + 2, n + 3);
-        }
-      }
-      const walks = new THREE.BufferGeometry();
-      walks.setAttribute(
-        'position',
-        new THREE.Float32BufferAttribute(pavement, 3),
-      );
-      walks.setIndex(pavementIndices);
-      walks.computeVertexNormals();
-      root.add(
-        new THREE.Mesh(
-          walks,
-          new THREE.MeshStandardMaterial({
-            color: 0x3c4855,
-            roughness: 0.8,
-            side: THREE.DoubleSide,
-          }),
-        ),
-      );
-      colliders.push(
-        world.createCollider(
-          RAPIER.ColliderDesc.trimesh(
-            new Float32Array(pavement),
-            new Uint32Array(pavementIndices),
-          ).setFriction(1),
-        ),
-      );
+      colliders.push(...createStreetSurfaces(root, world, graph, index));
       const poles = new THREE.InstancedMesh(
         box,
         new THREE.MeshStandardMaterial({ color: 0x465361, roughness: 0.7 }),
@@ -364,9 +255,9 @@ export class MetroWorld {
       for (const node of graph.nodes)
         for (let d = 0; d < 2; d++) {
           this.dummy.position.set(
-            node.x + o.x + (d ? 10 : -10),
-            roadHeight(node.x + o.x, node.z + o.z) + 2,
-            node.z + o.z + 10,
+            signalPoints[node.id][d].x,
+            signalPoints[node.id][d].y + 2,
+            signalPoints[node.id][d].z,
           );
           this.dummy.rotation.set(0, 0, 0);
           this.dummy.scale.set(0.15, 4, 0.15);
@@ -382,9 +273,9 @@ export class MetroWorld {
       for (const n of graph.nodes)
         for (let d = 0; d < 2; d++) {
           this.dummy.position.set(
-            n.x + o.x + (d ? 10 : -10),
-            roadHeight(n.x + o.x, n.z + o.z) + 4,
-            n.z + o.z + 10,
+            signalPoints[n.id][d].x,
+            signalPoints[n.id][d].y + 4,
+            signalPoints[n.id][d].z,
           );
           this.dummy.scale.setScalar(1);
           this.dummy.updateMatrix();
@@ -403,10 +294,24 @@ export class MetroWorld {
       if (index === 3) {
         // Open-ended tunnel over the western expressway.
         for (let z = -240; z <= 240; z += 24) {
+          if (z % 120 === 0) continue;
           this.block(root, colliders, o.x - 18, 4, o.z + z, 1, 8, 24, buildMat);
           this.block(root, colliders, o.x + 18, 4, o.z + z, 1, 8, 24, buildMat);
         }
         this.block(root, colliders, o.x, 8.5, o.z, 38, 1, 504, buildMat);
+        const tunnelLampMaterial = new THREE.MeshBasicMaterial({
+          color: 0xffd3a1,
+        });
+        for (let z = -180; z <= 180; z += 120)
+          for (const side of [-1, 1]) {
+            const fixture = new THREE.Mesh(
+              new THREE.BoxGeometry(0.9, 0.13, 0.6),
+              tunnelLampMaterial,
+            );
+            fixture.position.set(o.x + side * 14, 7.8, o.z + z);
+            root.add(fixture);
+          }
+
         this.sign(
           root,
           'NACELLE / AIRPORT BELT',

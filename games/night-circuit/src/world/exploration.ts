@@ -1,5 +1,7 @@
+import RAPIER from '@dimforge/rapier3d-compat';
+import { streetPoint } from './street-layout';
 import * as THREE from 'three';
-import data from '../data/exploration.json';
+import { worldExploration as data } from './world-data';
 import { roadHeight } from './atlas';
 import type { Profile } from '../progression/profile';
 export const collectionIds = new Set(data.collectibles.map((p) => p.id));
@@ -12,7 +14,14 @@ export function collect(profile: Profile, id: string) {
 }
 export class Exploration {
   private readonly pieces: THREE.Mesh[] = [];
-  constructor(scene: THREE.Scene) {
+  private readonly roads: {
+    collider: RAPIER.Collider;
+    district: number;
+    x: number;
+    z: number;
+    enabled: boolean;
+  }[] = [];
+  constructor(scene: THREE.Scene, world: RAPIER.World) {
     const geometry = new THREE.TorusGeometry(1, 0.16, 5, 8),
       material = new THREE.MeshBasicMaterial({ color: 0xd5ed88 });
     for (const p of data.collectibles) {
@@ -31,8 +40,10 @@ export class Exploration {
         indices: number[] = [];
       for (let i = 0; i <= 24; i++) {
         const x = p.a.x + ((p.b.x - p.a.x) * i) / 24;
-        for (const side of [-1, 1])
-          v.push(x, roadHeight(x, p.a.z + side * 3) + 0.04, p.a.z + side * 3);
+        for (const side of [-1, 1]) {
+          const mapped = streetPoint(x, p.a.z + side * 3);
+          v.push(mapped.x, roadHeight(mapped.x, mapped.z) + 0.04, mapped.z);
+        }
         if (i) {
           const n = i * 2;
           indices.push(n - 2, n - 1, n, n - 1, n + 1, n);
@@ -43,6 +54,20 @@ export class Exploration {
       g.setIndex(indices);
       g.computeVertexNormals();
       scene.add(new THREE.Mesh(g, mat));
+      const collider = world.createCollider(
+        RAPIER.ColliderDesc.trimesh(
+          new Float32Array(v),
+          new Uint32Array(indices),
+        ).setFriction(1),
+      );
+      collider.setEnabled(false);
+      const middle = streetPoint((p.a.x + p.b.x) / 2, (p.a.z + p.b.z) / 2);
+      this.roads.push({
+        collider,
+        district: p.district,
+        ...middle,
+        enabled: false,
+      });
     }
   }
   update(
@@ -54,6 +79,14 @@ export class Exploration {
     unlocked: number,
     canCollect: boolean,
   ): string | undefined {
+    for (const road of this.roads) {
+      const enabled =
+        road.district < unlocked && Math.hypot(x - road.x, z - road.z) < 1120;
+      if (enabled !== road.enabled) {
+        road.collider.setEnabled(enabled);
+        road.enabled = enabled;
+      }
+    }
     let found: string | undefined;
     for (let i = 0; i < this.pieces.length; i++) {
       const p = data.collectibles[i],

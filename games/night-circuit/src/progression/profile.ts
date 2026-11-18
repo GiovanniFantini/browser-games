@@ -46,6 +46,11 @@ export interface Profile {
   ghost: GhostRecord | null;
   cup: CupState | null;
   bestScores: Record<string, number>;
+  recordsLayout: 2;
+  previousRecords: {
+    bestTimes: Record<string, number>;
+    bestScores: Record<string, number>;
+  };
   credits: number;
   cars: GarageCar[];
   activeCar: string;
@@ -62,6 +67,8 @@ export function freshProfile(): Profile {
     ghost: null,
     cup: null,
     bestScores: {},
+    recordsLayout: 2,
+    previousRecords: { bestTimes: {}, bestScores: {} },
     credits: catalog.initialCredits,
     cars: [
       {
@@ -254,6 +261,35 @@ export function parseProfile(raw: string): Profile {
       throw Error('Punteggio non valido.');
     bestScores[id] = value as number;
   }
+  if (input.recordsLayout !== undefined && input.recordsLayout !== 2)
+    throw Error('Versione record non valida.');
+  const previousRecords: {
+    bestTimes: Record<string, number>;
+    bestScores: Record<string, number>;
+  } = { bestTimes: {}, bestScores: {} };
+  if (input.previousRecords !== undefined) {
+    const previous = object(input.previousRecords);
+    for (const kind of ['bestTimes', 'bestScores'] as const)
+      for (const [id, value] of Object.entries(object(previous[kind]))) {
+        const limit = kind === 'bestTimes' ? 86400 : 1e9;
+        if (
+          !events.includes(id) ||
+          typeof value !== 'number' ||
+          !Number.isFinite(value) ||
+          value < 0 ||
+          value > limit ||
+          (kind === 'bestTimes' && value === 0)
+        )
+          throw Error('Record precedente non valido.');
+        previousRecords[kind][id] = value;
+      }
+  }
+  if (input.recordsLayout === undefined) {
+    Object.assign(previousRecords.bestTimes, bestTimes);
+    Object.assign(previousRecords.bestScores, bestScores);
+    for (const id of Object.keys(bestTimes)) delete bestTimes[id];
+    for (const id of Object.keys(bestScores)) delete bestScores[id];
+  }
   const ghost = parseGhost(input.ghost),
     cup = parseCup(input.cup);
   if (
@@ -270,6 +306,8 @@ export function parseProfile(raw: string): Profile {
     version: 6,
     exploration: [...input.exploration] as string[],
     career: parseCareer(input.career),
+    recordsLayout: 2,
+    previousRecords,
     ghost,
     cup,
     bestScores,

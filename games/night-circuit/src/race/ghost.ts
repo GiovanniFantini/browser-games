@@ -1,8 +1,10 @@
+import { streetPoint, streetHeight } from '../world/street-layout';
 import * as THREE from 'three';
 import settings from '../data/modes.json';
 import { createCar } from '../vehicle/model';
 export interface GhostRecord {
   version: number;
+  layout?: 2;
   event: string;
   duration: number;
   frames: number[][];
@@ -56,6 +58,7 @@ export class GhostRecorder {
     try {
       return parseGhost({
         version: settings.ghost.version,
+        layout: 2,
         event,
         duration,
         frames,
@@ -73,6 +76,7 @@ export function parseGhost(value: unknown): GhostRecord | null {
   if (
     g.version !== settings.ghost.version ||
     g.event !== 'ghost-foundry' ||
+    (g.layout !== undefined && g.layout !== 2) ||
     !Number.isFinite(g.duration) ||
     g.duration <= 0 ||
     g.duration > settings.ghost.maxDuration ||
@@ -98,7 +102,13 @@ export function parseGhost(value: unknown): GhostRecord | null {
   });
   if (frames[0][0] !== 0 || Math.abs(frames.at(-1)![0] - g.duration) > 0.025)
     throw Error('Fantasma incompleto.');
-  return { version: g.version, event: g.event, duration: g.duration, frames };
+  return {
+    version: g.version,
+    ...(g.layout === 2 ? { layout: 2 as const } : {}),
+    event: g.event,
+    duration: g.duration,
+    frames,
+  };
 }
 export class GhostCar {
   private readonly car = createCar({ simple: true, color: '#55d8ed' });
@@ -124,7 +134,51 @@ export class GhostCar {
     scene.add(this.car.root);
   }
   load(record: GhostRecord | null) {
-    this.record = record;
+    // Legacy recordings remain importable. Adapt their pose at playback only,
+    // leaving the saved original and its timing untouched.
+    this.record =
+      record && record.layout !== 2
+        ? {
+            ...record,
+            layout: 2,
+            frames: record.frames.map((frame) => {
+              const f = [...frame],
+                p = streetPoint(f[1], f[3]);
+              const q = new THREE.Quaternion(f[4], f[5], f[6], f[7]);
+              const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(q);
+              const next = streetPoint(f[1] + forward.x, f[3] + forward.z);
+              const delta =
+                Math.atan2(next.x - p.x, next.z - p.z) -
+                Math.atan2(forward.x, forward.z);
+              q.premultiply(
+                new THREE.Quaternion().setFromAxisAngle(
+                  THREE.Object3D.DEFAULT_UP,
+                  delta,
+                ),
+              );
+              const oldPitch = Math.asin(Math.max(-1, Math.min(1, forward.y))),
+                newPitch = Math.atan2(
+                  streetHeight(next.x, next.z) - streetHeight(p.x, p.z),
+                  Math.hypot(next.x - p.x, next.z - p.z),
+                );
+              const yaw = Math.atan2(next.x - p.x, next.z - p.z);
+              q.premultiply(
+                new THREE.Quaternion().setFromAxisAngle(
+                  new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw)),
+                  oldPitch - newPitch,
+                ),
+              );
+              f[1] = p.x;
+              f[2] += streetHeight(p.x, p.z);
+              f[3] = p.z;
+              f[4] = q.x;
+              f[5] = q.y;
+              f[6] = q.z;
+              f[7] = q.w;
+              return f;
+            }),
+          }
+        : record;
     this.index = 0;
     this.car.root.visible = false;
   }

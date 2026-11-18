@@ -1,3 +1,5 @@
+import { edgeFrame } from './street-network';
+import { streetHeight } from './street-layout';
 import * as THREE from 'three';
 import type { RoadGraph } from './graph';
 
@@ -57,13 +59,12 @@ export function createStreetTrees(scene: THREE.Scene, graph: RoadGraph) {
     return (seed >>> 0) / 4294967296;
   };
   graph.edges.forEach((e, i) => {
-    const a = graph.nodes[e.a],
-      b = graph.nodes[e.b],
-      vertical = a.x === b.x,
+    const f = edgeFrame(graph, e),
       side = i % 2 ? 1 : -1;
-    const x = (a.x + b.x) / 2 + (vertical ? side * 19 : 13),
-      z = (a.z + b.z) / 2 + (vertical ? 13 : side * 19);
-    dummy.position.set(x, 2.35, z);
+    const x = f.x + f.dz * side * ((e.width ?? 24) / 2 + 7) + f.dx * 13,
+      z = f.z - f.dx * side * ((e.width ?? 24) / 2 + 7) + f.dz * 13,
+      y = streetHeight(x, z);
+    dummy.position.set(x, y + 2.35, z);
     dummy.scale.set(1, 1, 1);
     dummy.rotation.set(0, 0, 0.05);
     dummy.updateMatrix();
@@ -73,7 +74,7 @@ export function createStreetTrees(scene: THREE.Scene, graph: RoadGraph) {
         spread = Math.sqrt(random()) * 2.3;
       dummy.position.set(
         x + Math.sin(angle) * spread,
-        4.8 + random() * 3.1,
+        y + 4.8 + random() * 3.1,
         z + Math.cos(angle) * spread,
       );
       dummy.scale.set(0.65 + random() * 0.5, 0.8 + random() * 0.5, 1);

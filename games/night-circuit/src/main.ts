@@ -36,8 +36,12 @@ import { ChaseCamera } from './vehicle/camera';
 import { createTrack } from './world/track';
 import { Hud } from './ui/hud';
 import { EngineAudio } from './audio/engine';
-import district from './data/district.json';
-import { createGraph } from './world/graph';
+import {
+  worldDistrict as district,
+  worldRaces as raceCatalog,
+} from './world/world-data';
+import { districtGraph } from './world/street-network';
+import { streetSpawn } from './world/street-layout';
 import { City } from './world/city';
 import { Exploration, collect } from './world/exploration';
 import { DrivingStyle } from './vehicle/style';
@@ -57,7 +61,6 @@ import { Navigation } from './ui/navigation';
 import { RaceSystem } from './race/system';
 import type { RaceOptions } from './ui/races';
 import type { QAControls } from './core/qa';
-import raceCatalog from './data/races.json';
 import { GarageUI } from './ui/garage';
 import { browserStore } from './progression/storage';
 import { activeCar, settleRace } from './progression/profile';
@@ -638,7 +641,7 @@ async function boot() {
     world.timestep = FIXED_DT;
     if (testTrack) createTrack(scene, world);
     else {
-      const graph = createGraph();
+      const graph = districtGraph(0);
       const cityRoot = new THREE.Scene();
       scene.add(cityRoot);
       city = new City(cityRoot, world, graph, initialLow, district, true);
@@ -769,11 +772,7 @@ async function boot() {
             'Guida libera · ' + info.name;
           document.querySelector('.location')!.innerHTML =
             `<span class="live-dot"></span> PORT RIDERS <span class="separator">/</span> ${info.name.toUpperCase()}`;
-          vehicle.setSpawn(
-            o.x - 4.5,
-            roadHeight(o.x - 4.5, o.z - 310) + 1.15,
-            o.z - 310,
-          );
+          vehicle.setSpawn(...streetSpawn(o.x - 4.5, o.z - 310));
           if (teleport) {
             metro!.update(
               o.x,
@@ -881,7 +880,9 @@ async function boot() {
       races?.stop();
       hud.error('Contesto grafico perso. Ricarica la pagina per riprovare.');
     });
-    const explorationWorld = testTrack ? undefined : new Exploration(scene);
+    const explorationWorld = testTrack
+      ? undefined
+      : new Exploration(scene, world);
     const drivingStyle = new DrivingStyle();
     const lighting = metro ? new WorldLighting(scene) : undefined;
     lighting?.update(

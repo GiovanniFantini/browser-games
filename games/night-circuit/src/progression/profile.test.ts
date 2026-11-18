@@ -11,6 +11,22 @@ import {
 import { calculateStats, catalog, stockLevels } from './catalog';
 import { ProfileStore, SAVE_KEY } from './storage';
 
+it('separa i record della mappa precedente senza perderli o confrontarli con le nuove gare', () => {
+  const legacy: Record<string, unknown> = {
+    ...freshProfile(),
+    bestTimes: { 'circuit-foundry': 12 },
+    bestScores: { 'drift-foundry': 5000 },
+  };
+  delete legacy.recordsLayout;
+  delete legacy.previousRecords;
+  const p = parseProfile(JSON.stringify(legacy));
+  expect(p.bestTimes).toEqual({});
+  expect(p.bestScores).toEqual({});
+  expect(p.previousRecords.bestTimes).toEqual({ 'circuit-foundry': 12 });
+  expect(p.previousRecords.bestScores).toEqual({ 'drift-foundry': 5000 });
+  expect(parseProfile(JSON.stringify(p))).toEqual(p);
+});
+
 describe('catalogo, economia e compatibilità', () => {
   it('offre undici categorie con tre livelli che modificano statistiche effettive', () => {
     expect(catalog.categories).toHaveLength(11);

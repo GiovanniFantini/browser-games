@@ -1,8 +1,10 @@
+import { streetPoint } from '../world/street-layout';
+import { edgeFrame } from '../world/street-network';
 import { roadHeight } from '../world/atlas';
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import data from '../data/district.json';
-import type { RoadGraph } from '../world/graph';
+import { findPath, type RoadGraph } from '../world/graph';
 import { signalColor } from './signals';
 import modeConfig from '../data/modes.json';
 
@@ -38,12 +40,25 @@ function makeRoute(graph: RoadGraph, index: number): Route {
     top = Math.floor(index / 3) % 3;
   const right = Math.min(n - 1, left + 3 + (index % 3)),
     bottom = Math.min(n - 1, top + 3 + (Math.floor(index / 2) % 3));
+  const corners: number[] = [];
+  for (let x = left; x < right; x++) corners.push(top * n + x);
+  for (let z = top; z < bottom; z++) corners.push(z * n + right);
+  for (let x = right; x > left; x--) corners.push(bottom * n + x);
+  for (let z = bottom; z > top; z--) corners.push(z * n + left);
+  if (index % 2) corners.reverse();
   const ids: number[] = [];
-  for (let x = left; x < right; x++) ids.push(top * n + x);
-  for (let z = top; z < bottom; z++) ids.push(z * n + right);
-  for (let x = right; x > left; x--) ids.push(bottom * n + x);
-  for (let z = bottom; z > top; z--) ids.push(z * n + left);
-  if (index % 2) ids.reverse();
+  for (let i = 0; i < corners.length; i++) {
+    const path = findPath(graph, corners[i], corners[(i + 1) % corners.length]);
+    for (const id of path.slice(0, -1)) {
+      if (ids.at(-1) === id) continue;
+      if (ids.at(-2) === id) ids.pop();
+      else ids.push(id);
+    }
+  }
+  while (ids.length > 3 && ids[1] === ids.at(-1)) {
+    ids.shift();
+    ids.pop();
+  }
   const points: Point[] = [],
     stops: Stop[] = [];
   let length = 0;
@@ -56,25 +71,57 @@ function makeRoute(graph: RoadGraph, index: number): Route {
     const a = graph.nodes[ids[i]],
       b = graph.nodes[ids[(i + 1) % ids.length]],
       c = graph.nodes[ids[(i + 2) % ids.length]];
-    const norm = Math.hypot(b.x - a.x, b.z - a.z),
-      nextNorm = Math.hypot(c.x - b.x, c.z - b.z);
-    const dx = (b.x - a.x) / norm,
-      dz = (b.z - a.z) / norm,
-      nx = (c.x - b.x) / nextNorm,
-      nz = (c.z - b.z) / nextNorm;
-    const offset = data.laneOffset;
-    const startX = a.x - dz * offset + dx * 15,
-      startZ = a.z + dx * offset + dz * 15;
-    const endX = b.x - dz * offset - dx * 15,
-      endZ = b.z + dx * offset - dz * 15;
-    add(startX, startZ);
+    const edge = graph.edges.find(
+      (e) => (e.a === a.id && e.b === b.id) || (e.a === b.id && e.b === a.id),
+    )!;
+    const nextEdge = graph.edges.find(
+      (e) => (e.a === b.id && e.b === c.id) || (e.a === c.id && e.b === b.id),
+    )!;
+    const at = (distance: number) => {
+      const f = edgeFrame(
+        graph,
+        edge,
+        edge.a === a.id ? distance / edge.length : 1 - distance / edge.length,
+      );
+      if (edge.a !== a.id) {
+        f.dx *= -1;
+        f.dz *= -1;
+      }
+      return f;
+    };
+    const end = at(edge.length - 15);
+    const next = edgeFrame(
+      graph,
+      nextEdge,
+      nextEdge.a === b.id ? 15 / nextEdge.length : 1 - 15 / nextEdge.length,
+    );
+    if (nextEdge.a !== b.id) {
+      next.dx *= -1;
+      next.dz *= -1;
+    }
+    const dx = end.dx,
+      dz = end.dz,
+      nx = next.dx,
+      nz = next.dz,
+      offset = data.laneOffset;
+    const endX = end.x - dz * offset,
+      endZ = end.z + dx * offset;
+    for (let d = 15; d < edge.length - 15; d += 4) {
+      const f = at(d);
+      add(f.x - f.dz * offset, f.z + f.dx * offset);
+    }
     add(endX, endZ);
-    stops.push({ distance: length, node: b.id, vertical: dx === 0 });
-    const nextX = b.x - nz * offset + nx * 15,
-      nextZ = b.z + nx * offset + nz * 15;
+    stops.push({
+      distance: length,
+      node: b.id,
+      vertical: Math.abs(dz) > Math.abs(dx),
+    });
+    const nextX = next.x - nz * offset,
+      nextZ = next.z + nx * offset;
     // Quadratic spline rounds each junction while remaining inside its square.
-    const controlX = b.x - (dz + nz) * offset,
-      controlZ = b.z + (dx + nx) * offset;
+    const denominator = Math.max(0.2, 1 + dx * nx + dz * nz);
+    const controlX = b.x - ((dz + nz) * offset) / denominator,
+      controlZ = b.z + ((dx + nx) * offset) / denominator;
     for (let j = 1; j <= 8; j++) {
       const t = j / 8,
         s = 1 - t;
@@ -115,30 +162,46 @@ export class Traffic {
         const x = i % 2 ? 4.5 : -4.5,
           points: Point[] = [];
         let distance = 0;
-        for (const [px, pz] of [
+        const corners = [
           [x, -480],
           [x, 480],
           [x + 120, 480],
           [x + 120, -480],
           [x, -480],
-        ]) {
-          const last = points.at(-1);
-          if (last) distance += Math.hypot(px - last.x, pz - last.z);
-          points.push({ x: px, z: pz, distance });
+        ];
+        for (let j = 0; j < corners.length - 1; j++) {
+          const a = corners[j],
+            b = corners[j + 1],
+            steps = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 4);
+          for (let k = j ? 1 : 0; k <= steps; k++) {
+            const p = streetPoint(
+                a[0] + ((b[0] - a[0]) * k) / steps,
+                a[1] + ((b[1] - a[1]) * k) / steps,
+              ),
+              last = points.at(-1);
+            if (last) distance += Math.hypot(p.x - last.x, p.z - last.z);
+            points.push({ ...p, distance });
+          }
         }
         const c = this.cars[i];
         c.route = { points, stops: [], length: distance };
         c.distance = 250 + i * 105;
         c.speed = modeConfig.drag.trafficSpeed;
         this.locate(c);
-        c.body.setTranslation({ x: c.x, y: 0.53, z: c.z }, false);
+        c.body.setTranslation(
+          { x: c.x, y: roadHeight(c.x, c.z) + 0.53, z: c.z },
+          false,
+        );
       }
     } else if (!enabled && this.savedRoutes) {
       this.cars.forEach((c, i) => {
         c.route = this.savedRoutes![i].route;
         c.distance = this.savedRoutes![i].distance;
         this.locate(c);
-        c.body.setTranslation({ x: c.x, y: 0.53, z: c.z }, false);
+        c.body.setTranslation(
+          { x: c.x, y: roadHeight(c.x, c.z) + 0.53, z: c.z },
+          false,
+        );
       });
       this.savedRoutes = null;
     }
@@ -202,11 +265,21 @@ export class Traffic {
         body,
       };
       this.locate(car);
-      body.setTranslation({ x: car.x, y: 0.53, z: car.z }, false);
-      this.quaternion.setFromAxisAngle(
-        THREE.Object3D.DEFAULT_UP,
-        Math.atan2(car.dx, car.dz),
+      body.setTranslation(
+        { x: car.x, y: roadHeight(car.x, car.z) + 0.53, z: car.z },
+        false,
       );
+      this.dummy.rotation.set(
+        -Math.atan2(
+          roadHeight(car.x + car.dx, car.z + car.dz) -
+            roadHeight(car.x - car.dx, car.z - car.dz),
+          2,
+        ),
+        Math.atan2(car.dx, car.dz),
+        0,
+        'YXZ',
+      );
+      this.quaternion.copy(this.dummy.quaternion);
       body.setRotation(this.quaternion, false);
       this.cars.push(car);
       this.shell.setColorAt(i, new THREE.Color(colors[i % colors.length]));
@@ -295,10 +368,17 @@ export class Traffic {
       this.translation.y = roadHeight(car.x, car.z) + 0.53;
       this.translation.x = car.x;
       this.translation.z = car.z;
-      this.quaternion.setFromAxisAngle(
-        THREE.Object3D.DEFAULT_UP,
+      this.dummy.rotation.set(
+        -Math.atan2(
+          roadHeight(car.x + car.dx, car.z + car.dz) -
+            roadHeight(car.x - car.dx, car.z - car.dz),
+          2,
+        ),
         Math.atan2(car.dx, car.dz),
+        0,
+        'YXZ',
       );
+      this.quaternion.copy(this.dummy.quaternion);
       car.body.setNextKinematicTranslation(this.translation);
       car.body.setNextKinematicRotation(this.quaternion);
     }

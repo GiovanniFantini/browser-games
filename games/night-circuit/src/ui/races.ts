@@ -2,7 +2,7 @@ import type { ModeSession } from '../race/mode-session';
 import type { Vehicle } from '../vehicle/vehicle';
 import type { CupState } from '../race/tournament';
 import modes from '../data/modes.json';
-import catalog from '../data/races.json';
+import { worldRaces as catalog } from '../world/world-data';
 import type { RaceSession } from '../race/session';
 
 const labels: Record<string, string> = {
