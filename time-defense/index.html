@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071e25" />
+    <meta
+      name="description"
+      content="Time Defense: cinque livelli nella saga dei dinosauri, difese viventi e un Custode da liberare."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2307303a' stroke='%23f4b32f' stroke-width='3'/%3E%3Cpath d='m16 5 5 11-5 11-5-11Z' fill='%23a9ebd7'/%3E%3C/svg%3E"
+    />
+    <title>Time Defense · Custodi delle Epoche</title>
+    <script type="module" crossorigin src="./assets/index-Dr7sfa0u.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BbJ0rscY.css">
+  </head>
+  <body>
+    <img id="backdrop" class="backdrop" alt="" aria-hidden="true" />
+    <div class="shade" aria-hidden="true"></div>
+    <main id="app">
+      <section id="intro" class="intro" aria-labelledby="title">
+        <p class="eyebrow">Custodi delle Epoche</p>
+        <h1 id="title">Time Defense</h1>
+        <img id="menu-lia" class="menu-lia" width="96" height="96" alt="Lia, esploratrice con capelli ricci e sciarpa turchese" />
+        <p class="lead">Ogni epoca, una nuova difesa.</p>
+        <p>
+          Il viaggio comincia fra felci giganti, creature disorientate e
+          fratture nel tempo.
+        </p>
+        <p id="availability" class="availability">Per giocare serve una finestra di almeno 1024 × 720 pixel.</p>
+        <p id="campaign-summary" role="status"></p>
+        <div class="menu-actions"><button id="continue-saga" type="button" hidden>Continua la saga</button><button id="open-settings" class="secondary" type="button">Impostazioni</button><button id="audio-toggle" class="secondary" type="button">Attiva audio</button><button id="reread-intro" class="secondary" type="button">Introduzione</button></div>
+        <p class="save-status" data-save-status role="status"></p>
+        <noscript
+          >
+          <p class="no-script">
+            Attiva JavaScript per aprire le anteprime. Puoi comunque ricaricare
+            la pagina dal collegamento qui sotto.
+          </p></noscript
+        >
+        <div
+          class="intro-actions"
+          role="group"
+          aria-label="Gioco e anteprime disponibili"
+        >
+          <div id="campaign-levels" class="campaign-levels" aria-label="Livelli della saga"><button id="open-mission" type="button" disabled aria-describedby="availability">Gioca la Foresta</button>
+          <button id="open-river" type="button" disabled class="secondary">Fiume · completa la Foresta</button>
+          <button id="open-swamp" type="button" disabled class="secondary">Palude · completa il Fiume</button>
+          <button id="open-plateau" type="button" disabled class="secondary">Altopiano · completa la Palude</button>
+          <button id="open-rift" type="button" disabled class="secondary">Valle · completa l’Altopiano</button>
+          </div>
+          <button id="open-notes" type="button" hidden disabled class="secondary">Appunti della Foresta</button>
+          <details id="lab-tools" hidden><summary>Allenamento libero</summary><div class="training-actions"><button class="secondary"
+            id="open-field"
+            type="button"
+            disabled
+            aria-describedby="availability"
+          >
+            Esplora il campo
+          </button>
+          <button id="open-movement" type="button" disabled class="secondary" aria-describedby="availability">Prova il movimento</button>
+          <button id="open-combat" type="button" disabled class="secondary" aria-describedby="availability">Prova i colpi</button>
+          <button id="open-economy" type="button" disabled class="secondary" aria-describedby="availability">Prova costruzione</button>
+          <button id="open-waves" type="button" disabled class="secondary" aria-describedby="availability">Prova ondate</button>
+          <button
+            id="observe"
+            type="button"
+            disabled
+            aria-describedby="availability"
+            class="secondary"
+          >
+            Osserva l’ambientazione
+          </button>
+          </div></details>
+        </div>
+        <p id="boot-status" class="status" role="status">
+          Preparazione del viaggio. Se non si apre, ricarica la pagina.
+        </p>
+        <button id="retry" type="button" class="secondary" hidden>
+          Riprova caricamento
+        </button>
+        <a class="reload" href="./">Ricarica la pagina</a>
+      </section>
+      <section
+        id="observation"
+        class="observation"
+        aria-label="Osservazione dell’ambientazione"
+        aria-describedby="observation-description"
+        hidden
+      >
+        <button id="back" type="button">Torna alla presentazione</button>
+        <p id="observation-description" class="observation-note">
+          Margine della foresta
+          <span
+            >Una foresta con un sentiero sinuoso, piazzole rotonde e un portale
+            azzurro sulla destra.</span
+          >
+        </p>
+      </section>
+      <section
+        id="field-view"
+        aria-label="Anteprima del campo"
+        hidden
+      ></section>
+    </main>
+  </body>
+</html>

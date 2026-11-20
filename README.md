@@ -1,8 +1,12 @@
-# NIGHT CIRCUIT: Neon Streets
+# BrowserGames
+
+[Scegli il gioco](https://giovannifantini.github.io/night-circuit/) oppure apri [Time Defense](./time-defense/), un tower defense in cinque livelli nella saga dei dinosauri.
+
+## NIGHT CIRCUIT: Neon Streets
 
 Gioco di guida arcade 3D per browser desktop.
 
-Gioca: https://giovannifantini.github.io/night-circuit/
+[Apri NIGHT CIRCUIT](./guida/)
 
 WASD: guida. C: visuale. H: garage. G: mappa. Esc: pausa.
 
@@ -15,3 +19,4 @@ Revisione grafica aggiornata: cielo e materiali procedurali, illuminazione nottu
 Aggiornamento del 17 novembre 2026: rendering ottimizzato conservando la grafica, correzioni a coppa, fantasma e personalizzazioni del tetto. Review conclusiva Codex e Opus: READY TO GO IN PROD e raggiunto. Sorgenti della build: c10cd11585aea0f4aff9b893748f5c1409876751.
 
 Aggiornamento del 18 novembre 2026: strade curve, diagonali e incroci a T, dislivelli reali e segnaletica nei quattro quartieri. Fix approvate da Opus per quote, GPS, traffico, tunnel, scorciatoie e record. I record della mappa precedente restano visibili separatamente nel garage; carriera e inventari vengono conservati. Sorgenti della build: ac1297d2d99cec61da855fa7b31e3671d1e7bf7f.
+
