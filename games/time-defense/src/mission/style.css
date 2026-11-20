@@ -1,0 +1,20 @@
+.mission-guide {flex:none;display:flex;flex-direction:column;padding:10px 12px;background:#103842;border:1px solid #5d9c9c;border-radius:12px;max-height:34%;min-height:0;}
+.mission-guide h2 {font-size:17px;margin:0 0 6px;}
+.mission-guide h2 {flex:none;}
+.mission-guide p {font-size:14px;line-height:1.35;margin:5px 0 9px;}
+.mission-actions {display:flex;gap:6px;flex:none;margin-bottom:6px;}
+.mission-actions button {min-height:44px;font-size:14px;padding:8px;flex:1 1 auto;min-width:0;}
+.mission-guide-text {overflow:auto;min-height:0;scrollbar-gutter:stable;}
+.mission-guide .mission-scroll-hint {flex:none;font-size:12px;margin:4px 0 0;color:#b5ffed;}
+.mission-speaker {display:flex;align-items:center;gap:16px;}
+.mission-speaker img {object-fit:contain;flex:none;}
+.economy-dialog-body a {color:#b5ffed;overflow-wrap:anywhere;display:inline-block;padding:12px 0;}
+.mission-periods {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;list-style-position:inside;margin:16px 0;padding:0;font-size:16px;}
+.mission-periods li {padding:10px 6px;background:#103842;border:1px solid #5d9c9c;border-radius:6px;overflow-wrap:anywhere;}
+.mission-present {display:flex;align-items:center;gap:10px;}
+@media(max-width:420px){.mission-periods{grid-template-columns:1fr;}}
+
+.mission-note-cards {display:flex;flex-direction:column;gap:8px;}
+.mission-note-cards button {width:100%;min-height:44px;}
+
+.mission-companions{display:flex;flex-wrap:wrap;gap:16px}.mission-note-cards+details{margin-top:16px}.economy-dialog details{margin-top:12px}.economy-dialog summary{min-height:44px;cursor:pointer;padding:10px 4px;box-sizing:border-box}

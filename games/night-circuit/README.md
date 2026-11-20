@@ -2,7 +2,7 @@
 
 Racing arcade 3D per browser desktop. Città, auto e contenuti creativi originali, sempre di notte. Versione locale 0.8.0: guida, Old Docks, nove eventi, tuning prestazioni ed estetico, garage e salvataggi. Drift, drag, sprint a tempo, sfide, torneo, fantasma e carriera sono disponibili. La fase 8 aggiunge i quattro quartieri continui, 51 auto di 12 costruttori, radio, effetti, impostazioni e IT/EN. Le otto fasi sono implementate e verificate; la review iterativa con Opus locale è conclusa con entrambi i verdetti READY TO PROD per la build statica. Le misure su GPU integrata fisica restano da eseguire.
 
-Gioca alla [versione online su GitHub Pages](https://giovannifantini.github.io/night-circuit/), senza account ChatGPT. Il [repository della distribuzione](https://github.com/GiovanniFantini/night-circuit) è pubblico; i sorgenti di sviluppo restano nel repository privato BrowserGames. Per trasferire i progressi fra PC o dal precedente sito usare Esporta e Importa salvataggio nel gioco.
+Gioca alla [versione online su GitHub Pages](https://giovannifantini.github.io/browser-games/guida/), senza account ChatGPT. Il [repository della distribuzione](https://github.com/GiovanniFantini/browser-games) è pubblico; i sorgenti di sviluppo sono nel branch codex/release-night-circuit dello stesso repository. Per trasferire i progressi fra PC o dal precedente sito usare Esporta e Importa salvataggio nel gioco.
 
 ## Nuova rete stradale online
 
@@ -271,3 +271,5 @@ La review conclusiva con Opus locale e le relative correzioni sono registrate in
 Nel drift rapido di Vetracava, se Hillcrest non è ancora aperto, uscire dalla piattaforma di partenza può far cadere l’auto e riportarla al punto di Old Docks. R resta il recupero al checkpoint durante la gara. Aprire Hillcrest rende disponibili salita e rientro del passo.
 
 La preparazione per GitHub e i salvataggi fra PC sono descritti in [distribuzione](docs/pubblicazione.md).
+
+Nella home pubblica della raccolta scegli NIGHT CIRCUIT per aprire guida/. I parametri dei vecchi segnalibri, come ?quality=low, seguono la scelta del gioco.

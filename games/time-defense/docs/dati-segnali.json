@@ -1,0 +1,486 @@
+{
+  "version": 1,
+  "scope": "Task27 design inventory and isolated playback, not production combat or final assets",
+  "timing":{"demoPreRoll":0.35,"resinaPreparation":0.15,"sporePreparation":0.15,"flightDemonstration":0.35,"nidoPreparation":0.15,"nidoSortie":1.2,"nidoOutbound":0.6,"stormoStagger":0.08,"rocciaWindup":0.25,"rocciaImpulse":0.1},
+  "root":{"normalDuration":0.65,"bossDuration":0.2,"normalImmunity":1.2,"bossImmunity":3},
+  "effects": [
+    {
+      "id": "select",
+      "name": "Selezione e raggio",
+      "trigger": "selezione",
+      "visual": "Anello chiaro/scuro e raggio statico; nome e stato nel DOM",
+      "reduced": "identico",
+      "end": "annullamento o nuova selezione",
+      "audio": "ui-select"
+    },
+    {
+      "id": "build",
+      "name": "Costruzione e miglioramento",
+      "trigger": "transazione riuscita",
+      "visual": "Sagoma definitiva subito, arco luminoso 0,25 s senza crescere il corpo; nuovo nome/stadio",
+      "reduced": "sagoma e conferma testuale senza arco",
+      "end": "0,25 s decorativi",
+      "audio": "ui-build"
+    },
+    {
+      "id": "res-shot",
+      "name": "Resina Base e Radici",
+      "trigger": "attacco",
+      "visual": "Goccia separata, piccolo spruzzo a terra, icona Rallentato con percentuale e residuo",
+      "reduced": "goccia, impatto e icona senza pulviscolo",
+      "end": "slow 25%/1,5 s o30%/1,8 s",
+      "audio": "res-shot"
+    },
+    {
+      "id": "glue",
+      "name": "Colla",
+      "trigger": "impatto valido",
+      "visual": "Pozza fissa raggio65 con bordo doppio; 45% e residuo sul bersaglio",
+      "reduced": "bordo e simbolo goccia invariati",
+      "end": "3 s, fuori area residuo0,4 s; massimo2pozze per fonte",
+      "audio": "res-impact"
+    },
+    {
+      "id": "amber",
+      "name": "Ambra",
+      "trigger": "impatto valido",
+      "visual": "Frammenti intorno ai piedi senza deformare arti, icona radici/Immobile, poi icona30%",
+      "reduced": "cristalli fermi e testo; niente bagliori",
+      "end": "0,65 s comuni/0,2 boss; poi30%per1s, immunità condivisa dopo fine1,2/3s",
+      "audio": "amber-impact"
+    },
+    {
+      "id": "spore-mark",
+      "name": "Base e Corolla",
+      "trigger": "seme a segno",
+      "visual": "Simbolo foglia e DPS/residuo, Carica scende gradualmente; Corolla alterna gli emettitori",
+      "reduced": "simbolo statico, nessun lampeggio per tick",
+      "end": "3/3,5s, intensità dominante non somma",
+      "audio": "spore-apply"
+    },
+    {
+      "id": "cloud",
+      "name": "Nube",
+      "trigger": "seme valido",
+      "visual": "Area fissa raggio75 con bordo frastagliato e foglia; non disco opaco sul corpo",
+      "reduced": "bordo statico; fonte disattivata sparisce subito",
+      "end": "3,5s, massimo2; uscita interrompe5/s senza coda",
+      "audio": "spore-cloud"
+    },
+    {
+      "id": "parasite",
+      "name": "Parassita",
+      "trigger": "prenotazione e marchio",
+      "visual": "Due posti distinti: seme vuoto in volo, foglia piena applicata; nome bersaglio e residuo",
+      "reduced": "stessi simboli e contatori",
+      "end": "4s/10DPS; massimo2ID inclusi prenotati, niente terzo marchio",
+      "audio": "spore-apply"
+    },
+    {
+      "id": "nest",
+      "name": "Nido Base e Vedetta",
+      "trigger": "sortita",
+      "visual": "Distacco, battito articolato, un contatto, rientro; nessuna barra Carica alleata",
+      "reduced": "traiettoria funzionale e contatto, niente scie",
+      "end": "preparazione0,15s, sortita1,2s, recupero entro intervallo",
+      "audio": "nest-release"
+    },
+    {
+      "id": "flock",
+      "name": "Stormo",
+      "trigger": "sortita multipla",
+      "visual": "Fino a3 alleati/bersagli distinti, partenze sfalsate0,08s; ali non coprono gli indicatori",
+      "reduced": "tre traiettorie e contatti distinti senza scie",
+      "end": "ultimo rientro1,51s dall'inizio ciclo <1,6",
+      "audio": "nest-release"
+    },
+    {
+      "id": "dive",
+      "name": "Picchiata",
+      "trigger": "sortita verso Supporto",
+      "visual": "Un alleato e una linea direzionale breve; bersaglio Supporto nominato",
+      "reduced": "un percorso e contatto",
+      "end": "una sola applicazione; nessun nuovo bersaglio se manca",
+      "audio": "nest-impact"
+    },
+    {
+      "id": "rock-hit",
+      "name": "Roccia Base e Massiccio",
+      "trigger": "colpo corto",
+      "visual": "Rotazioni dei pugni con lunghezze fisse; impulso magico separato, un impatto",
+      "reduced": "pugno/impulso senza polvere o scuotimenti",
+      "end": "0,25s preparazione+0,10s impulso; recupero non danneggia",
+      "audio": "rock-hit"
+    },
+    {
+      "id": "fracture",
+      "name": "Frantuma",
+      "trigger": "dopo il colpo se sopravvive",
+      "visual": "Scudo inciso con meno20 e residuo4s; non cancellare fisicamente la corazza",
+      "reduced": "stessa icona e durata",
+      "end": "4s, fonti non sommate; primo colpo senza nuovo debuff",
+      "audio": "rock-fracture"
+    },
+    {
+      "id": "quake",
+      "name": "Sisma",
+      "trigger": "inizio preparazione e impatto",
+      "visual": "Cerchio fisso raggio85, un impulso al momento0,35s; onda decorativa separata dal bordo reale",
+      "reduced": "bordo fisso e un riscontro statico, niente espansione",
+      "end": "un colpo per ID, nessun DOT/slow/colpo nell'onda",
+      "audio": "rock-quake"
+    },
+    {
+      "id": "miss",
+      "name": "Bersaglio perso",
+      "trigger": "bersaglio neutralizzato o uscito prima dell'impatto",
+      "visual": "Proiettile sfuma senza effetto; alleato rientra senza colpire; nessun retarget",
+      "reduced": "cessazione dell'oggetto e stato Mancato",
+      "end": "0,15s decorativi senza danno o premio",
+      "audio": null
+    },
+    {
+      "id": "slow-root",
+      "name": "Stati di controllo",
+      "trigger": "slow o immobilizzazione",
+      "visual": "Icone diverse goccia/radici, percentuale/residuo leggibili; pausa blocca tutti i tempi",
+      "reduced": "icone identiche, nessun cambio forma",
+      "end": "singole scadenze, massimo slow dominante/cap60%, root non silenzia",
+      "audio": null
+    },
+    {
+      "id": "richiamo",
+      "name": "Canto di Richiamo",
+      "trigger": "prima3s, poi periodo7s fra preavvisi",
+      "visual": "1s bordo tratteggiato con nota; poi1,5s bordo continuo, freccia doppia solo su destinatari ammessi",
+      "reduced": "bordi, simbolo e testo senza onde",
+      "end": "fonte/raggio/TTL; segue centro fonte, no coda e no somma Celerità",
+      "audio": "call-warn"
+    },
+    {
+      "id": "boss-phase",
+      "name": "Cambio fase Custode",
+      "trigger": "Carica780 e360",
+      "visual": "Tacche/barra e testo Fase2/Fase3; postura/cadenza cambiano con arti rigidi, niente nuovo scudo",
+      "reduced": "testo e tacche invariati",
+      "end": "evento monotono; salti di fase ammessi, nessuna invulnerabilità",
+      "audio": "boss-phase"
+    },
+    {
+      "id": "roar",
+      "name": "Ruggito Custode",
+      "trigger": "2s dopo Fase2, poi periodo8s fra avvisi",
+      "visual": "1,5s bordo tratteggiato/nota, poi2s continuo; +25% solo Esploratore/Corridore/Branco nel raggio200",
+      "reduced": "bordi/simboli/testo senza onde",
+      "end": "segue fonte; cambioFase3 cancella preavviso/aura; no bonus postumo",
+      "audio": "roar-warn"
+    },
+    {
+      "id": "tail",
+      "name": "Coda temporale",
+      "trigger": "2s dopo Fase3, poi periodo9s fra avvisi",
+      "visual": "Centro fisso raggio180 e fino2ID bloccati, anelli numerati A/B, testo e1,5s; impulso separato dal corpo",
+      "reduced": "anelli e conto invariati, niente tremori",
+      "end": "impatto sospende2,5s; senza ID ritenta1s; morte prima cancella",
+      "audio": "tail-warn"
+    },
+    {
+      "id": "disabled",
+      "name": "Torre sospesa",
+      "trigger": "impatto coda su stessoID",
+      "visual": "Orologio e Sospesa, residuo e indicatore cadenza fermo; attacchi partiti continuano",
+      "reduced": "identico",
+      "end": "2,5s di simulazione, anche dopo boss liberato; recupero riparte dalla frazione conservata",
+      "audio": "tail-hit"
+    },
+    {
+      "id": "neutralized",
+      "name": "Neutralizzazione",
+      "trigger": "Carica zero una volta",
+      "visual": "0,25s contorno aperto e scia0,4s, figura invariata svanisce; niente corpo a terra",
+      "reduced": "sagoma svanisce senza scia",
+      "end": "nessuna logica oltre zero; particelle senza premio o blocchi",
+      "audio": "neutralize"
+    },
+    {
+      "id": "leak",
+      "name": "Fuga e Stabilità",
+      "trigger": "uscita attiva una volta",
+      "visual": "Portale segnala perdita numerica; Custode mostra Sconfitta immediata, non meno vite ordinario",
+      "reduced": "numero e messaggio senza lampo",
+      "end": "0,3s decorativi, Stabilità mai negativa",
+      "audio": "portal-leak"
+    },
+    {
+      "id": "waves-outcomes",
+      "name": "Ondate ed esiti",
+      "trigger": "avvio/fine/vittoria/sconfitta",
+      "visual": "Messaggi persistenti e pulsanti espliciti, niente avanzamento dopo letture; finale solo dopo tutte le condizioni",
+      "reduced": "identico, nessuna transizione obbligatoria",
+      "end": "chiusura esplicita; bosszero da solo non vince",
+      "audio": "wave-clear"
+    },
+    {
+      "id": "portal-environment",
+      "name": "Portale e ambienti",
+      "trigger": "ambiente visibile",
+      "visual": "Luce lieve periodica e pochi elementi separati; sentiero/indicatori in primo piano",
+      "reduced": "luce e fondale fermi; acqua senza scorrimento decorativo",
+      "end": "solo decorazione, nessuna collisione o modifica Guado",
+      "audio": null
+    }
+  ],
+  "audio": [
+    {
+      "id": "ui-select",
+      "name": "Scelta",
+      "duration": 0.08,
+      "frequency": 660,
+      "kind": "tick",
+      "priority": 0
+    },
+    {
+      "id": "ui-build",
+      "name": "Costruzione e miglioramento",
+      "duration": 0.22,
+      "frequency": 520,
+      "kind": "rise",
+      "priority": 1
+    },
+    {
+      "id": "ui-sell",
+      "name": "Vendita confermata",
+      "duration": 0.16,
+      "frequency": 480,
+      "kind": "fall",
+      "priority": 1
+    },
+    {
+      "id": "ui-cancel",
+      "name": "Annulla o chiudi",
+      "duration": 0.08,
+      "frequency": 350,
+      "kind": "tick",
+      "priority": 0
+    },
+    {
+      "id": "ui-invalid",
+      "name": "Azione non disponibile",
+      "duration": 0.12,
+      "frequency": 220,
+      "kind": "double",
+      "priority": 1
+    },
+    {
+      "id": "wave-start",
+      "name": "Avvio ondata",
+      "duration": 0.35,
+      "frequency": 440,
+      "kind": "rise",
+      "priority": 2
+    },
+    {
+      "id": "wave-clear",
+      "name": "Fine ondata",
+      "duration": 0.45,
+      "frequency": 600,
+      "kind": "rise",
+      "priority": 2
+    },
+    {
+      "id": "res-shot",
+      "name": "Lancio goccia",
+      "duration": 0.12,
+      "frequency": 500,
+      "kind": "fall",
+      "priority": 0
+    },
+    {
+      "id": "res-impact",
+      "name": "Spruzzo resina",
+      "duration": 0.16,
+      "frequency": 300,
+      "kind": "noise",
+      "priority": 0
+    },
+    {
+      "id": "amber-impact",
+      "name": "Ambra",
+      "duration": 0.25,
+      "frequency": 900,
+      "kind": "chime",
+      "priority": 1
+    },
+    {
+      "id": "spore-apply",
+      "name": "Seme e marchio",
+      "duration": 0.18,
+      "frequency": 450,
+      "kind": "rise",
+      "priority": 0
+    },
+    {
+      "id": "spore-cloud",
+      "name": "Nube",
+      "duration": 0.3,
+      "frequency": 260,
+      "kind": "noise",
+      "priority": 0
+    },
+    {
+      "id": "nest-release",
+      "name": "Sortita e ali",
+      "duration": 0.2,
+      "frequency": 420,
+      "kind": "noise",
+      "priority": 0
+    },
+    {
+      "id": "nest-impact",
+      "name": "Contatto pterosauro",
+      "duration": 0.14,
+      "frequency": 720,
+      "kind": "fall",
+      "priority": 0
+    },
+    {
+      "id": "rock-hit",
+      "name": "Pugno",
+      "duration": 0.22,
+      "frequency": 105,
+      "kind": "fall",
+      "priority": 0
+    },
+    {
+      "id": "rock-fracture",
+      "name": "Scudo inciso",
+      "duration": 0.25,
+      "frequency": 180,
+      "kind": "double",
+      "priority": 1
+    },
+    {
+      "id": "rock-quake",
+      "name": "Impulso Sisma",
+      "duration": 0.32,
+      "frequency": 85,
+      "kind": "fall",
+      "priority": 1
+    },
+    {
+      "id": "call-warn",
+      "name": "Preavviso Richiamo",
+      "duration": 0.4,
+      "frequency": 480,
+      "kind": "double",
+      "priority": 3
+    },
+    {
+      "id": "boss-phase",
+      "name": "Cambio fase",
+      "duration": 0.45,
+      "frequency": 330,
+      "kind": "rise",
+      "priority": 3
+    },
+    {
+      "id": "roar-warn",
+      "name": "Preavviso ruggito",
+      "duration": 0.5,
+      "frequency": 140,
+      "kind": "double",
+      "priority": 3
+    },
+    {
+      "id": "tail-warn",
+      "name": "Preavviso coda",
+      "duration": 0.45,
+      "frequency": 760,
+      "kind": "double",
+      "priority": 3
+    },
+    {
+      "id": "tail-hit",
+      "name": "Sospensione torri",
+      "duration": 0.3,
+      "frequency": 260,
+      "kind": "fall",
+      "priority": 2
+    },
+    {
+      "id": "neutralize",
+      "name": "Neutralizzazione",
+      "duration": 0.18,
+      "frequency": 850,
+      "kind": "chime",
+      "priority": 0
+    },
+    {
+      "id": "boss-release",
+      "name": "Custode libero",
+      "duration": 0.7,
+      "frequency": 520,
+      "kind": "rise",
+      "priority": 3
+    },
+    {
+      "id": "portal-leak",
+      "name": "Sovraccarico portale",
+      "duration": 0.3,
+      "frequency": 190,
+      "kind": "double",
+      "priority": 2
+    },
+    {
+      "id": "victory",
+      "name": "Vittoria",
+      "duration": 0.8,
+      "frequency": 660,
+      "kind": "rise",
+      "priority": 3
+    },
+    {
+      "id": "defeat",
+      "name": "Tentativo terminato",
+      "duration": 0.7,
+      "frequency": 330,
+      "kind": "fall",
+      "priority": 3
+    },
+    {
+      "id": "footstep",
+      "name": "Passi comuni",
+      "duration": 0.08,
+      "frequency": 160,
+      "kind": "noise",
+      "priority": 0
+    },
+    {
+      "id": "water-step",
+      "name": "Passo Guado in acqua",
+      "duration": 0.1,
+      "frequency": 300,
+      "kind": "noise",
+      "priority": 0
+    }
+  ],
+  "mix": {
+    "maxVoices": 12,
+    "voiceGain": 0.2,
+    "criticalReserve": 3,
+    "effectPeak": 0.42,
+    "musicPeak": 0.16,
+    "masterGain": 0.7,
+    "noiseSeed": 2711
+  },
+  "animationPolicy": "Parti rigide, piedi e basamenti stabili, nessun morph/optical-flow; riuso v3 di design, rig finali ai36-38",
+  "music": {
+    "id": "saga-loop",
+    "name": "Traccia dell'Atlante",
+    "duration": 16,
+    "tempo": 120,
+    "bars": 8,
+    "notes": [220, 261.6256, 293.6648, 329.6276, 391.9954],
+    "scope": "Original procedural design sketch: melody/pulse, not finished orchestration"
+  }
+}

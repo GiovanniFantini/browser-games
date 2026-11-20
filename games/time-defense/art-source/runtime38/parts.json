@@ -1,0 +1,866 @@
+{
+  "version": 2,
+  "scope": "Effective production rig calibration38. referencePeriod is authoring provenance, not runtime cadence.",
+  "actors": {
+    "esploratore": {
+      "name": "esploratore",
+      "size": 150.37593984962405,
+      "quad": true,
+      "duty": 0.7,
+      "stride": 0.3,
+      "phases": [
+        0,
+        0.5,
+        0.5,
+        0
+      ],
+      "rig": {},
+      "referencePeriod": 1.08
+    },
+    "corridore": {
+      "name": "corridore",
+      "size": 129.03225806451613,
+      "quad": false,
+      "duty": 0.56,
+      "stride": 0.36,
+      "phases": [
+        0,
+        0.5,
+        0.5,
+        0
+      ],
+      "rig": {},
+      "referencePeriod": 0.82
+    },
+    "corazzato": {
+      "name": "corazzato",
+      "size": 142.85714285714286,
+      "quad": true,
+      "duty": 0.76,
+      "stride": 0.14,
+      "phases": [
+        0,
+        0.25,
+        0.5,
+        0.75
+      ],
+      "rig": {
+        "bobAmplitude": 0,
+        "footLift": 0.04,
+        "hipY": -0.18,
+        "upperLength": 0.13,
+        "lowerLength": 0.13,
+        "frontHipX": 0.36,
+        "hindHipX": -0.34,
+        "frontFootAdvance": 0,
+        "farFootY": 0,
+        "farHipX": 0,
+        "farHipY": 0,
+        "bodyWidth": 1.15,
+        "bodyY": -0.31,
+        "tailWidth": 0.48,
+        "tailRootX": -0.48,
+        "tailRootY": -0.27
+      },
+      "referencePeriod": 1.22
+    },
+    "branco": {
+      "name": "branco",
+      "size": 84.21052631578948,
+      "quad": false,
+      "duty": 0.55,
+      "stride": 0.36,
+      "phases": [
+        0,
+        0.5,
+        0.5,
+        0
+      ],
+      "rig": {
+        "tailWidth": 0.3,
+        "bodyWidth": 0.68,
+        "bodyY": -0.5,
+        "tailRootX": -0.24,
+        "tailRootY": -0.41
+      },
+      "referencePeriod": 0.78
+    },
+    "richiamo": {
+      "name": "richiamo",
+      "size": 173.91304347826087,
+      "quad": true,
+      "duty": 0.69,
+      "stride": 0.3,
+      "phases": [
+        0,
+        0.5,
+        0.5,
+        0
+      ],
+      "rig": {},
+      "referencePeriod": 1.12
+    },
+    "guado": {
+      "name": "guado",
+      "size": 149.65986394557822,
+      "quad": true,
+      "duty": 0.7,
+      "stride": 0.3,
+      "phases": [
+        0,
+        0.5,
+        0.5,
+        0
+      ],
+      "rig": {
+        "bodyWidth": 1.1,
+        "bodyY": -0.43,
+        "tailRootX": -0.4,
+        "tailRootY": -0.43,
+        "tailWidth": 0.6,
+        "hindHipX": -0.28,
+        "frontHipX": 0.25
+      },
+      "referencePeriod": 1.04
+    },
+    "custode": {
+      "name": "boss",
+      "size": 202.24719101123594,
+      "quad": false,
+      "duty": 0.66,
+      "stride": 0.36,
+      "phases": [
+        0,
+        0.5,
+        0.5,
+        0
+      ],
+      "rig": {
+        "bodyWidth": 0.95,
+        "bodyY": -0.53,
+        "tailRootX": -0.32,
+        "tailRootY": -0.5,
+        "tailWidth": 1
+      },
+      "referencePeriod": 1.38
+    }
+  },
+  "parts": {
+    "esploratore-body": {
+      "width": 283,
+      "height": 173,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 0,
+        "top": 0,
+        "width": 362,
+        "height": 256
+      },
+      "flipped": false
+    },
+    "esploratore-tail": {
+      "width": 235,
+      "height": 108,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 345,
+        "top": 0,
+        "width": 280,
+        "height": 256
+      },
+      "flipped": false
+    },
+    "esploratore-front-upper": {
+      "width": 112,
+      "height": 177,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 625,
+        "top": 0,
+        "width": 213,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.5625,
+        0.15
+      ],
+      "end": [
+        0.27232142857142855,
+        0.86
+      ]
+    },
+    "esploratore-front-lower": {
+      "width": 96,
+      "height": 157,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 838,
+        "top": 0,
+        "width": 212,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.4739583333333333,
+        0.15
+      ],
+      "end": [
+        0.3697916666666667,
+        0.74
+      ]
+    },
+    "esploratore-hind-upper": {
+      "width": 124,
+      "height": 177,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1050,
+        "top": 0,
+        "width": 240,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.5161290322580645,
+        0.15
+      ],
+      "end": [
+        0.3225806451612903,
+        0.86
+      ]
+    },
+    "esploratore-hind-lower": {
+      "width": 99,
+      "height": 155,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1290,
+        "top": 0,
+        "width": 246,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.4393939393939394,
+        0.15
+      ],
+      "end": [
+        0.3282828282828283,
+        0.74
+      ]
+    },
+    "corazzato-body": {
+      "width": 315,
+      "height": 184,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 0,
+        "top": 256,
+        "width": 362,
+        "height": 256
+      },
+      "flipped": false
+    },
+    "corazzato-tail": {
+      "width": 237,
+      "height": 87,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 345,
+        "top": 256,
+        "width": 280,
+        "height": 256
+      },
+      "flipped": true
+    },
+    "corazzato-front-upper": {
+      "width": 104,
+      "height": 180,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 625,
+        "top": 256,
+        "width": 213,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.5384615384615384,
+        0.15
+      ],
+      "end": [
+        0.2692307692307692,
+        0.86
+      ]
+    },
+    "corazzato-front-lower": {
+      "width": 86,
+      "height": 139,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 838,
+        "top": 256,
+        "width": 212,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.38372093023255816,
+        0.15
+      ],
+      "end": [
+        0.3953488372093023,
+        0.74
+      ]
+    },
+    "corazzato-hind-upper": {
+      "width": 119,
+      "height": 179,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1050,
+        "top": 256,
+        "width": 240,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.5126050420168067,
+        0.15
+      ],
+      "end": [
+        0.4579831932773109,
+        0.86
+      ]
+    },
+    "corazzato-hind-lower": {
+      "width": 87,
+      "height": 141,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1290,
+        "top": 256,
+        "width": 246,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.3735632183908046,
+        0.15
+      ],
+      "end": [
+        0.40804597701149425,
+        0.74
+      ]
+    },
+    "richiamo-body": {
+      "width": 314,
+      "height": 211,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 0,
+        "top": 512,
+        "width": 362,
+        "height": 256
+      },
+      "flipped": false
+    },
+    "richiamo-tail": {
+      "width": 234,
+      "height": 86,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 345,
+        "top": 512,
+        "width": 280,
+        "height": 256
+      },
+      "flipped": false
+    },
+    "richiamo-front-upper": {
+      "width": 103,
+      "height": 179,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 625,
+        "top": 512,
+        "width": 213,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.5436893203883495,
+        0.15
+      ],
+      "end": [
+        0.27184466019417475,
+        0.86
+      ]
+    },
+    "richiamo-front-lower": {
+      "width": 85,
+      "height": 150,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 838,
+        "top": 512,
+        "width": 212,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.4117647058823529,
+        0.15
+      ],
+      "end": [
+        0.34705882352941175,
+        0.74
+      ]
+    },
+    "richiamo-hind-upper": {
+      "width": 118,
+      "height": 182,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1050,
+        "top": 512,
+        "width": 240,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.538135593220339,
+        0.15
+      ],
+      "end": [
+        0.3177966101694915,
+        0.86
+      ]
+    },
+    "richiamo-hind-lower": {
+      "width": 88,
+      "height": 149,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1290,
+        "top": 512,
+        "width": 246,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.38636363636363635,
+        0.15
+      ],
+      "end": [
+        0.30113636363636365,
+        0.74
+      ]
+    },
+    "guado-body": {
+      "width": 323,
+      "height": 184,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 0,
+        "top": 768,
+        "width": 362,
+        "height": 256
+      },
+      "flipped": false
+    },
+    "guado-tail": {
+      "width": 227,
+      "height": 79,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 345,
+        "top": 768,
+        "width": 280,
+        "height": 256
+      },
+      "flipped": false
+    },
+    "guado-front-upper": {
+      "width": 107,
+      "height": 178,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 625,
+        "top": 768,
+        "width": 213,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.5700934579439252,
+        0.15
+      ],
+      "end": [
+        0.21962616822429906,
+        0.86
+      ]
+    },
+    "guado-front-lower": {
+      "width": 91,
+      "height": 147,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 838,
+        "top": 768,
+        "width": 212,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.4010989010989011,
+        0.15
+      ],
+      "end": [
+        0.32967032967032966,
+        0.74
+      ]
+    },
+    "guado-hind-upper": {
+      "width": 125,
+      "height": 177,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1050,
+        "top": 768,
+        "width": 240,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.536,
+        0.15
+      ],
+      "end": [
+        0.308,
+        0.86
+      ]
+    },
+    "guado-hind-lower": {
+      "width": 93,
+      "height": 145,
+      "source": "parts-quadrupedi-refined.png",
+      "sourceRect": {
+        "left": 1290,
+        "top": 768,
+        "width": 246,
+        "height": 256
+      },
+      "flipped": false,
+      "root": [
+        0.3333333333333333,
+        0.15
+      ],
+      "end": [
+        0.27419354838709675,
+        0.74
+      ]
+    },
+    "corridore-body": {
+      "width": 328,
+      "height": 252,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 0,
+        "top": 0,
+        "width": 362,
+        "height": 341
+      },
+      "flipped": false
+    },
+    "corridore-tail": {
+      "width": 265,
+      "height": 96,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 345,
+        "top": 0,
+        "width": 280,
+        "height": 341
+      },
+      "flipped": false
+    },
+    "corridore-hind-upper": {
+      "width": 140,
+      "height": 239,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 625,
+        "top": 0,
+        "width": 213,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.475,
+        0.15
+      ],
+      "end": [
+        0.4928571428571429,
+        0.86
+      ]
+    },
+    "corridore-hind-lower": {
+      "width": 135,
+      "height": 222,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 838,
+        "top": 0,
+        "width": 212,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.42592592592592593,
+        0.15
+      ],
+      "end": [
+        0.2518518518518518,
+        0.74
+      ]
+    },
+    "corridore-far-upper": {
+      "width": 124,
+      "height": 240,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 1050,
+        "top": 0,
+        "width": 240,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.5362903225806451,
+        0.15
+      ],
+      "end": [
+        0.3387096774193548,
+        0.86
+      ]
+    },
+    "corridore-far-lower": {
+      "width": 135,
+      "height": 222,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 1290,
+        "top": 0,
+        "width": 246,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.42592592592592593,
+        0.15
+      ],
+      "end": [
+        0.24444444444444444,
+        0.74
+      ]
+    },
+    "branco-body": {
+      "width": 297,
+      "height": 223,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 0,
+        "top": 341,
+        "width": 362,
+        "height": 341
+      },
+      "flipped": false
+    },
+    "branco-tail": {
+      "width": 260,
+      "height": 92,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 345,
+        "top": 341,
+        "width": 280,
+        "height": 341
+      },
+      "flipped": false
+    },
+    "branco-hind-upper": {
+      "width": 113,
+      "height": 212,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 625,
+        "top": 341,
+        "width": 213,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.4646017699115044,
+        0.15
+      ],
+      "end": [
+        0.42035398230088494,
+        0.86
+      ]
+    },
+    "branco-hind-lower": {
+      "width": 136,
+      "height": 207,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 838,
+        "top": 341,
+        "width": 212,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.4338235294117647,
+        0.15
+      ],
+      "end": [
+        0.2426470588235294,
+        0.74
+      ]
+    },
+    "branco-far-upper": {
+      "width": 108,
+      "height": 212,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 1050,
+        "top": 341,
+        "width": 240,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.5416666666666666,
+        0.15
+      ],
+      "end": [
+        0.3611111111111111,
+        0.86
+      ]
+    },
+    "branco-far-lower": {
+      "width": 136,
+      "height": 206,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 1290,
+        "top": 341,
+        "width": 246,
+        "height": 341
+      },
+      "flipped": false,
+      "root": [
+        0.4338235294117647,
+        0.15
+      ],
+      "end": [
+        0.2426470588235294,
+        0.74
+      ]
+    },
+    "boss-tail": {
+      "width": 278,
+      "height": 106,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 345,
+        "top": 682,
+        "width": 280,
+        "height": 342
+      },
+      "flipped": false
+    },
+    "boss-hind-upper": {
+      "width": 128,
+      "height": 256,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 625,
+        "top": 682,
+        "width": 213,
+        "height": 342
+      },
+      "flipped": false,
+      "root": [
+        0.515625,
+        0.15
+      ],
+      "end": [
+        0.375,
+        0.86
+      ]
+    },
+    "boss-hind-lower": {
+      "width": 151,
+      "height": 236,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 838,
+        "top": 682,
+        "width": 212,
+        "height": 342
+      },
+      "flipped": false,
+      "root": [
+        0.38079470198675497,
+        0.15
+      ],
+      "end": [
+        0.23509933774834438,
+        0.74
+      ]
+    },
+    "boss-far-upper": {
+      "width": 127,
+      "height": 252,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 1050,
+        "top": 682,
+        "width": 240,
+        "height": 342
+      },
+      "flipped": false,
+      "root": [
+        0.5196850393700787,
+        0.15
+      ],
+      "end": [
+        0.35826771653543305,
+        0.86
+      ]
+    },
+    "boss-far-lower": {
+      "width": 153,
+      "height": 236,
+      "source": "parts-bipedi-refined.png",
+      "sourceRect": {
+        "left": 1290,
+        "top": 682,
+        "width": 246,
+        "height": 342
+      },
+      "flipped": false,
+      "root": [
+        0.3790849673202614,
+        0.15
+      ],
+      "end": [
+        0.24509803921568626,
+        0.74
+      ]
+    }
+  }
+}

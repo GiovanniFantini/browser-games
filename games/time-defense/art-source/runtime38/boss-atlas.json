@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "file": "boss-parts-v2.png",
+  "sha256": "b51bc9adccdbaf579bfc2043eed9f8c66972febd4c26e0ae69bb1fe860dd6b6b",
+  "bytes": 636727,
+  "width": 1774,
+  "height": 887,
+  "transparentPixels": 1264307,
+  "body": {
+    "x": 170,
+    "y": 140,
+    "width": 794,
+    "height": 615
+  },
+  "jaw": {
+    "x": 1226,
+    "y": 438,
+    "width": 360,
+    "height": 165
+  },
+  "bodyJawSocket": {
+    "x": 0.55,
+    "y": 0.35
+  },
+  "jawHinge": {
+    "x": 0.16,
+    "y": 0.4
+  },
+  "jawScale": 1.1,
+  "closedJawAngle": 0.06,
+  "openJawAngle": 0.44
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "status": "Task13 candidate; authoring data, not runtime or verified play balance",
+  "physicalProtection": "percentage; clamp(P - strongestActiveReduction - personalPenetration, 0, 100)",
+  "nodes": [
+    {"id":"resina-base","family":"Resina","name":"Base","cost":75,"total":75,"damage":8,"interval":1.2,"range":200,"kind":"physical","targets":1,"penetration":0,"note":"Rallenta 25% per 1,5 s"},
+    {"id":"resina-radici","family":"Resina","name":"Radici salde","parent":"resina-base","cost":60,"total":135,"damage":10,"interval":1,"range":220,"kind":"physical","targets":1,"penetration":0,"note":"Rallenta 30% per 1,8 s"},
+    {"id":"resina-colla","family":"Resina","name":"Colla","parent":"resina-radici","cost":90,"total":225,"damage":5,"interval":1.4,"range":220,"kind":"physical","targets":1,"penetration":0,"area":65,"note":"Pozza 3 s, rallenta 45%; nessun danno ad area o progressivo; massimo 2 pozze"},
+    {"id":"resina-ambra","family":"Resina","name":"Ambra","parent":"resina-radici","cost":110,"total":245,"damage":16,"interval":1.5,"range":240,"kind":"physical","targets":1,"penetration":0,"note":"Immobilizza 0,65 s (boss 0,2); immunità successiva globale; poi rallenta 30% per 1 s"},
+    {"id":"spore-base","family":"Spore","name":"Base","cost":90,"total":90,"damage":4,"duration":3,"interval":1.6,"range":190,"kind":"spore","targets":1,"note":"4 Carica/s per marchio; nessun danno immediato"},
+    {"id":"spore-corolla","family":"Spore","name":"Corolla doppia","parent":"spore-base","cost":65,"total":155,"damage":6,"duration":3.5,"interval":1.3,"range":210,"kind":"spore","targets":1,"note":"6 Carica/s per marchio; due teste alternate, non due colpi"},
+    {"id":"spore-nube","family":"Spore","name":"Nube","parent":"spore-corolla","cost":100,"total":255,"damage":5,"duration":3.5,"interval":2.2,"range":210,"kind":"spore-area","area":75,"maxAreas":2,"note":"5 Carica/s per nemico dentro una nube; sovrapposizioni senza somma, nessuna coda fuori area"},
+    {"id":"spore-parassita","family":"Spore","name":"Parassita","parent":"spore-corolla","cost":120,"total":275,"damage":10,"duration":4,"interval":1.8,"range":230,"kind":"spore","targets":1,"maxMarks":2,"note":"10 Carica/s per marchio, massimo 2 bersagli distinti compresi semi in volo"},
+    {"id":"nido-base","family":"Nido","name":"Base","cost":110,"total":110,"damage":14,"interval":1.6,"range":300,"kind":"physical","targets":1,"penetration":0,"note":"Incursione; target fissato alla partenza"},
+    {"id":"nido-vedetta","family":"Nido","name":"Vedetta","parent":"nido-base","cost":70,"total":180,"damage":18,"interval":1.5,"range":320,"kind":"physical","targets":1,"penetration":0,"note":"Un alleato, priorità standard"},
+    {"id":"nido-stormo","family":"Nido","name":"Stormo","parent":"nido-vedetta","cost":120,"total":300,"damage":12,"interval":1.6,"range":320,"kind":"physical","targets":3,"penetration":0,"note":"12 per ciascuno di massimo 3 ID distinti; nessun accentramento dei tre colpi"},
+    {"id":"nido-picchiata","family":"Nido","name":"Picchiata","parent":"nido-vedetta","cost":140,"total":320,"damage":36,"interval":2.2,"range":340,"kind":"physical","targets":1,"penetration":0,"note":"Priorità ai Supporti anche se non primi sul percorso"},
+    {"id":"roccia-base","family":"Roccia","name":"Base","cost":130,"total":130,"damage":24,"interval":2.2,"range":150,"kind":"physical","targets":1,"penetration":15,"note":"Colpo corto, può mancare se il target esce durante la preparazione"},
+    {"id":"roccia-massiccio","family":"Roccia","name":"Massiccio","parent":"roccia-base","cost":75,"total":205,"damage":32,"interval":2,"range":165,"kind":"physical","targets":1,"penetration":15,"note":"Danno singolo, non doppio pugno"},
+    {"id":"roccia-frantuma","family":"Roccia","name":"Frantuma","parent":"roccia-massiccio","cost":150,"total":355,"damage":42,"interval":2.4,"range":180,"kind":"physical","targets":1,"penetration":15,"sharedReduction":20,"reductionDuration":4,"note":"Riduzione condivisa solo dopo il colpo; primo colpo senza nuova riduzione; non cerca il più corazzato"},
+    {"id":"roccia-sisma","family":"Roccia","name":"Sisma","parent":"roccia-massiccio","cost":130,"total":335,"damage":18,"interval":2.4,"range":165,"kind":"physical-area","penetration":15,"area":85,"note":"Un colpo per nemico nell'area fissa; niente controllo o danno durante l'anello decorativo"}
+  ]
+}

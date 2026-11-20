@@ -1,0 +1,22 @@
+[
+  {
+    "kind": "goku",
+    "triangles": 5552,
+    "meshes": 25,
+    "bones": 13,
+    "texture": [
+      1774,
+      887
+    ]
+  },
+  {
+    "kind": "bulma",
+    "triangles": 4560,
+    "meshes": 22,
+    "bones": 13,
+    "texture": [
+      1774,
+      887
+    ]
+  }
+]

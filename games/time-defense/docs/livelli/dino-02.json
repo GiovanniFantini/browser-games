@@ -1,0 +1,508 @@
+{
+  "id": "dino-02",
+  "name": "Pianura fluviale",
+  "saga": "dinosauri",
+  "width": 1536,
+  "height": 1024,
+  "status": "Task40 runtime candidate; graduated armor introduction, same routes and enemy stats",
+  "docName": "fiume",
+  "guide": {
+    "speaker": "Tic",
+    "text": "La traccia attraversa il fiume. Il ponte allunga il cammino, ma alcune creature passano nell'acqua. Guarda entrambi gli itinerari prima di costruire"
+  },
+  "background": "art-source/maps/fiume/fondale-v2.png",
+  "budget": 225,
+  "stability": 20,
+  "educationCard": "E2",
+  "towerAvailability": "profile-unlocks",
+  "firstEntryTowers": [
+    "resina-base",
+    "resina-radici",
+    "spore-base",
+    "spore-corolla",
+    "nido-base",
+    "nido-vedetta"
+  ],
+  "arsenalText": "Resina, Spore e Nido con miglioramenti comuni. Le specializzazioni non sono ancora disponibili.",
+  "arsenalTextScope": "First entry only. Runtime replay availability is derived from completed levels.",
+  "canvasDescription": "Pianura fluviale con ponte a nord, scorciatoia in acqua, otto piazzole e raggio della torre selezionata",
+  "routeExplanation": "X \u00e8 il bivio, Y il ricongiungimento. Tutte le creature percorrono il ponte, tranne il Guado che segue la scorciatoia in acqua. I percorsi sono assegnati prima dell'ingresso: non li sceglie il giocatore. L'acqua non cambia velocit\u00e0, danni, effetti o raggi delle torri.",
+  "victoryText": "La vittoria apre la Palude e le specializzazioni di Resina e Spore; Prossimo livello porta alla preparazione. Nessuna stella o scheda letta \u00e8 richiesta.",
+  "markers": [
+    {
+      "id": "X",
+      "x": 350,
+      "y": 600
+    },
+    {
+      "id": "Y",
+      "x": 1165,
+      "y": 610
+    }
+  ],
+  "waterSegment": {
+    "path": "river-water",
+    "from": [
+      540,
+      625
+    ],
+    "to": [
+      925,
+      625
+    ],
+    "boundaryMethod": "Observed shallow wet banks along the route, including pale water over sand; artistic transition is gradual, these are effect transition markers, not collision borders"
+  },
+  "paths": [
+    {
+      "id": "river-bridge",
+      "name": "Ponte: percorso lungo",
+      "type": "catmull-rom-sections",
+      "stepsPerSegment": 50,
+      "allowedEnemies": [
+        "esploratore",
+        "corridore",
+        "corazzato"
+      ],
+      "sections": [
+        [
+          [
+            0,
+            590
+          ],
+          [
+            150,
+            610
+          ],
+          [
+            260,
+            610
+          ],
+          [
+            350,
+            600
+          ]
+        ],
+        [
+          [
+            350,
+            600
+          ],
+          [
+            440,
+            510
+          ],
+          [
+            435,
+            360
+          ],
+          [
+            505,
+            260
+          ],
+          [
+            610,
+            240
+          ],
+          [
+            770,
+            235
+          ],
+          [
+            935,
+            260
+          ],
+          [
+            1030,
+            325
+          ],
+          [
+            1055,
+            480
+          ],
+          [
+            1060,
+            550
+          ],
+          [
+            1080,
+            585
+          ],
+          [
+            1115,
+            605
+          ],
+          [
+            1165,
+            610
+          ]
+        ],
+        [
+          [
+            1165,
+            610
+          ],
+          [
+            1265,
+            620
+          ],
+          [
+            1350,
+            630
+          ],
+          [
+            1460,
+            620
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "river-water",
+      "name": "Acqua: scorciatoia del Guado",
+      "type": "catmull-rom-sections",
+      "stepsPerSegment": 50,
+      "shortcut": true,
+      "allowedEnemies": [
+        "guado"
+      ],
+      "sections": [
+        [
+          [
+            0,
+            590
+          ],
+          [
+            150,
+            610
+          ],
+          [
+            260,
+            610
+          ],
+          [
+            350,
+            600
+          ]
+        ],
+        [
+          [
+            350,
+            600
+          ],
+          [
+            540,
+            625
+          ],
+          [
+            735,
+            625
+          ],
+          [
+            925,
+            625
+          ],
+          [
+            1065,
+            600
+          ],
+          [
+            1165,
+            610
+          ]
+        ],
+        [
+          [
+            1165,
+            610
+          ],
+          [
+            1265,
+            620
+          ],
+          [
+            1350,
+            630
+          ],
+          [
+            1460,
+            620
+          ]
+        ]
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "id": "A",
+      "x": 215,
+      "y": 780
+    },
+    {
+      "id": "B",
+      "x": 320,
+      "y": 335
+    },
+    {
+      "id": "C",
+      "x": 625,
+      "y": 110
+    },
+    {
+      "id": "D",
+      "x": 1010,
+      "y": 170
+    },
+    {
+      "id": "E",
+      "x": 1165,
+      "y": 400
+    },
+    {
+      "id": "F",
+      "x": 990,
+      "y": 780
+    },
+    {
+      "id": "G",
+      "x": 1345,
+      "y": 455
+    },
+    {
+      "id": "H",
+      "x": 515,
+      "y": 770
+    }
+  ],
+  "waves": [
+    {
+      "id": "dino-02-w1",
+      "name": "Una nuova vedetta",
+      "bonus": 14,
+      "groups": [
+        {
+          "enemy": "esploratore",
+          "count": 5,
+          "start": 0,
+          "interval": 3,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w2",
+      "name": "Prima corazza",
+      "bonus": 20,
+      "newEnemy": "corazzato",
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 1,
+          "start": 0,
+          "interval": 6,
+          "path": "river-bridge"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 4,
+          "start": 10,
+          "interval": 2,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w3",
+      "name": "Tempo per le Spore",
+      "bonus": 20,
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 2,
+          "start": 0,
+          "interval": 4.5,
+          "path": "river-bridge"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 4,
+          "start": 12,
+          "interval": 3,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w4",
+      "name": "Dentro il fiume",
+      "bonus": 18,
+      "newEnemy": "guado",
+      "groups": [
+        {
+          "enemy": "guado",
+          "count": 4,
+          "start": 0,
+          "interval": 6,
+          "path": "river-water"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 4,
+          "start": 15,
+          "interval": 3,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w5",
+      "name": "Due sponde",
+      "bonus": 20,
+      "groups": [
+        {
+          "enemy": "guado",
+          "count": 6,
+          "start": 0,
+          "interval": 4,
+          "path": "river-water"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 5,
+          "start": 14,
+          "interval": 3,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w6",
+      "name": "Lento non significa vicino",
+      "bonus": 22,
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 5,
+          "start": 0,
+          "interval": 5,
+          "path": "river-bridge"
+        },
+        {
+          "enemy": "guado",
+          "count": 6,
+          "start": 12,
+          "interval": 4,
+          "path": "river-water"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w7",
+      "name": "Passi sul ponte",
+      "bonus": 24,
+      "groups": [
+        {
+          "enemy": "corridore",
+          "count": 8,
+          "start": 0,
+          "interval": 3,
+          "path": "river-bridge"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 5,
+          "start": 16,
+          "interval": 5,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w8",
+      "name": "Ritmi incrociati",
+      "bonus": 26,
+      "groups": [
+        {
+          "enemy": "guado",
+          "count": 8,
+          "start": 0,
+          "interval": 3,
+          "path": "river-water"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 8,
+          "start": 19,
+          "interval": 3,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w9",
+      "name": "Acqua e corazza",
+      "bonus": 28,
+      "groups": [
+        {
+          "enemy": "guado",
+          "count": 8,
+          "start": 0,
+          "interval": 3.5,
+          "path": "river-water"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 19,
+          "interval": 5,
+          "path": "river-bridge"
+        }
+      ]
+    },
+    {
+      "id": "dino-02-w10",
+      "name": "Il secondo frammento",
+      "bonus": 30,
+      "groups": [
+        {
+          "enemy": "corridore",
+          "count": 10,
+          "start": 0,
+          "interval": 2.5,
+          "path": "river-bridge"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 12,
+          "interval": 5,
+          "path": "river-bridge"
+        },
+        {
+          "enemy": "guado",
+          "count": 8,
+          "start": 25,
+          "interval": 3.3,
+          "path": "river-water"
+        }
+      ]
+    }
+  ],
+  "tutorialScope": "Historical task22 authoring copy. Runtime numeric warnings are derived from current dati-nemici in src/mission/content.ts.",
+  "tutorial": [
+    {
+      "id": "river-nido",
+      "when": "first-preparation",
+      "text": "Il Nido appena sbloccato copre un'area pi\u00f9 ampia. Puoi confrontarlo senza acquistarlo: Resina e Spore restano disponibili."
+    },
+    {
+      "id": "river-armor",
+      "when": "before-wave-2",
+      "text": "Corazzato: Carica 120, Protezione fisica 40%, velocit\u00e0 34. Ogni fuga toglie 2 Stabilit\u00e0. Le Spore non subiscono quella Protezione; anche il danno fisico continua a funzionare."
+    },
+    {
+      "id": "river-water",
+      "when": "before-wave-4",
+      "text": "Guado: Carica 64, velocit\u00e0 46 a terra e in acqua, nessuna Protezione, fuga 2. Seguir\u00e0 la scorciatoia X-Y. Le torri colpiscono anche in acqua: controlla quali piazzole la raggiungono."
+    }
+  ]
+}

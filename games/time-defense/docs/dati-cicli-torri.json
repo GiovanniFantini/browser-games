@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "scope": "Task36: velocità dei proiettili in unità mondo/s. Tempi di preparazione, sortita e scaglionamento restano in dati-segnali.json; intervalli e statistiche in dati-torri.json.",
+  "resinaProjectileSpeed": 660,
+  "sporeProjectileSpeed": 560,
+  "minimumProjectileFlight": 0.12,
+  "soldAllyFade": 0.2,
+  "impactDisplay": 0.16
+}

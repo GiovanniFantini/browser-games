@@ -1,6 +1,10 @@
 # Distribuzione di Night Circuit
 
-## Pubblicazione attuale: GitHub Pages
+## Indirizzo attuale
+
+[Apri NIGHT CIRCUIT](https://giovannifantini.github.io/browser-games/guida/) dalla nuova raccolta.
+
+## Storico della precedente distribuzione
 
 ### Nuova mappa pubblicata il 18 novembre 2026
 
@@ -76,3 +80,7 @@ I sorgenti sono stati caricati su main e una variante della build con base /Brow
 ## Salvataggi fra PC
 
 I progressi sono salvati nel browser e restano separati per PC, browser e indirizzo del sito. Per trasferirli usare Esporta salvataggio nel gioco sul PC di origine e Importa sul PC di destinazione. Non è presente sincronizzazione cloud. I salvataggi dell’indirizzo locale non vengono trasferiti automaticamente al sito.
+
+## Home comune pubblicata
+
+La Pages pubblica usa /browser-games/ per il selettore, /browser-games/guida/ per la guida e /browser-games/time-defense/ per la strategia. Il commit pubblico 64418e916930d29ee0788d445747526ffc947016 introduce il selettore.

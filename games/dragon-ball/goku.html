@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goku bambino · Studio del modello</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;overflow:hidden;background:#e7e6e1;color:#263133;font-family:Arial,sans-serif}canvas{display:block;touch-action:none}header{position:absolute;top:32px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}header a{pointer-events:auto;color:inherit;font-size:12px;text-decoration:none;border-bottom:1px solid #a5aaa6;padding-bottom:5px}.eyebrow{font-size:10px;letter-spacing:2px;color:#81572d}h1{font-size:29px;font-weight:500;margin:12px 0}header p{font-size:12px;color:#62706f;line-height:1.6;margin:0}.caption{position:absolute;left:36px;bottom:104px;font-size:11px;color:#62706f;line-height:1.8;pointer-events:none}nav{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;gap:6px;white-space:nowrap}button{border:1px solid #b8bfba;border-radius:4px;padding:12px 15px;background:#ffffffa8;color:#263133;font:inherit;font-size:11px;cursor:pointer}button:hover,button[aria-pressed=true]{background:#263b44;color:#fff}button:focus-visible{outline:3px solid #b77630;outline-offset:3px}@media(max-width:700px){header{left:20px;top:20px;right:20px}h1{font-size:23px}.caption{left:20px;font-size:10px}nav{gap:3px;bottom:20px}button{padding:10px 7px;font-size:10px}}
+  </style>
+</head>
+<body>
+  <header><div><span class="eyebrow">STUDIO DEL MODELLO · TENKAICHI 3 / PS2</span><h1>Goku bambino</h1><p>Nuova proposta 3D da valutare</p></div><a href="/">Torna al gioco →</a></header>
+  <p class="caption">Trascina per ruotare · Rotella per lo zoom<br>Modello usato anche nel gioco</p>
+  <nav aria-label="Esamina Goku"><button id="three-quarter" aria-pressed="true">Tre quarti</button><button id="front">Davanti</button><button id="side">Profilo</button><button id="back">Dietro</button><button id="face">Viso</button><button id="ready" aria-pressed="true">In guardia</button><button id="walk">Camminata</button></nav>
+  <script type="module" src="/src/goku-preview.ts"></script>
+</body></html>

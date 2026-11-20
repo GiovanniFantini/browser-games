@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "scope": "Parametri degli effetti non ancora strutturati in dati-torri.json. Valori normalizzati dalle schede approvate, senza cambiare il bilanciamento. Danni, raggi, protezioni e durate Spore restano negli altri JSON canonici.",
+  "sources": ["torri/resina.md", "torri/spore.md", "bilanciamento-iniziale.md", "dati-segnali.json"],
+  "slowCap": 0.6,
+  "resina-base": { "slow": 0.25, "duration": 1.5 },
+  "resina-radici": { "slow": 0.3, "duration": 1.8 },
+  "resina-colla": { "slow": 0.45, "linger": 0.4, "areaDuration": 3, "maxAreas": 2 },
+  "resina-ambra": { "afterSlow": 0.3, "afterDuration": 1 }
+}

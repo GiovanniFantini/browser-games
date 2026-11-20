@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "status": "Design candidates; runtime and waves not implemented",
+  "enemies": [
+    {"id":"esploratore","name":"Esploratore","charge":48,"speed":55,"physicalProtection":0,"sporeProtection":0,"stabilityLoss":1,"reward":8,"support":false,"firstLevel":"dino-01","ability":"Nessuna"},
+    {"id":"corridore","name":"Corridore","charge":32,"speed":90,"physicalProtection":0,"sporeProtection":0,"stabilityLoss":1,"reward":8,"support":false,"firstLevel":"dino-01","ability":"Nessuna; velocità costante"},
+    {"id":"corazzato","name":"Corazzato","charge":120,"speed":34,"physicalProtection":40,"sporeProtection":0,"stabilityLoss":2,"reward":16,"support":false,"firstLevel":"dino-02","ability":"Protezione fisica costante"},
+    {"id":"branco","name":"Branco","charge":14,"speed":64,"physicalProtection":0,"sporeProtection":0,"stabilityLoss":1,"reward":4,"support":false,"firstLevel":"dino-03","ability":"Nessuna individuale; gruppo con ID indipendenti","defaultGroup":5,"introGroup":3,"spawnInterval":0.546875},
+    {"id":"richiamo","name":"Richiamo","charge":84,"speed":42,"physicalProtection":0,"sporeProtection":0,"stabilityLoss":2,"reward":14,"support":true,"firstLevel":"dino-04","ability":"Canto: raggio 140, avviso 1 s, velocità +25% per 1,5 s","firstCastDelay":3,"windup":1,"activeDuration":1.5,"castPeriod":7,"radius":140,"speedMultiplier":1.25,"speedBonusCategory":"celerity","affectedFamilies":["esploratore","corridore","corazzato","branco","guado"]},
+    {"id":"guado","name":"Guado","charge":64,"speed":46,"physicalProtection":0,"sporeProtection":0,"stabilityLoss":2,"reward":12,"support":false,"firstLevel":"dino-02","ability":"Ramo acquatico assegnato sulle mappe predisposte; nessun bonus terreno","terrainSpeedMultiplier":1,"waterPathOnlyWhenDeclared":true},
+    {"id":"custode","name":"Custode della Frattura","boss":true,"charge":1200,"speed":20,"physicalProtection":20,"sporeProtection":0,"instantDefeatOnEscape":true,"reward":100,"support":false,"firstLevel":"dino-05","ability":"Tre fasi; ruggito ai minori e coda che sospende fino a due torri","phases":[{"phase":1,"aboveCharge":780,"speed":20},{"phase":2,"aboveCharge":360,"atMostCharge":780,"speed":20},{"phase":3,"aboveCharge":0,"atMostCharge":360,"speed":26}],"roar":{"firstDelay":2,"windup":1.5,"duration":2,"period":8,"radius":200,"speedMultiplier":1.25,"speedBonusCategory":"celerity","affectedFamilies":["esploratore","corridore","branco"]},"tail":{"firstDelay":2,"windup":1.5,"duration":2.5,"period":9,"radius":180,"maxTargets":2,"emptyRetry":1}}
+  ]
+}
+

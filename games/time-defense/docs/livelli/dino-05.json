@@ -1,0 +1,584 @@
+{
+  "id": "dino-05",
+  "name": "Valle della Frattura",
+  "saga": "dinosauri",
+  "width": 1536,
+  "height": 1024,
+  "docName": "frattura",
+  "status": "Task46 runtime candidate; balance changes measured in canonical model, native verification pending",
+  "guide": {
+    "speaker": "Tic",
+    "text": "L'ultimo frammento \u00e8 al centro della valle. Il percorso entra nella frattura una sola volta: difendi il portale mentre liberiamo il Custode"
+  },
+  "background": "art-source/maps/frattura/fondale-v5.png",
+  "budget": 225,
+  "stability": 20,
+  "educationCard": "E5",
+  "towerAvailability": "profile-unlocks",
+  "analysisEnemy": "custode",
+  "firstEntryTowers": [
+    "resina-base",
+    "resina-radici",
+    "resina-colla",
+    "resina-ambra",
+    "spore-base",
+    "spore-corolla",
+    "spore-nube",
+    "spore-parassita",
+    "nido-base",
+    "nido-vedetta",
+    "nido-stormo",
+    "nido-picchiata",
+    "roccia-base",
+    "roccia-massiccio",
+    "roccia-frantuma",
+    "roccia-sisma"
+  ],
+  "arsenalText": "Quattro famiglie complete gi\u00e0 conosciute, senza nuove torri o bonus permanenti per il finale.",
+  "canvasDescription": "Valle viola con un solo percorso avvolgente e finito dal bordo sinistro al portale centrale, dieci piazzole e raggio della torre selezionata",
+  "portalLabelOffset": {
+    "x": -64,
+    "y": -28
+  },
+  "routeExplanation": "Il percorso avvolgente si percorre una sola volta e termina nel portale centrale. Non \u00e8 un circuito: nessuna creatura torna all'ingresso. Fratture e precipizi sono scenici, senza scorciatoie, salti o bivi nascosti. Tutti i gruppi seguono lo stesso itinerario.",
+  "importantNotice": "Il Custode arriva nell'ondata 10. Se raggiunge il portale perdi subito, anche con Stabilit\u00e0 20. Gli altri nemici continuano a togliere la Stabilit\u00e0 dichiarata. Puoi mettere in pausa e leggere le capacit\u00e0 prima di avviare.",
+  "victoryText": "Saga completata soltanto dopo tutte le dieci ondate risolte, nessun nemico vivo, Stabilit\u00e0 positiva e Custode comparso e neutralizzato. Dopo il finale: Torna alla mappa o Rigioca. Nessuna saga successiva \u00e8 gi\u00e0 giocabile.",
+  "bossRequirement": {
+    "enemy": "custode",
+    "count": 1,
+    "wave": 10,
+    "mustSpawn": true,
+    "mustNeutralize": true,
+    "escape": "instant-defeat"
+  },
+  "entries": [
+    {
+      "id": "I1",
+      "name": "ingresso",
+      "x": 0,
+      "y": 510
+    }
+  ],
+  "paths": [
+    {
+      "id": "rift-spiral",
+      "name": "Percorso avvolgente verso il portale",
+      "stepsPerSegment": 50,
+      "knots": [
+        [
+          0,
+          510
+        ],
+        [
+          200,
+          510
+        ],
+        [
+          300,
+          460
+        ],
+        [
+          400,
+          290
+        ],
+        [
+          650,
+          170
+        ],
+        [
+          850,
+          150
+        ],
+        [
+          1030,
+          175
+        ],
+        [
+          1200,
+          280
+        ],
+        [
+          1305,
+          450
+        ],
+        [
+          1310,
+          600
+        ],
+        [
+          1200,
+          730
+        ],
+        [
+          1030,
+          785
+        ],
+        [
+          830,
+          780
+        ],
+        [
+          690,
+          730
+        ],
+        [
+          640,
+          650
+        ],
+        [
+          650,
+          590
+        ],
+        [
+          700,
+          540
+        ],
+        [
+          810,
+          515
+        ],
+        [
+          930,
+          525
+        ]
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "id": "A",
+      "x": 250,
+      "y": 340
+    },
+    {
+      "id": "B",
+      "x": 670,
+      "y": 100
+    },
+    {
+      "id": "C",
+      "x": 1040,
+      "y": 75
+    },
+    {
+      "id": "D",
+      "x": 1450,
+      "y": 455
+    },
+    {
+      "id": "E",
+      "x": 1415,
+      "y": 640
+    },
+    {
+      "id": "F",
+      "x": 980,
+      "y": 880
+    },
+    {
+      "id": "G",
+      "x": 575,
+      "y": 820
+    },
+    {
+      "id": "H",
+      "x": 520,
+      "y": 590
+    },
+    {
+      "id": "I",
+      "x": 880,
+      "y": 635
+    },
+    {
+      "id": "J",
+      "x": 1040,
+      "y": 305
+    }
+  ],
+  "waves": [
+    {
+      "id": "dino-05-w1",
+      "name": "Una sola traccia",
+      "bonus": 24,
+      "groups": [
+        {
+          "enemy": "esploratore",
+          "count": 6,
+          "start": 8,
+          "interval": 3,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corridore",
+          "count": 3,
+          "start": 0,
+          "interval": 3.5,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w2",
+      "name": "Pietra nella frattura",
+      "bonus": 26,
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 2,
+          "start": 0,
+          "interval": 5,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 6,
+          "start": 12,
+          "interval": 3,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w3",
+      "name": "Gruppi fra le rune",
+      "bonus": 28,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w3-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 9,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w3-b"
+        },
+        {
+          "enemy": "guado",
+          "count": 6,
+          "start": 12,
+          "interval": 4,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w4",
+      "name": "Un canto conosciuto",
+      "bonus": 24,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corridore",
+          "count": 6,
+          "start": 2,
+          "interval": 3,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 12,
+          "interval": 4.5,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w5",
+      "name": "Tre gruppi distinti",
+      "bonus": 26,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w5-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 8,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w5-b"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 16,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w5-c"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 5,
+          "start": 14,
+          "interval": 5,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w6",
+      "name": "Echi della valle",
+      "bonus": 30,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 2,
+          "start": 0,
+          "interval": 11,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 4,
+          "interval": 4,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 8,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w7-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 18,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w7-b"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 6,
+          "start": 24,
+          "interval": 3,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w7",
+      "name": "La traccia si avvicina",
+      "bonus": 34,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "guado",
+          "count": 6,
+          "start": 4,
+          "interval": 4,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corridore",
+          "count": 6,
+          "start": 10,
+          "interval": 3,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 24,
+          "interval": 4.5,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w8",
+      "name": "L'ultimo ancoraggio",
+      "bonus": 36,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w10-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 8,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w10-b"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 16,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w10-c"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 24,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w10-d"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 8,
+          "start": 12,
+          "interval": 4.5,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w9",
+      "name": "Prima del Custode",
+      "bonus": 38,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 2,
+          "start": 0,
+          "interval": 12,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corridore",
+          "count": 8,
+          "start": 4,
+          "interval": 2.8,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "guado",
+          "count": 8,
+          "start": 10,
+          "interval": 3.5,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 22,
+          "interval": 4.5,
+          "path": "rift-spiral"
+        }
+      ]
+    },
+    {
+      "id": "dino-05-w10",
+      "name": "Libera il Custode",
+      "bonus": 40,
+      "newEnemy": "custode",
+      "notice": "Custode unico: Carica 1200, Protezione fisica 20%, Spore 0%. Fase 1 sopra 780; Fase 2 sopra 360 fino a 780 con ruggito; Fase 3 positiva fino a 360 con velocit\u00e0 26 e coda che sospende fino a due torri. Se fugge perdi subito. Gli accompagnatori elencati sono tutti dichiarati, non evocati dal ruggito.",
+      "groups": [
+        {
+          "enemy": "custode",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 6,
+          "start": 6,
+          "interval": 3,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 18,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w12-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 30,
+          "interval": 0.546875,
+          "path": "rift-spiral",
+          "pack": "w12-b"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 3,
+          "start": 12,
+          "interval": 6,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 26,
+          "interval": 1,
+          "path": "rift-spiral"
+        },
+        {
+          "enemy": "corridore",
+          "count": 4,
+          "start": 34,
+          "interval": 3,
+          "path": "rift-spiral"
+        }
+      ]
+    }
+  ],
+  "tutorial": [
+    {
+      "id": "rift-finite",
+      "when": "first-preparation",
+      "text": "Il percorso entra una sola volta nel portale centrale. Le torri vicine a pi\u00f9 tratti possono coprirli in momenti diversi: controlla i raggi senza confondere la somma delle esposizioni con un attacco continuo."
+    },
+    {
+      "id": "rift-spread",
+      "when": "before-wave-9",
+      "phaseLabel": "Prima della nona ondata",
+      "text": "Il Custode arriver\u00e0 dopo questa ondata. Puoi mettere in pausa e distribuire le difese. La coda colpisce al massimo due torri, non tutto l'arsenale; gli attacchi gi\u00e0 partiti continuano."
+    },
+    {
+      "id": "rift-boss",
+      "when": "before-wave-10",
+      "phaseLabel": "Prima dell'ondata del Custode",
+      "text": "Il Custode cambia comportamento a 780 e 360 Carica, senza curarsi. Se raggiunge il portale perdi subito. Guarda gli avvisi di ruggito e coda; puoi sempre mettere in pausa e leggere i dettagli."
+    },
+    {
+      "id": "rift-release",
+      "when": "boss-neutralized",
+      "phaseLabel": "Dopo la liberazione, se restano ingressi o creature",
+      "text": "Il Custode \u00e8 libero. Proteggi ancora il portale: la vittoria richiede di risolvere tutti gli accompagnatori e gli ingressi dichiarati."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+ "id":"dino-01","name":"Margine della foresta","saga":"dinosauri","width":1536,"height":1024,
+ "status":"Task21 candidate; map and waves design, not playable",
+ "guide":{"speaker":"Tic","text":"La prima traccia è qui. Difendi il portale mentre stabilizzo il frammento. Puoi osservare il sentiero e preparare le difese con calma"},
+ "background":"art-source/maps/foresta/fondale-v1.png",
+ "budget":225,"stability":20,"educationCard":"E1","towerAvailability":"profile-unlocks","firstEntryTowers":["resina-base","resina-radici","spore-base","spore-corolla"],
+ "paths":[{"id":"forest-main","type":"catmull-rom","stepsPerSegment":50,"knots":[[0,484],[115,489],[230,436],[356,310],[476,305],[591,384],[676,522],[760,617],[891,640],[998,590],[1100,456],[1207,394],[1344,407],[1460,400]]}],
+ "slots":[{"id":"A","x":285,"y":590},{"id":"B","x":490,"y":445},{"id":"C","x":665,"y":240},{"id":"D","x":900,"y":495},{"id":"E","x":1090,"y":706},{"id":"F","x":1250,"y":535},{"id":"G","x":1320,"y":285}],
+ "waves":[
+  {"id":"dino-01-w1","name":"Osserva il passo","bonus":12,"groups":[{"enemy":"esploratore","count":4,"start":0,"interval":3,"path":"forest-main"}]},
+  {"id":"dino-01-w2","name":"Sostieni la difesa","bonus":14,"groups":[{"enemy":"esploratore","count":6,"start":0,"interval":2.8,"path":"forest-main"}]},
+  {"id":"dino-01-w3","name":"Primi Corridori","bonus":14,"newEnemy":"corridore","groups":[{"enemy":"corridore","count":3,"start":0,"interval":3.5,"path":"forest-main"},{"enemy":"esploratore","count":4,"start":12,"interval":3,"path":"forest-main"}]},
+  {"id":"dino-01-w4","name":"Più passi sul sentiero","bonus":16,"groups":[{"enemy":"esploratore","count":8,"start":0,"interval":2.5,"path":"forest-main"}]},
+  {"id":"dino-01-w5","name":"Due ritmi","bonus":16,"groups":[{"enemy":"esploratore","count":6,"start":0,"interval":2.6,"path":"forest-main"},{"enemy":"corridore","count":4,"start":17,"interval":2.8,"path":"forest-main"}]},
+  {"id":"dino-01-w6","name":"Copri le curve","bonus":18,"groups":[{"enemy":"esploratore","count":8,"start":0,"interval":2.8,"path":"forest-main"},{"enemy":"corridore","count":4,"start":23,"interval":2.8,"path":"forest-main"}]},
+  {"id":"dino-01-w7","name":"Corsa fra le felci","bonus":20,"groups":[{"enemy":"corridore","count":8,"start":0,"interval":3,"path":"forest-main"},{"enemy":"esploratore","count":6,"start":25,"interval":2.5,"path":"forest-main"}]},
+  {"id":"dino-01-w8","name":"Difesa distribuita","bonus":22,"groups":[{"enemy":"esploratore","count":10,"start":0,"interval":2.4,"path":"forest-main"},{"enemy":"corridore","count":6,"start":26,"interval":2.8,"path":"forest-main"}]},
+  {"id":"dino-01-w9","name":"Il primo frammento","bonus":24,"groups":[{"enemy":"esploratore","count":12,"start":0,"interval":2.2,"path":"forest-main"},{"enemy":"corridore","count":8,"start":28,"interval":2.6,"path":"forest-main"}]}
+ ],
+ "tutorial":[
+  {"id":"forest-build","when":"first-preparation","text":"Scegli una torre, una piazzola e Costruisci. Puoi confrontare il raggio prima di spendere."},
+  {"id":"forest-start","when":"before-first-wave","text":"Avvia quando sei pronto. Dall'avvio della prima ondata il rimborso passa dal 100% al 70%."},
+  {"id":"forest-pause","when":"first-wave","text":"Puoi mettere in pausa e decidere con calma. Le creature e tutti i timer si fermano."},
+  {"id":"forest-upgrade","when":"after-wave-1","text":"Ora puoi migliorare una torre o costruirne un'altra. Le Scintille valgono per questo tentativo."},
+  {"id":"forest-runner","when":"before-wave-3","text":"Corridore: veloce, poca Carica. Il rallentamento aiuta, Spore richiede tempo. Ogni fuga toglie 1 Stabilità."}
+ ]
+}

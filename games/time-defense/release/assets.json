@@ -1,0 +1,346 @@
+{
+  "scope": "Only62PNG/3MP3 and JSON dependencies required by the released runtime. No design galleries, personal review transcripts or encoder in the static site.",
+  "assets": [
+    {
+      "source": "art-source/animations-v3/parts/boss-far-lower.png",
+      "distributed": "assets/boss-far-lower-DIr3KPYu.png",
+      "sha256": "ba6d00722a7cde0eea2db97d58b417a0e87cc39a9933e4d20356f5a20b48b619"
+    },
+    {
+      "source": "art-source/animations-v3/parts/boss-far-upper.png",
+      "distributed": "assets/boss-far-upper-BAnikCdv.png",
+      "sha256": "59a35197413374a950b0a97df2d8186875a1385e9a75885c2623937f5158c720"
+    },
+    {
+      "source": "art-source/animations-v3/parts/boss-hind-lower.png",
+      "distributed": "assets/boss-hind-lower-CpHOeboM.png",
+      "sha256": "6fce68731bb61252469ddd9b859682af57131de0df6acd09b1d4d644bae3dfe3"
+    },
+    {
+      "source": "art-source/animations-v3/parts/boss-hind-upper.png",
+      "distributed": "assets/boss-hind-upper-DH8kyjJO.png",
+      "sha256": "01061d17037686c86ae70c92225f0438aea210d8ab5c65edda8776b85c6a574a"
+    },
+    {
+      "source": "art-source/animations-v3/parts/boss-tail.png",
+      "distributed": "assets/boss-tail-CaLiX7aB.png",
+      "sha256": "cf1ece7bb432af4e35ed8df225d54c1db81a5bf47970a1eda18d99f48f020d81"
+    },
+    {
+      "source": "art-source/animations-v3/parts/branco-body.png",
+      "distributed": "assets/branco-body-BL-aDT0X.png",
+      "sha256": "211c5c7a1451c23de132492f0aea7e76bec0678d319594bd19e8395277d816bc"
+    },
+    {
+      "source": "art-source/animations-v3/parts/branco-far-lower.png",
+      "distributed": "assets/branco-far-lower-D4f2v9vD.png",
+      "sha256": "7eeffbd99f0a00778d7ba826d2e9573ee4847f6e6b0f4599477086fcd3376431"
+    },
+    {
+      "source": "art-source/animations-v3/parts/branco-far-upper.png",
+      "distributed": "assets/branco-far-upper-BxduYUNt.png",
+      "sha256": "2506e8313e3b8facbafedde1ce3a16bdfa0fcf5baaab0833b9827b9efdce3c28"
+    },
+    {
+      "source": "art-source/animations-v3/parts/branco-hind-lower.png",
+      "distributed": "assets/branco-hind-lower-2X3v95It.png",
+      "sha256": "c6ad40612d8a52be0c1e46264b4e5060f11e596afaa83240cbe2175f063a6419"
+    },
+    {
+      "source": "art-source/animations-v3/parts/branco-hind-upper.png",
+      "distributed": "assets/branco-hind-upper-Q38VOxni.png",
+      "sha256": "0bb2f97580686cbee2207c92ba4afda267451f28412c044b436caa050e6d6bb7"
+    },
+    {
+      "source": "art-source/animations-v3/parts/branco-tail.png",
+      "distributed": "assets/branco-tail-BnyY3gAl.png",
+      "sha256": "eaa8168dcd089675cd9ee3fb102cb342f34437f8241830d566198f72a63031d8"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corazzato-body.png",
+      "distributed": "assets/corazzato-body-DDBg8a8W.png",
+      "sha256": "3b3ecbbad539ec8bf4572cca4835a668430e732e25c643b7f0ff66297ebb19c6"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corazzato-front-lower.png",
+      "distributed": "assets/corazzato-front-lower-DC_hUpNs.png",
+      "sha256": "841ac29372ed265bcbdfd37e1664cc529508e5bd942091ede82e90d12c85ffca"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corazzato-front-upper.png",
+      "distributed": "assets/corazzato-front-upper-Cw4H5ikO.png",
+      "sha256": "f82166405643ca770de62353573a869e9eae3e41c5a6065c23fb747ff2d28797"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corazzato-hind-lower.png",
+      "distributed": "assets/corazzato-hind-lower-CoIsjRAR.png",
+      "sha256": "e2e82dc8012bcc5f669f674c9eb1e718bc2273fb72c2169d133d6d363ed84344"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corazzato-hind-upper.png",
+      "distributed": "assets/corazzato-hind-upper-Cvp_JbKP.png",
+      "sha256": "66c6d87d81b5335d2bf904ad0553904a4d767abe96821693cd679912b490c0e4"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corazzato-tail.png",
+      "distributed": "assets/corazzato-tail-CMgBpr3f.png",
+      "sha256": "fc928f6e6d7b3fccd8ee25adc022df6acb62cc7a3ccdfbb44ec86b0e2b7fd1d2"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corridore-body.png",
+      "distributed": "assets/corridore-body-DoSrVJe3.png",
+      "sha256": "0f32152034cb0cf45c4ddc307337aacac96ecf5e34e22da72d9cd1eca43888f1"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corridore-far-lower.png",
+      "distributed": "assets/corridore-far-lower-Cs_mFzir.png",
+      "sha256": "af79255cfaa8a1124c64649f67a4671bbd27c4270b8127073f2e0ec1b4b0b726"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corridore-far-upper.png",
+      "distributed": "assets/corridore-far-upper-BcaFeL-O.png",
+      "sha256": "11883ca35c82ecb9b1de5b9466bf3f1caddca242705ebd6b071f45ff5c3c9e21"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corridore-hind-lower.png",
+      "distributed": "assets/corridore-hind-lower-SVkCP1s3.png",
+      "sha256": "7d02aa5a6aa79c083afecf9a6c2b566553f7d24f3c683ecccbc7eaf2a184e030"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corridore-hind-upper.png",
+      "distributed": "assets/corridore-hind-upper-BUE1tMrx.png",
+      "sha256": "dc4f190147cbfe47870b55e36ea20a5b5557de36db33ac53063c9c2e610242fb"
+    },
+    {
+      "source": "art-source/animations-v3/parts/corridore-tail.png",
+      "distributed": "assets/corridore-tail-DQCgX-FK.png",
+      "sha256": "4ac6a7980c9becee7bcecc846318530ecd2c37cde7ea8bc498b39a4f9172855c"
+    },
+    {
+      "source": "art-source/animations-v3/parts/esploratore-body.png",
+      "distributed": "assets/esploratore-body-M9rIjSWG.png",
+      "sha256": "7727d39ad35da4b001e572ecaa9e09b23f07cca559e794859b57e551609160e5"
+    },
+    {
+      "source": "art-source/animations-v3/parts/esploratore-front-lower.png",
+      "distributed": "assets/esploratore-front-lower-CxHrZ9PZ.png",
+      "sha256": "a1bf195cd9116679f809f2877af0d2d69425ca0ee46590c4886f54c7ec00e44a"
+    },
+    {
+      "source": "art-source/animations-v3/parts/esploratore-front-upper.png",
+      "distributed": "assets/esploratore-front-upper-DOUV_LMU.png",
+      "sha256": "c7e6e4d13fc31fc3c9148c422bd8905a6912599a34202be05d106185a63e7545"
+    },
+    {
+      "source": "art-source/animations-v3/parts/esploratore-hind-lower.png",
+      "distributed": "assets/esploratore-hind-lower-DLJe0g6z.png",
+      "sha256": "fe632c45183fb30374a3708414950504bf359d13746c6357e1b6da535abf5546"
+    },
+    {
+      "source": "art-source/animations-v3/parts/esploratore-hind-upper.png",
+      "distributed": "assets/esploratore-hind-upper-BTA1nK1V.png",
+      "sha256": "7b4e8a655fd123e708c02f91a33763b3ca48c81a1e4a42e9d158c91e18ca10fc"
+    },
+    {
+      "source": "art-source/animations-v3/parts/esploratore-tail.png",
+      "distributed": "assets/esploratore-tail-DYCtYRhE.png",
+      "sha256": "0154c92dadd03edad4f63b6e4af911794f05267a9e13895ab918ba51da599a6a"
+    },
+    {
+      "source": "art-source/animations-v3/parts/guado-body.png",
+      "distributed": "assets/guado-body-CNFjwFzt.png",
+      "sha256": "223cafed728aa50589e1ab88e8ac7d4cbd9ed5118702800d4a9b51058b3fb0a1"
+    },
+    {
+      "source": "art-source/animations-v3/parts/guado-front-lower.png",
+      "distributed": "assets/guado-front-lower-BezdUdwP.png",
+      "sha256": "2217f08f6e0aad5e2becdcf5af2f6a903d5c84f8db968fd599fff10781dc5a9e"
+    },
+    {
+      "source": "art-source/animations-v3/parts/guado-front-upper.png",
+      "distributed": "assets/guado-front-upper-DZCSDFvs.png",
+      "sha256": "873a98ac007d80587eff16232555c1b346f2e892ae1910178e6b7a4f4e74b62d"
+    },
+    {
+      "source": "art-source/animations-v3/parts/guado-hind-lower.png",
+      "distributed": "assets/guado-hind-lower-D3bDHbEG.png",
+      "sha256": "9f6e99e148f070b93b9d147493ffba64fb17e782c0f46b53a5c399faf67dac6f"
+    },
+    {
+      "source": "art-source/animations-v3/parts/guado-hind-upper.png",
+      "distributed": "assets/guado-hind-upper-DwviR2Bt.png",
+      "sha256": "089ab1555b4b2fa1e1c8ca965447aec41e9b838f7c9664262af68a0346d7399c"
+    },
+    {
+      "source": "art-source/animations-v3/parts/guado-tail.png",
+      "distributed": "assets/guado-tail-DR27Eu7Z.png",
+      "sha256": "9a22f1859b7c544e5fee1597e80317eb1ce3f0f8bd1f13c5be17bf5a65eb49e3"
+    },
+    {
+      "source": "art-source/animations-v3/parts/richiamo-body.png",
+      "distributed": "assets/richiamo-body-DBWeEbwz.png",
+      "sha256": "129bd1cdc1b13899f33b3b1ab777a8d356c7f39e1229093f14e506eabd2eca19"
+    },
+    {
+      "source": "art-source/animations-v3/parts/richiamo-front-lower.png",
+      "distributed": "assets/richiamo-front-lower-CqpH9Qe4.png",
+      "sha256": "7f769927e9af40f2e700c1caaf3117300dac59eda86cee6b931fed8fb9ebd7d8"
+    },
+    {
+      "source": "art-source/animations-v3/parts/richiamo-front-upper.png",
+      "distributed": "assets/richiamo-front-upper-cloTH-Hp.png",
+      "sha256": "d8141e7e1e5726efc6bab88cb4e7fd12a429de5995c6e62dcffc1e060e00cbdf"
+    },
+    {
+      "source": "art-source/animations-v3/parts/richiamo-hind-lower.png",
+      "distributed": "assets/richiamo-hind-lower-COArZN08.png",
+      "sha256": "884075091c0f705dfed205ce8be7c5c29cf01aa5582fcab8c8ba85f69027b095"
+    },
+    {
+      "source": "art-source/animations-v3/parts/richiamo-hind-upper.png",
+      "distributed": "assets/richiamo-hind-upper-CQPiMaIP.png",
+      "sha256": "900978b461fa0f87fddab8b7103674766e190e58861e8c0d24b696a76c3f847d"
+    },
+    {
+      "source": "art-source/animations-v3/parts/richiamo-tail.png",
+      "distributed": "assets/richiamo-tail-Dk2kDBJD.png",
+      "sha256": "2393ee8f4a2dbd59207448636d3003dd67d0299c539a1bdd84e42ea6bec19c9c"
+    },
+    {
+      "source": "art-source/animations-v3/parts/wing-far-inner.png",
+      "distributed": "assets/wing-far-inner-CNahEOVM.png",
+      "sha256": "6fcdc08e0e423baf210e429c78554ae6d1d93f43ad54a14138de2b39a1e86415"
+    },
+    {
+      "source": "art-source/animations-v3/parts/wing-far-outer.png",
+      "distributed": "assets/wing-far-outer-Bjy_rtJ-.png",
+      "sha256": "c002c9388397268b19ccee30fc26437e755a939ff74919b238e8a6e50c162770"
+    },
+    {
+      "source": "art-source/animations-v3/parts/wing-near-inner.png",
+      "distributed": "assets/wing-near-inner-CtcWRr1q.png",
+      "sha256": "7f867a33f7a74ce2db38834dd3251fce751209632b756c56edaad1ee2d9032f7"
+    },
+    {
+      "source": "art-source/animations-v3/parts/wing-near-outer.png",
+      "distributed": "assets/wing-near-outer-B7Jbm8Ym.png",
+      "sha256": "f85872f40aba94674d02b4a69d0e9ba6a5d83001562dd1854bc0e13e2ebc57a4"
+    },
+    {
+      "source": "art-source/audio45/atlas-boss.mp3",
+      "distributed": "assets/atlas-boss-BA_lBnX2.mp3",
+      "sha256": "1343e3c9bdb9e810647af1238911aced60ace5e235ef4a6cefc3923023f83ec3"
+    },
+    {
+      "source": "art-source/audio45/atlas-forest.mp3",
+      "distributed": "assets/atlas-forest-B6n0T1gt.mp3",
+      "sha256": "e7a070d677c152cc602d74bc5f20f9ec6e5e6b725bdde8625d7f1ff6cc8290a2"
+    },
+    {
+      "source": "art-source/audio45/atlas-wetland.mp3",
+      "distributed": "assets/atlas-wetland-D87ws891.mp3",
+      "sha256": "b9bd84b15d94b83d91e9c546ecae8fda5026ac17b745b4470c81c58955ab9521"
+    },
+    {
+      "source": "art-source/characters/lia-osserva.png",
+      "distributed": "assets/lia-osserva-Ds3lFTrV.png",
+      "sha256": "0b37a6a47deadd02bee06f7ec52c156a24ae06b72e5185abb4525be98b0dd985"
+    },
+    {
+      "source": "art-source/characters/tic-osserva.png",
+      "distributed": "assets/tic-osserva-BRhF3BMN.png",
+      "sha256": "22d4c02e012a1f324548753342ea5722e92cc3b2c4b732bc1248322b2f182547"
+    },
+    {
+      "source": "art-source/maps/altopiano/fondale-v2.png",
+      "distributed": "assets/fondale-v2-DeEwwH2u.png",
+      "sha256": "646ecf21dcaf28e011aa774b86edef0e04319f0759bb1e60d3057bfa637c7599"
+    },
+    {
+      "source": "art-source/maps/fiume/fondale-v2.png",
+      "distributed": "assets/fondale-v2-D99K51ee.png",
+      "sha256": "84855029e6568de2ff98437030c7ec86f5282e6d82c60adbf50fed1fb809d242"
+    },
+    {
+      "source": "art-source/maps/foresta/fondale-v1.png",
+      "distributed": "assets/fondale-v1-B1uSGeHf.png",
+      "sha256": "281eae367a84a2039c83033cb73de53f7f0533feba2f0e14d2d127b84a3b0bd7"
+    },
+    {
+      "source": "art-source/maps/frattura/fondale-v5.png",
+      "distributed": "assets/fondale-v5-gzJShEs7.png",
+      "sha256": "67b6d825e3b0d496134b5fcbdedef73b8c6607b650a09998e6a1a926ec5e4fcd"
+    },
+    {
+      "source": "art-source/maps/palude/fondale-v1.png",
+      "distributed": "assets/fondale-v1-CKmTKFl_.png",
+      "sha256": "27e1e3d4f39975356ef9b39f882edc413cdaca9f3b0363755ab187b213f0ef4b"
+    },
+    {
+      "source": "art-source/runtime36/nido-parts-v1.png",
+      "distributed": "assets/nido-parts-v1-BWhZSSkP.png",
+      "sha256": "423671793723c942b06e9c2ab018c354b3aab93485a0efbfa5dfcbd347946eed"
+    },
+    {
+      "source": "art-source/runtime36/ptero-parts-v1.png",
+      "distributed": "assets/ptero-parts-v1-C2SxcNUm.png",
+      "sha256": "66eb7523e334cdb1f0997626341a37b905c464d43ac08774e5c72ef1790d0071"
+    },
+    {
+      "source": "art-source/runtime36/resina-parts-v1.png",
+      "distributed": "assets/resina-parts-v1-BS8tzVpW.png",
+      "sha256": "8f88e5bb027346caf9d333ad45bda681da95f33865d21a9b2f9205a71269d900"
+    },
+    {
+      "source": "art-source/runtime36/roccia-parts-v1.png",
+      "distributed": "assets/roccia-parts-v1-DOc_NZVn.png",
+      "sha256": "0c0ab7266efbf118d286eccb1b2db5a786faee90fafbb36f3302941c4ebb9449"
+    },
+    {
+      "source": "art-source/runtime36/spore-parts-v1.png",
+      "distributed": "assets/spore-parts-v1-BUKEKpI-.png",
+      "sha256": "5acc16e8287d60fb0e67058e663d2028815961d36050b060e7a08b544befb969"
+    },
+    {
+      "source": "art-source/runtime38/boss-parts-v2.png",
+      "distributed": "assets/boss-parts-v2-CcUWfi4G.png",
+      "sha256": "b51bc9adccdbaf579bfc2043eed9f8c66972febd4c26e0ae69bb1fe860dd6b6b"
+    },
+    {
+      "source": "art-source/ui/assets/tower-nido.png",
+      "distributed": "assets/tower-nido-CulEipHB.png",
+      "sha256": "4d62c6d2b883dabd9a0f398fa1abebd71bdf71ef69e0d5a088ff21b46a9a8417"
+    },
+    {
+      "source": "art-source/ui/assets/tower-resina.png",
+      "distributed": "assets/tower-resina-WBdAvNit.png",
+      "sha256": "5bc84a358b198c789a46fd7072a0d592970aceff37c6a657b8d5e44c89fcf256"
+    },
+    {
+      "source": "art-source/ui/assets/tower-roccia.png",
+      "distributed": "assets/tower-roccia-C_CjEM73.png",
+      "sha256": "cb15e1cda260d67f53b6339798f16cdfc485db2d43f97cab387e5a87db15202d"
+    },
+    {
+      "source": "art-source/ui/assets/tower-spore.png",
+      "distributed": "assets/tower-spore-0c_Ew-7r.png",
+      "sha256": "bac88914b35189e4183233b80536e6893b9a50fc623ca748c0ce9a4197a2be83"
+    }
+  ],
+  "data": [
+    "art-source/runtime36/parts.json",
+    "art-source/runtime38/boss-atlas.json",
+    "art-source/runtime38/parts.json",
+    "docs/dati-cicli-nemici.json",
+    "docs/dati-cicli-torri.json",
+    "docs/dati-effetti-combattimento.json",
+    "docs/dati-nemici.json",
+    "docs/dati-segnali.json",
+    "docs/dati-torri.json",
+    "docs/livelli/dino-01.json",
+    "docs/livelli/dino-02.json",
+    "docs/livelli/dino-03.json",
+    "docs/livelli/dino-04.json",
+    "docs/livelli/dino-05.json"
+  ]
+}

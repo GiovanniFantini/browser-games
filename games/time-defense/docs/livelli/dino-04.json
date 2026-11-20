@@ -1,0 +1,641 @@
+{
+  "id": "dino-04",
+  "name": "Altopiano roccioso",
+  "saga": "dinosauri",
+  "width": 1536,
+  "height": 1024,
+  "docName": "altopiano",
+  "status": "Task46 runtime candidate; balance changes measured in canonical model, native verification pending",
+  "guide": {
+    "speaker": "Tic",
+    "text": "Il frammento è oltre il dirupo. Le tracce arrivano da due ingressi: guarda i fronti annunciati e proteggi il portale comune"
+  },
+  "background": "art-source/maps/altopiano/fondale-v2.png",
+  "budget": 225,
+  "stability": 20,
+  "educationCard": "E4",
+  "towerAvailability": "profile-unlocks",
+  "analysisEnemy": "corazzato",
+  "firstEntryTowers": [
+    "resina-base",
+    "resina-radici",
+    "resina-colla",
+    "resina-ambra",
+    "spore-base",
+    "spore-corolla",
+    "spore-nube",
+    "spore-parassita",
+    "nido-base",
+    "nido-vedetta",
+    "nido-stormo",
+    "nido-picchiata",
+    "roccia-base",
+    "roccia-massiccio",
+    "roccia-frantuma",
+    "roccia-sisma"
+  ],
+  "arsenalText": "Quattro famiglie complete: Roccia e rami del Nido appena sbloccati, più Resina e Spore. Le novità si possono confrontare senza comprarle subito.",
+  "canvasDescription": "Altopiano con due ingressi e ponti distinti verso un solo portale, dieci piazzole e raggio della torre selezionata",
+  "routeExplanation": "I1 è l'ingresso Nord, I2 l'ingresso Sud. I gruppi sono annunciati con il proprio ingresso e seguono il ponte corrispondente fino a Y, poi il tratto finale comune. Nessun bivio iniziale o scelta casuale. Il dirupo non è attraversabile fuori dai ponti, senza voli o scorciatoie del Guado.",
+  "routeLegend": "Linea continua = fronte Nord da I1; linea a trattini = fronte Sud da I2. Il selettore confronta gli itinerari, senza modificare i gruppi in gioco.",
+  "victoryText": "La vittoria apre la Valle della Frattura, senza nuove torri permanenti o denaro trasferito. Prossimo livello porta alla preparazione.",
+  "entries": [
+    {
+      "id": "I1",
+      "name": "ingresso Nord",
+      "x": 0,
+      "y": 320
+    },
+    {
+      "id": "I2",
+      "name": "ingresso Sud",
+      "x": 0,
+      "y": 695
+    }
+  ],
+  "markers": [
+    {
+      "id": "Y",
+      "x": 1300,
+      "y": 495
+    }
+  ],
+  "paths": [
+    {
+      "id": "plateau-north",
+      "name": "Nord: ingresso I1 e ponte alto",
+      "stepsPerSegment": 50,
+      "sections": [
+        [
+          [
+            0,
+            320
+          ],
+          [
+            150,
+            325
+          ],
+          [
+            250,
+            290
+          ],
+          [
+            350,
+            230
+          ],
+          [
+            450,
+            245
+          ],
+          [
+            550,
+            300
+          ],
+          [
+            650,
+            300
+          ],
+          [
+            750,
+            285
+          ],
+          [
+            850,
+            300
+          ],
+          [
+            970,
+            310
+          ],
+          [
+            1068,
+            350
+          ],
+          [
+            1119,
+            405
+          ],
+          [
+            1160,
+            450
+          ],
+          [
+            1190,
+            480
+          ],
+          [
+            1240,
+            493.125
+          ],
+          [
+            1300,
+            495
+          ]
+        ],
+        [
+          [
+            1300,
+            495
+          ],
+          [
+            1460,
+            500
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "plateau-south",
+      "name": "Sud: ingresso I2 e ponte basso",
+      "traceDash": true,
+      "stepsPerSegment": 50,
+      "sections": [
+        [
+          [
+            0,
+            695
+          ],
+          [
+            180,
+            700
+          ],
+          [
+            330,
+            745
+          ],
+          [
+            450,
+            750
+          ],
+          [
+            580,
+            720
+          ],
+          [
+            700,
+            705
+          ],
+          [
+            800,
+            700
+          ],
+          [
+            900,
+            700
+          ],
+          [
+            1010,
+            675
+          ],
+          [
+            1085,
+            610
+          ],
+          [
+            1136,
+            550
+          ],
+          [
+            1180,
+            510
+          ],
+          [
+            1240,
+            493.125
+          ],
+          [
+            1300,
+            495
+          ]
+        ],
+        [
+          [
+            1300,
+            495
+          ],
+          [
+            1460,
+            500
+          ]
+        ]
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "id": "A",
+      "x": 225,
+      "y": 185
+    },
+    {
+      "id": "B",
+      "x": 445,
+      "y": 305
+    },
+    {
+      "id": "C",
+      "x": 670,
+      "y": 170
+    },
+    {
+      "id": "D",
+      "x": 1050,
+      "y": 235
+    },
+    {
+      "id": "E",
+      "x": 1280,
+      "y": 400
+    },
+    {
+      "id": "F",
+      "x": 1280,
+      "y": 615
+    },
+    {
+      "id": "G",
+      "x": 1010,
+      "y": 765
+    },
+    {
+      "id": "H",
+      "x": 610,
+      "y": 835
+    },
+    {
+      "id": "I",
+      "x": 400,
+      "y": 615
+    },
+    {
+      "id": "J",
+      "x": 205,
+      "y": 815
+    }
+  ],
+  "waves": [
+    {
+      "id": "dino-04-w1",
+      "name": "Due ingressi",
+      "bonus": 28,
+      "groups": [
+        {
+          "enemy": "esploratore",
+          "count": 4,
+          "start": 0,
+          "interval": 3,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 3,
+          "start": 6,
+          "interval": 3,
+          "path": "plateau-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w2",
+      "name": "Pietra e corazza",
+      "bonus": 30,
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 1,
+          "start": 0,
+          "interval": 5,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 4,
+          "start": 8,
+          "interval": 3,
+          "path": "plateau-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w3",
+      "name": "L'altro fronte",
+      "bonus": 32,
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 2,
+          "start": 0,
+          "interval": 5,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "corridore",
+          "count": 6,
+          "start": 8,
+          "interval": 3,
+          "path": "plateau-north"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w4",
+      "name": "Il primo canto",
+      "bonus": 34,
+      "newEnemy": "richiamo",
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 5,
+          "start": 1,
+          "interval": 2.5,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 5,
+          "start": 10,
+          "interval": 3,
+          "path": "plateau-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w5",
+      "name": "Voci e piccoli passi",
+      "bonus": 36,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 4,
+          "start": 1,
+          "interval": 4.5,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "plateau-north",
+          "pack": "w5-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 9,
+          "interval": 0.546875,
+          "path": "plateau-north",
+          "pack": "w5-b"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w6",
+      "name": "Segui il segnale",
+      "bonus": 38,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 12,
+          "interval": 1,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "corridore",
+          "count": 6,
+          "start": 3,
+          "interval": 3,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 6,
+          "start": 10,
+          "interval": 3,
+          "path": "plateau-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w7",
+      "name": "Due file corazzate",
+      "bonus": 40,
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 0,
+          "interval": 4.5,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 6,
+          "interval": 4.5,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 8,
+          "interval": 0.546875,
+          "path": "plateau-north",
+          "pack": "w7-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 20,
+          "interval": 0.546875,
+          "path": "plateau-south",
+          "pack": "w7-b"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w8",
+      "name": "Canti fra i ponti",
+      "bonus": 42,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 8,
+          "interval": 1,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "guado",
+          "count": 8,
+          "start": 0,
+          "interval": 3.5,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "corridore",
+          "count": 8,
+          "start": 15,
+          "interval": 2.8,
+          "path": "plateau-north"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w9",
+      "name": "Proteggi i raccordi",
+      "bonus": 44,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "plateau-north",
+          "pack": "w9-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 4,
+          "interval": 0.546875,
+          "path": "plateau-south",
+          "pack": "w9-b"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 10,
+          "interval": 0.546875,
+          "path": "plateau-north",
+          "pack": "w9-c"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 14,
+          "interval": 0.546875,
+          "path": "plateau-south",
+          "pack": "w9-d"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 8,
+          "interval": 4.5,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 18,
+          "interval": 4.5,
+          "path": "plateau-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-04-w10",
+      "name": "Il quarto frammento",
+      "bonus": 46,
+      "groups": [
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 0,
+          "interval": 1,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "richiamo",
+          "count": 1,
+          "start": 12,
+          "interval": 1,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "corridore",
+          "count": 8,
+          "start": 4,
+          "interval": 2.8,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "guado",
+          "count": 8,
+          "start": 10,
+          "interval": 3.5,
+          "path": "plateau-south"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 8,
+          "start": 18,
+          "interval": 4,
+          "path": "plateau-north"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 8,
+          "start": 22,
+          "interval": 4,
+          "path": "plateau-south"
+        }
+      ]
+    }
+  ],
+  "tutorial": [
+    {
+      "id": "plateau-fronts",
+      "when": "first-preparation",
+      "text": "I1 e I2 sono ingressi diversi, con un portale comune. Confronta i raggi sui due fronti. Roccia e rami del Nido sono sbloccati, ma puoi continuare con le difese che conosci."
+    },
+    {
+      "id": "plateau-stone",
+      "when": "before-wave-2",
+      "text": "Roccia ha raggio corto e ignora 15 punti di Protezione fisica; Spore resta un'alternativa contro la corazza. Frantuma riduce la Protezione per tutti dopo il proprio colpo, non prima."
+    },
+    {
+      "id": "plateau-support",
+      "when": "before-wave-4",
+      "text": "Richiamo: Carica 84, velocità 42, fuga 2. Il canto avvisa per 1 secondo e accelera del 25% soltanto le altre creature ammesse entro raggio 140. Neutralizzare la fonte toglie subito il bonus. Picchiata dà priorità ai Supporti anche quando non cantano."
+    },
+    {
+      "id": "plateau-mix",
+      "when": "before-wave-5",
+      "phaseLabel": "Prima della quinta ondata",
+      "text": "Stormo distribuisce gli attacchi su tre individui distinti. Sisma colpisce un'area, senza rallentare. Sono alternative, non acquisti obbligatori. Immobilizzare Richiamo non interrompe il canto."
+    }
+  ],
+  "arsenalTextScope": "First entry only. Runtime replay availability follows completed levels.",
+  "tutorialScope": "Design copy; runtime numerical warnings derive from canonical enemy and tower data."
+}

@@ -1,0 +1,12 @@
+{
+  "name": "browsergames",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix games/dragon-ball run dev -- --host 127.0.0.1",
+    "build": "npm --prefix games/dragon-ball run build",
+    "test": "npm --prefix games/dragon-ball test",
+    "dev:night-circuit": "npm --prefix games/night-circuit run dev",
+    "build:night-circuit": "npm --prefix games/night-circuit run build",
+    "test:night-circuit": "npm --prefix games/night-circuit test"
+  }
+}

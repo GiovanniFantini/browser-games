@@ -1,0 +1,572 @@
+{
+  "id": "dino-03",
+  "name": "Palude delle felci",
+  "saga": "dinosauri",
+  "width": 1536,
+  "height": 1024,
+  "docName": "palude",
+  "status": "Task46 runtime candidate; balance changes measured in canonical model, native verification pending",
+  "guide": {
+    "speaker": "Tic",
+    "text": "La traccia circonda la palude. I gruppi prenderanno due sentieri diversi: controlla gli itinerari annunciati prima di distribuire le difese"
+  },
+  "background": "art-source/maps/palude/fondale-v1.png",
+  "budget": 225,
+  "stability": 20,
+  "educationCard": "E3",
+  "towerAvailability": "profile-unlocks",
+  "analysisEnemy": "branco",
+  "firstEntryTowers": [
+    "resina-base",
+    "resina-radici",
+    "resina-colla",
+    "resina-ambra",
+    "spore-base",
+    "spore-corolla",
+    "spore-nube",
+    "spore-parassita",
+    "nido-base",
+    "nido-vedetta"
+  ],
+  "arsenalText": "Resina e Spore con le due specializzazioni appena sbloccate; Nido base e Vedetta. Roccia e rami del Nido non sono ancora disponibili.",
+  "canvasDescription": "Palude con due sentieri asciutti attorno allo stagno, otto piazzole e raggio della torre scelta",
+  "routeExplanation": "X è il bivio, Y il ricongiungimento. Nord e Sud sono itinerari a terra assegnati ai gruppi prima dell'ingresso, annunciati nell'ondata. Nessuna scelta casuale al bivio. L'acqua è decorativa e non attraversabile in questa mappa: anche Guado segue il sentiero annunciato, alla normale velocità 46.",
+  "routeLegend": "Linea continua = Nord; linea a trattini = Sud, entrambi a terra. Il selettore confronta gli itinerari senza cambiarli nel gioco.",
+  "victoryText": "La vittoria apre l'Altopiano, tutta la famiglia Roccia e i rami del Nido. Prossimo livello porta alla preparazione, senza requisito di stelle o schede lette.",
+  "markers": [
+    {
+      "id": "X",
+      "x": 210,
+      "y": 510
+    },
+    {
+      "id": "Y",
+      "x": 1300,
+      "y": 510
+    }
+  ],
+  "paths": [
+    {
+      "id": "swamp-north",
+      "name": "Nord: sentiero delle felci",
+      "stepsPerSegment": 50,
+      "sections": [
+        [
+          [
+            0,
+            510
+          ],
+          [
+            110,
+            515
+          ],
+          [
+            210,
+            510
+          ]
+        ],
+        [
+          [
+            210,
+            510
+          ],
+          [
+            360,
+            420
+          ],
+          [
+            470,
+            320
+          ],
+          [
+            650,
+            255
+          ],
+          [
+            850,
+            250
+          ],
+          [
+            1020,
+            300
+          ],
+          [
+            1100,
+            390
+          ],
+          [
+            1130,
+            450
+          ],
+          [
+            1180,
+            500
+          ],
+          [
+            1240,
+            510
+          ],
+          [
+            1300,
+            510
+          ]
+        ],
+        [
+          [
+            1300,
+            510
+          ],
+          [
+            1460,
+            510
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "swamp-south",
+      "name": "Sud: sentiero dei tronchi",
+      "traceDash": true,
+      "stepsPerSegment": 50,
+      "sections": [
+        [
+          [
+            0,
+            510
+          ],
+          [
+            110,
+            515
+          ],
+          [
+            210,
+            510
+          ]
+        ],
+        [
+          [
+            210,
+            510
+          ],
+          [
+            360,
+            620
+          ],
+          [
+            520,
+            710
+          ],
+          [
+            710,
+            740
+          ],
+          [
+            900,
+            710
+          ],
+          [
+            1050,
+            630
+          ],
+          [
+            1130,
+            570
+          ],
+          [
+            1180,
+            520
+          ],
+          [
+            1240,
+            510
+          ],
+          [
+            1300,
+            510
+          ]
+        ],
+        [
+          [
+            1300,
+            510
+          ],
+          [
+            1460,
+            510
+          ]
+        ]
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "id": "A",
+      "x": 185,
+      "y": 350
+    },
+    {
+      "id": "B",
+      "x": 470,
+      "y": 205
+    },
+    {
+      "id": "C",
+      "x": 845,
+      "y": 150
+    },
+    {
+      "id": "D",
+      "x": 1160,
+      "y": 275
+    },
+    {
+      "id": "E",
+      "x": 1320,
+      "y": 640
+    },
+    {
+      "id": "F",
+      "x": 920,
+      "y": 815
+    },
+    {
+      "id": "G",
+      "x": 525,
+      "y": 835
+    },
+    {
+      "id": "H",
+      "x": 295,
+      "y": 740
+    }
+  ],
+  "waves": [
+    {
+      "id": "dino-03-w1",
+      "name": "Due sentieri",
+      "bonus": 24,
+      "groups": [
+        {
+          "enemy": "esploratore",
+          "count": 4,
+          "start": 0,
+          "interval": 3,
+          "path": "swamp-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 3,
+          "start": 8,
+          "interval": 3,
+          "path": "swamp-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w2",
+      "name": "Primo piccolo Branco",
+      "bonus": 26,
+      "newEnemy": "branco",
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 3,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w2-a"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 5,
+          "start": 6,
+          "interval": 3,
+          "path": "swamp-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w3",
+      "name": "Gruppi distinti",
+      "bonus": 30,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 3,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w3-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 3,
+          "start": 6,
+          "interval": 0.546875,
+          "path": "swamp-south",
+          "pack": "w3-b"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 2,
+          "start": 9,
+          "interval": 5,
+          "path": "swamp-north"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w4",
+      "name": "Scegli dove rallentare",
+      "bonus": 32,
+      "groups": [
+        {
+          "enemy": "corridore",
+          "count": 6,
+          "start": 0,
+          "interval": 3,
+          "path": "swamp-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 6,
+          "start": 8,
+          "interval": 3,
+          "path": "swamp-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w5",
+      "name": "Cinque nel Branco",
+      "bonus": 34,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w5-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 10,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w5-b"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 4,
+          "start": 5,
+          "interval": 5,
+          "path": "swamp-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w6",
+      "name": "Passi nella zona umida",
+      "bonus": 36,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w6-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 4,
+          "interval": 0.546875,
+          "path": "swamp-south",
+          "pack": "w6-b"
+        },
+        {
+          "enemy": "guado",
+          "count": 6,
+          "start": 10,
+          "interval": 4,
+          "path": "swamp-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w7",
+      "name": "Forme e ritmi",
+      "bonus": 38,
+      "groups": [
+        {
+          "enemy": "corazzato",
+          "count": 5,
+          "start": 0,
+          "interval": 5,
+          "path": "swamp-north"
+        },
+        {
+          "enemy": "corridore",
+          "count": 5,
+          "start": 8,
+          "interval": 3,
+          "path": "swamp-south"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 24,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w7-a"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w8",
+      "name": "Nebbia fra le felci",
+      "bonus": 40,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w8-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 9,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w8-b"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 18,
+          "interval": 0.546875,
+          "path": "swamp-south",
+          "pack": "w8-c"
+        },
+        {
+          "enemy": "guado",
+          "count": 5,
+          "start": 20,
+          "interval": 4,
+          "path": "swamp-south"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w9",
+      "name": "Difese distribuite",
+      "bonus": 42,
+      "groups": [
+        {
+          "enemy": "corridore",
+          "count": 8,
+          "start": 0,
+          "interval": 2.8,
+          "path": "swamp-north"
+        },
+        {
+          "enemy": "esploratore",
+          "count": 8,
+          "start": 14,
+          "interval": 2.8,
+          "path": "swamp-south"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 6,
+          "start": 19,
+          "interval": 4,
+          "path": "swamp-north"
+        }
+      ]
+    },
+    {
+      "id": "dino-03-w10",
+      "name": "Il terzo frammento",
+      "bonus": 44,
+      "groups": [
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 0,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w10-a"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 4,
+          "interval": 0.546875,
+          "path": "swamp-south",
+          "pack": "w10-b"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 10,
+          "interval": 0.546875,
+          "path": "swamp-north",
+          "pack": "w10-c"
+        },
+        {
+          "enemy": "branco",
+          "count": 5,
+          "start": 14,
+          "interval": 0.546875,
+          "path": "swamp-south",
+          "pack": "w10-d"
+        },
+        {
+          "enemy": "corridore",
+          "count": 6,
+          "start": 18,
+          "interval": 3,
+          "path": "swamp-north"
+        },
+        {
+          "enemy": "corazzato",
+          "count": 5,
+          "start": 21,
+          "interval": 5,
+          "path": "swamp-south"
+        }
+      ]
+    }
+  ],
+  "tutorial": [
+    {
+      "id": "swamp-paths",
+      "when": "first-preparation",
+      "text": "Nord e Sud sono annunciati per ogni gruppo. Confronta i raggi su entrambi. Le specializzazioni di Resina e Spore sono alternative: dopo un ramo non si passa all'altro senza vendere e ricostruire."
+    },
+    {
+      "id": "swamp-pack",
+      "when": "before-wave-2",
+      "text": "Branco: tre creature piccole, ciascuna con Carica 14, velocità 64 e fuga 1. Ogni individuo è un bersaglio distinto: il gruppo non condivide Carica o ricompensa."
+    },
+    {
+      "id": "swamp-five",
+      "when": "before-wave-5",
+      "phaseLabel": "Prima della quinta ondata",
+      "text": "Ora il Branco conta cinque individui. Nube copre un'area, Parassita al massimo due bersagli distinti. La densità aiuta l'area, ma conta il tempo dentro la nube."
+    },
+    {
+      "id": "swamp-guado",
+      "when": "before-wave-6",
+      "phaseLabel": "Prima della sesta ondata",
+      "text": "Qui Guado segue il sentiero Sud: questa mappa non ha un ramo acquatico. Velocità 46, nessuna Protezione e fuga 2 come al Fiume."
+    }
+  ]
+}
