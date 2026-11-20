@@ -1,6 +1,6 @@
 # BrowserGames
 
-[Scegli il gioco](https://giovannifantini.github.io/night-circuit/) oppure apri [Time Defense](./time-defense/), un tower defense in cinque livelli nella saga dei dinosauri.
+[Scegli il gioco](https://giovannifantini.github.io/browser-games/) oppure apri [Time Defense](./time-defense/), un tower defense in cinque livelli nella saga dei dinosauri.
 
 ## NIGHT CIRCUIT: Neon Streets
 
