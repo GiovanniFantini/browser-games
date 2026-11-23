@@ -1,4 +1,4 @@
-import{w as _,f as g,h as d,u as U,B as y,j as h,E as I,k as p}from"./diorama-4I0iubyS.js";const x={name:"local-uniform-bit",vertex:{header:`
+import{w as _,f as g,h as d,u as U,B as y,j as h,E as I,k as p}from"./diorama-0Ytc41Zl.js";const x={name:"local-uniform-bit",vertex:{header:`
 
             struct LocalUniforms {
                 uTransformMatrix:mat3x3<f32>,
