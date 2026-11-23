@@ -13,9 +13,10 @@
     main { max-width: 1200px; margin: auto; padding: 36px clamp(18px, 5vw, 64px) 64px; }
     header { border-bottom: 1px solid #41464b; padding-bottom: 18px; font-size: 1.15rem; letter-spacing: .02em; }
     h1 { font-size: clamp(2.65rem, 6vw, 5rem); letter-spacing: -.055em; line-height: 1.05; margin: .7em 0 .5em; }
-    nav { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; }
+    nav { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; }
     a { --accent: #91e5ff; display: flex; flex-direction: column; color: inherit; text-decoration: none; border: 1px solid #41464b; background: #1b2024; border-radius: 12px; overflow: hidden; }
     .strategy { --accent: #d2ed8b; }
+    .civilization { --accent: #f4c894; }
     a:hover { border-color: var(--accent); }
     a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
     img { display: block; width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
@@ -24,6 +25,7 @@
     h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.1; letter-spacing: -.035em; margin: .35em 0 0; }
     p { color: #d1d6d9; line-height: 1.55; margin: .7em 0 1.4em; }
     .play { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #41464b; padding-top: 14px; margin-top: auto; color: var(--accent); font-weight: 650; }
+    @media (max-width: 960px) { nav { grid-template-columns: repeat(2,minmax(0,1fr)); } }
     @media (max-width: 660px) { nav { grid-template-columns: 1fr; } main { padding-top: 22px; } }
   </style>
 </head>
@@ -44,6 +46,13 @@
         <div class="info"><small>Tower defense · Computer</small><h2 id="time">Time Defense</h2>
           <p>Difendi il portale dai dinosauri in cinque ambientazioni. Per giocare serve una finestra di almeno 1024 × 720 pixel.</p>
           <span class="play"><span id="play-time">Gioca</span><span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+      <a class="civilization" href="./epoche/" aria-labelledby="play-epoche epoche">
+        <img src="./covers/epoche.jpg" alt="" width="1186" height="683" loading="lazy" decoding="async">
+        <div class="info"><small>Gestionale di civiltà · Demo</small><h2 id="epoche">Epoche</h2>
+          <p>Guida un popolo dalla Preistoria al Neolitico. Scegli le politiche e affronta le crisi della crescita.</p>
+          <span class="play"><span id="play-epoche">Gioca alla demo</span><span aria-hidden="true">→</span></span>
         </div>
       </a>
     </nav>
