@@ -227,7 +227,7 @@ function Settlement({
 export function App({
   language,
   changeLanguage,
-  onLeave,
+  onLeave, onReplay,
   onDiscard,
   onExport,
   saveStatus,
@@ -236,7 +236,7 @@ export function App({
 }: {
   language: Language;
   changeLanguage: (language: Language) => void;
-  onLeave: () => void;
+  onLeave: () => void; onReplay: () => void;
   onDiscard: () => void;
   onExport: () => void;
   saveStatus: string;
@@ -509,7 +509,7 @@ export function App({
           view={campaign}
           snapshot={snapshot}
           language={language}
-          onEnd={onLeave}
+          onEnd={onLeave} onReplay={onReplay}
           onDiscard={onDiscard}
           onExport={onExport}
           leaving={leaving}

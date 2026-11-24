@@ -68,7 +68,7 @@ const deferredImpact = z.object({ family: z.enum(families), points: z.number().i
 const responseSchema = z.object({
   cost: z.number().nonnegative(),
   recovery: z.number().nonnegative(),
-  defer: deferredImpact.optional(),
+  defer: deferredImpact.extend({afterEras:z.union([z.literal(1),z.literal(2)]).optional()}).optional(),
   repay: deferredImpact.optional(),
   overload: z.object({ at: z.number().min(1).max(99), points: z.number().min(1).max(99) }).optional(),
   founds: z.enum(heritageSites).optional(),

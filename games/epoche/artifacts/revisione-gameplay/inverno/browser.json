@@ -1,0 +1,52 @@
+[
+  {
+    "lang": "it",
+    "id": "seeds",
+    "food": 53
+  },
+  {
+    "lang": "it",
+    "id": "departure",
+    "food": 43
+  },
+  {
+    "lang": "it",
+    "id": "carry",
+    "food": 100
+  },
+  {
+    "lang": "it",
+    "id": "isolate",
+    "food": 28
+  },
+  {
+    "lang": "it",
+    "id": "care",
+    "food": 46
+  },
+  {
+    "lang": "en",
+    "id": "seeds",
+    "food": 53
+  },
+  {
+    "lang": "en",
+    "id": "departure",
+    "food": 43
+  },
+  {
+    "lang": "en",
+    "id": "carry",
+    "food": 100
+  },
+  {
+    "lang": "en",
+    "id": "isolate",
+    "food": 28
+  },
+  {
+    "lang": "en",
+    "id": "care",
+    "food": 46
+  }
+]

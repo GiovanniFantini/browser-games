@@ -1,3 +1,4 @@
+import {previewHearing} from "@engine/campaign/reckoning";
 import { checkCampaignSeed } from "./holdout";
 import { createRng } from "@engine/core/rng";
 import { pathToFileURL } from "node:url";
@@ -144,6 +145,17 @@ export function runCampaign(
     pace,
   });
   const responseRng = createRng(seed ^ 0x51ac87);
+  const remediesUsed: string[]=[];
+  const selectRemedy=(state:Campaign)=>{
+    if(!state.reckoning)return state;
+    const options=previewHearing(state);
+    const score=(v:typeof options[number])=>(v.fatal?10000:0)+Math.max(0,...v.crises.map(c=>c.severity))
+      + (1-v.population)*100 + (narrative?.response==="foresight" && v.id==="renew"?18:0);
+    const selected=narrative?.response==="random"?options[responseRng.int(0,options.length-1)]!:
+      narrative?.response==="first"?options[0]!:options.sort((a,b)=>score(a)-score(b))[0]!;
+    remediesUsed.push(selected.id);
+    return applyCampaignAction(state,{type:"RECKON",token:state.reckoning.token,remedy:selected.id},content);
+  };
   const fallbackRng = createRng(seed ^ 0x5c81c37);
   const futureDecisions: {
     event: string;
@@ -178,6 +190,8 @@ export function runCampaign(
   ) {
     for (const { severity } of current.crises)
       peakCrisis = Math.max(peakCrisis, severity);
+    if(current.reckoning)current=selectRemedy(current);
+    if(current.studyFinished || current.outcome?.kind==="collapse")break;
     if (current.rules === "trial" && current.pending?.id === "ledger") break;
     if (current.pending) {
       const before = current;
@@ -300,7 +314,7 @@ export function runCampaign(
         : null;
     const waitingForRecovery = narrative?.response === "wait" && shouldWait(current);
     if (progress?.ready && !waitingForRecovery) {
-      const next = applyCampaignAction(current, { type: "ADVANCE" }, content);
+      const next = selectRemedy(applyCampaignAction(current, { type: "ADVANCE" }, content));
       if (next.core.eraId !== phase) {
         narrative?.onAdvance?.(current, next);
         path.push(next.core.eraId);
@@ -378,7 +392,7 @@ export function runCampaign(
     current = stepCampaign(current, commands, content).campaign;
   }
   return {
-    current,
+    current, remediesUsed,
     path,
     arrived,
     structural,

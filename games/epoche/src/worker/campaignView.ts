@@ -1,3 +1,4 @@
+import {needsHearing,previewHearing} from "../engine/campaign/reckoning";
 import {
   campaignBalance,
   traditions,
@@ -36,7 +37,10 @@ export function buildCampaignView(campaign: Campaign) {
   return {
     id: campaign.id,
     seed: campaign.seed,
-    rules: campaign.rules,
+    rules: campaign.rules, marks:campaign.marks, studyFinished:campaign.studyFinished,
+    hearing: campaign.reckoning ? {...campaign.reckoning,options:previewHearing(campaign)} : null,
+    hearingAhead: needsHearing(campaign,stage+1),
+    replay:{seed:campaign.seed,choices:campaign.choices,pace:campaign.pace,inherited:campaign.inherited},
     stage,
     eraId: campaign.core.eraId,
     heritage: campaign.heritage,

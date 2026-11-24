@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { download } from "./download";
 
-type Interaction = { ms: number; event: string; action: string; choice?: number; speed?: number };
+type Interaction = { ms: number; event: string; action: string; choice?: number; remedy?: string; offered?: string[]; target?: number; speed?: number };
 
 function record(id: string, entry: Interaction) {
   const key = "epoche.study." + id;
@@ -40,4 +40,8 @@ export function useTrialLog(id: string | undefined, event: string | undefined, d
 }
 export function exportTrialLog(id: string) {
   download("epoche-studio.json", sessionStorage.getItem("epoche.study." + id) ?? "[]", "application/json");
+}
+
+export function logTrialRemedy(id: string, remedy: string, offered: string[], target: number) {
+  record(id,{ms:Math.round(performance.timeOrigin+performance.now()),event:"hearing",action:"choice",remedy,offered,target});
 }

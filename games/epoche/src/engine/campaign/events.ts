@@ -1,3 +1,5 @@
+import { openHearing } from "./reckoning";
+import { winterRules, scriptedRules } from "@content/campaign/winter";
 import { trialEvents } from "@content/campaign/trial";
 import {
   campaignBalance,
@@ -83,7 +85,7 @@ export function applyResponse(
       : crisis)
     .filter(crisis => crisis.severity > 0);
   if (risk) crises.push({ family: risk.family, severity: risk.after });
-  const due = eraNumber(campaign.core.eraId) + 1;
+  const due = eraNumber(campaign.core.eraId) + (response.defer?.afterEras ?? 1);
   let deferred = campaign.deferred;
   let paid = 0;
   if (response.repay) {
@@ -99,13 +101,16 @@ export function applyResponse(
     const prior = deferred.find(entry => entry.source === response.labelKey && entry.due === due);
     deferred = prior
       ? deferred.map(entry => entry === prior ? { ...entry, points: entry.points + response.defer!.points } : entry)
-      : [...deferred, { ...response.defer, due, source: response.labelKey }];
+      : [...deferred, { family:response.defer.family, points:response.defer.points, due, source: response.labelKey }];
   }
   const used = response.founds ?? response.requires;
   const resolved = appendLog(
     {
       ...campaign,
       pending: null,
+      winterStock: winterRules(campaign.rules) && event.id==="winter" && index===3 ? Math.min(30,campaign.winterStock+30-paid) : campaign.winterStock,
+      marks: winterRules(campaign.rules) && event.id === "winter" && (index === 0 || index === 3)
+        ? { ...campaign.marks, ...(index === 0 ? {table:3} : {barter:3}) } : campaign.marks,
       deferred,
       renewedIn: used && isTradition(used)
         ? { ...campaign.renewedIn, [used]: campaign.highestEra } : campaign.renewedIn,
@@ -135,7 +140,11 @@ export function applyResponse(
   );
   const accounted = paid && response.repay ? appendLog(resolved, "log.debtPaid",
     { nameKey: response.labelKey, setting: paid, result: "family." + response.repay.family }) : resolved;
-  if (risk?.after !== 100) return accounted;
+  if (risk?.after !== 100) {
+    if(winterRules(campaign.rules) && event.id==="ledger" && (campaign.rules==="winterStudy" || Object.keys(campaign.marks).length>0))
+      return openHearing(accounted,2,"ledger");
+    return accounted;
+  }
   return appendLog({
     ...accounted,
     outcome: { kind: "collapse", family: risk.family },
@@ -174,7 +183,7 @@ export function settleEraChain(
 ): Campaign {
   if (campaign.pending || campaign.outcome) return campaign;
   const stage = eraNumber(campaign.core.eraId);
-  const scripted = campaign.rules === "trial" && trialEvents[campaign.core.eraId];
+  const scripted = scriptedRules(campaign.rules) && trialEvents[campaign.core.eraId];
   if (scripted) {
     const id = scripted.find(id => !Object.hasOwn(campaign.cooldowns, id));
     return id ? maybeOpenEvent({ ...campaign, chain: [{ id, at: campaign.core.tick }] }, content) : campaign;
@@ -196,7 +205,7 @@ export function maybeOpenEvent(
     return campaign;
   const stage = eraNumber(campaign.core.eraId);
   const timed = campaignTiming(campaign.pace);
-  const sequence = campaign.rules === "trial" ? trialEvents[campaign.core.eraId] : undefined;
+  const sequence = scriptedRules(campaign.rules) ? trialEvents[campaign.core.eraId] : undefined;
   const scheduled = sequence?.find(id => !Object.hasOwn(campaign.cooldowns, id));
   if (sequence && !scheduled) return campaign;
   const promised = sequence ? campaign.chain.find(link => link.id === scheduled) : earliestEraLink(campaign, stage);
@@ -206,7 +215,7 @@ export function maybeOpenEvent(
   const age = tick - (campaign.core.eraOrigin?.tick ?? 0);
   const periodic =
     age >= timed.firstEventTick &&
-    (age - timed.firstEventTick) % timed.eventEveryTicks === 0;
+    (age - timed.firstEventTick) % (timed.eventEveryTicks * (campaign.rules === "winterStudy" ? 2 : 1)) === 0;
   if (!exactChain && !periodic) return campaign;
   const rng = createRng(campaign.random);
   // A village facility serves the settlement, not the entire territory that
@@ -393,6 +402,10 @@ export function updateCrises(
     }
   }
 
+  const terminal = crises.find(crisis => crisis.severity >= 100);
+  if (campaign.rules === "winterStudy" && !campaign.outcome && terminal) {
+    return appendLog({ ...next, crises, pending: null, legacy: next.legacy + campaignBalance.legacyStructural, outcome: { kind: "collapse", family: terminal.family } }, "log.collapse", { nameKey: "family." + terminal.family });
+  }
   let outcome: Outcome | null = campaign.outcome;
   let legacy = campaign.legacy;
   const severe = crises.find(
@@ -442,6 +455,8 @@ export function preparation(campaign: Campaign): Campaign["core"] {
       effects[crisisTargets[crisis.family]] = -crisis.severity / 39;
     }
   }
+  if ((campaign.marks.field ?? 0) > eraNumber(core.eraId))
+    effects.sustenance = (effects.sustenance ?? 0) - 2;
   const relations = diplomacyEffects(campaign);
   const fatigue = campaign.war?.fatigue ?? 0;
   const modifiers = (core.modifiers ?? []).filter(

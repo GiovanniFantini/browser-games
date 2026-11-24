@@ -239,3 +239,7 @@ Il 24 novembre 2026 tre dilemmi sono diventati decisioni urgenti con un danno es
 ## Revisione del gameplay
 
 [Stato dei 40 task e verifiche](artifacts/revisione-gameplay/Stato.md). La prova su carta con tre partecipanti precede lo sviluppo dei rimedi al cambio di era.
+
+## Prova dei rimedi dell’inverno
+
+[Prova con i tre agenti](artifacts/revisione-gameplay/inverno/Prova.md). [Confronto delle partite](artifacts/revisione-gameplay/inverno/Confronto.md). La campagna ordinaria e il controllo restano disponibili accanto alle nuove modalità, con salvataggi separati.

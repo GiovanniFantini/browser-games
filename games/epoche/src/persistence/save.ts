@@ -1,3 +1,4 @@
+import {winterRules} from "@content/campaign/winter";
 import { z } from "zod";
 import { loadCampaignContent } from "@content/campaign/index";
 import {
@@ -87,7 +88,12 @@ const outcome = z.discriminatedUnion("kind", [
 ]);
 const campaignSchema = z.object({
   version: z.literal(2),
-  rules: z.enum(["current", "trial"]).default("current"),
+  inherited: z.number().nonnegative().default(0),
+  reckoning: z.object({token:tick,target:z.number().int().min(0).max(9),kind:z.enum(["advance","migration","ledger"])}).nullable().default(null),
+  marks: z.object({field:tick.optional(),clan:tick.optional(),hut:tick.optional(),table:tick.optional(),barter:tick.optional(),unseeded:tick.optional()}).default({}).transform(marks=>Object.fromEntries(Object.entries(marks).filter((entry): entry is [string,number]=>typeof entry[1]==="number"))),
+  winterStock:z.number().int().min(0).max(30).default(0),
+  studyFinished: z.boolean().default(false),
+  rules: z.enum(["current", "trial","winter","winterStudy"]).default("current"),
   pace: z.enum(["standard", "rapid"]).default("rapid"),
   id: smallId,
   seed: uint,
@@ -135,6 +141,7 @@ const campaignSchema = z.object({
         setting: percent.optional(),
         consequenceKey: smallId.optional(),
         result: smallId.optional(),
+        offered: z.array(smallId).max(12).optional(),
       }),
     )
     .max(1200),
@@ -229,6 +236,13 @@ export function validateSave(input: unknown): SaveFile {
   const save: SaveFile = fileSchema.parse(input);
   const content = loadCampaignContent();
   const { campaign } = save;
+  const hearing=campaign.reckoning;
+  const stage=campaignEras.findIndex(era=>era.id===campaign.core.eraId);
+  if(hearing && (!winterRules(campaign.rules) || campaign.outcome || campaign.pending ||
+    hearing.token!==campaign.sequence || hearing.target!==stage+(hearing.kind==="advance"?1:0) ||
+    (hearing.kind==="ledger" && stage!==2))) throw new Error("Invalid hearing");
+  if(campaign.studyFinished && (campaign.rules!=="winterStudy" || stage!==2 || hearing || campaign.pending))
+    throw new Error("Invalid study ending");
   if (
     save.queued.some(
       ({ policyId }) => !content.policies.some(({ id }) => id === policyId),

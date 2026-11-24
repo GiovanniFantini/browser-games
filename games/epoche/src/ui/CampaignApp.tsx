@@ -1,3 +1,4 @@
+import { playMode } from "./playMode";
 import { traits } from "@content/campaign/definitions";
 import { genesisModifiers } from "@engine/campaign/world";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -170,6 +171,7 @@ function Genesis({
 export function CampaignApp() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [screen, setScreen] = useState<"lobby" | "genesis" | "game">("lobby");
+  const [replay,setReplay]=useState<{seed:number;choices:GenesisChoices;pace:Pace;inherited:number}|null>(null);
   const [library, setLibrary] = useState<{
     records: SlotRecord[];
     legacy: number;
@@ -287,13 +289,14 @@ export function CampaignApp() {
     seed: number,
     choices: GenesisChoices,
     pace: Pace,
+    selected = slot, inherited = new URLSearchParams(location.search).has("studio") ? 0 : library.legacy,
   ): Promise<void> {
     if (busy) return;
     setBusy(true);
     setError("");
     setSaveStatus("slot.saving");
     try {
-      const { lease } = await claimSlot(slot, false);
+      const { lease } = await claimSlot(selected, false);
       setLease(lease);
       startGame({
         start: {
@@ -301,8 +304,8 @@ export function CampaignApp() {
           seed,
           choices,
           pace,
-          rules: new URLSearchParams(location.search).has("studio") ? "trial" : "current",
-          inherited: new URLSearchParams(location.search).has("studio") ? 0 : library.legacy,
+          rules: playMode(),
+          inherited,
         },
       });
       setScreen("game");
@@ -314,6 +317,7 @@ export function CampaignApp() {
   }
   async function resume(selected: Slot): Promise<void> {
     if (busy) return;
+    setReplay(null);
     setBusy(true);
     setError("");
     setSaveStatus("slot.saving");
@@ -342,6 +346,7 @@ export function CampaignApp() {
       return;
     setSlot(selected);
     setError("");
+    if(replay){void launch(replay.seed,replay.choices,replay.pace,selected,replay.inherited);setReplay(null);return;}
     setScreen("genesis");
   }
   async function importSlot(
@@ -359,7 +364,7 @@ export function CampaignApp() {
     try {
       if (file.size > 2_000_000) throw new Error("Size limit");
       const save = parseSave(await file.text());
-      if ((save.campaign.rules === "trial") !== new URLSearchParams(location.search).has("studio")) { setError("trial.wrongMode"); return; }
+      if (save.campaign.rules !== playMode()) { setError("trial.wrongMode"); return; }
       const { lease } = await claimSlot(selected, false);
       await persist(
         lease,
@@ -395,6 +400,7 @@ export function CampaignApp() {
       <App
         language={language}
         changeLanguage={setLanguage}
+        onReplay={() => { const config=useGameStore.getState().snapshot?.campaign?.replay; if(config){setReplay(config);void leave();} }}
         onLeave={() => void leave()}
         onDiscard={finishLeaving}
         onExport={() => void exportGame()}
@@ -458,6 +464,12 @@ export function CampaignApp() {
           </span>
         </div>
         <p>{translate(language, "slot.promise")} {translate(language, "spirit.inherited")}</p>
+        <nav className="study-links">
+          {playMode() !== "winter" && <a href="?rimedi">{translate(language,"hearing.full")}</a>}
+          {playMode() !== "winterStudy" && <a href="?studio=inverno">{translate(language,"hearing.study")}</a>}
+          {playMode() !== "current" && <a href="?">{translate(language,"hearing.normal")}</a>}
+        </nav>
+        {replay && <p role="status">{translate(language,"hearing.pickSlot")}</p>}
         {ready ? (
           <div className="slot-list">
             {slots.map((number) => {

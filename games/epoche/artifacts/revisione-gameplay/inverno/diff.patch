@@ -1,0 +1,1586 @@
+diff --git a/games/epoche/src/content/campaign/definitions.ts b/games/epoche/src/content/campaign/definitions.ts
+index 30dce88..78e56f4 100644
+--- a/games/epoche/src/content/campaign/definitions.ts
++++ b/games/epoche/src/content/campaign/definitions.ts
+@@ -68,7 +68,7 @@ const deferredImpact = z.object({ family: z.enum(families), points: z.number().i
+ const responseSchema = z.object({
+   cost: z.number().nonnegative(),
+   recovery: z.number().nonnegative(),
+-  defer: deferredImpact.optional(),
++  defer: deferredImpact.extend({afterEras:z.union([z.literal(1),z.literal(2)]).optional()}).optional(),
+   repay: deferredImpact.optional(),
+   overload: z.object({ at: z.number().min(1).max(99), points: z.number().min(1).max(99) }).optional(),
+   founds: z.enum(heritageSites).optional(),
+diff --git a/games/epoche/src/content/campaign/winter.ts b/games/epoche/src/content/campaign/winter.ts
+new file mode 100644
+index 0000000..16b9e79
+--- /dev/null
++++ b/games/epoche/src/content/campaign/winter.ts
+@@ -0,0 +1,26 @@
++export const winterMarks = [
++  "field",
++  "clan",
++  "hut",
++  "table",
++  "barter",
++  "unseeded",
++] as const;
++export type WinterMark = (typeof winterMarks)[number];
++export const remedies = [
++  "carry",
++  "seeds",
++  "departure",
++  "isolate",
++  "care",
++  "levy",
++  "condone",
++  "returnClan",
++  "share",
++  "renew",
++] as const;
++export type Remedy = (typeof remedies)[number];
++export const winterRules = (rules: string) =>
++  rules === "winter" || rules === "winterStudy";
++export const scriptedRules = (rules: string) =>
++  rules === "trial" || rules === "winterStudy";
+diff --git a/games/epoche/src/engine/campaign/campaign.ts b/games/epoche/src/engine/campaign/campaign.ts
+index 9bed23a..c3908ed 100644
+--- a/games/epoche/src/engine/campaign/campaign.ts
++++ b/games/epoche/src/engine/campaign/campaign.ts
+@@ -1,3 +1,4 @@
++import { needsHearing, openHearing, resolveHearing } from "./reckoning";
+ import {
+   campaignBalance,
+   campaignEras,
+@@ -72,6 +73,7 @@ export function createCampaign(
+   return appendLog(
+     {
+       version: 2,
++      inherited: input.inherited, reckoning:null, marks:{}, studyFinished:false, winterStock:0,
+       rules: input.rules ?? "current",
+       pace: input.pace ?? "rapid",
+       id: input.id,
+@@ -210,7 +212,7 @@ function resolveOutcome(
+       eraOrigin: { year: date, tick: core.tick },
+       modifiers: [],
+     };
+-    return settleDeferred(appendLog(
++    const migrated = appendLog(
+       {
+         ...sheltered,
+         regions,
+@@ -221,7 +223,8 @@ function resolveOutcome(
+       },
+       "log.migrate",
+       { name: victor.identity.name },
+-    ));
++    );
++    return needsHearing(campaign,eraNumber(nextCore.eraId)) ? openHearing(migrated,eraNumber(nextCore.eraId),"migration") : settleDeferred(migrated);
+   }
+   return campaign;
+ }
+@@ -231,6 +234,8 @@ export function applyCampaignAction(
+   action: CampaignAction,
+   content: ContentBundle,
+ ): Campaign {
++  if(action.type==="RECKON")return resolveHearing(campaign,action.token,action.remedy,content);
++  if(campaign.reckoning || campaign.studyFinished)return campaign;
+   if (action.type === "DOCTRINE")
+     return { ...campaign, doctrine: action.doctrine };
+   if (action.type === "RESPOND") {
+@@ -250,7 +255,10 @@ export function applyCampaignAction(
+       const advanced = advanceEra(campaign, content);
+       if (advanced === campaign) return campaign;
+       const followUp = settleEraChain(campaign, content);
+-      return followUp === campaign ? advanced : followUp;
++      if(followUp!==campaign)return followUp;
++      const target=eraNumber(advanced.core.eraId);
++      if(target>eraNumber(campaign.core.eraId) && needsHearing(campaign,target))return openHearing(campaign,target,"advance");
++      return advanced;
+     }
+     case "PACT":
+       return pact(campaign, action);
+@@ -277,6 +285,7 @@ export function stepCampaign(
+   commands: readonly Command[],
+   content: ContentBundle,
+ ) {
++  if(campaign.reckoning || campaign.studyFinished)return {campaign,commandResults:[]};
+   const minimumSupport = Math.min(
+     ...socialGroups(campaign).map((group) => group.support),
+   );
+@@ -326,6 +335,7 @@ export function stepCampaign(
+     !urgentDecision(next)
+   )
+     next = applyResponse(next, eventsById.get(next.pending.id)!.fallbackIndex, content);
++  if (next.reckoning) return { campaign: next, commandResults: result.commandResults };
+   if (next.core.tick % campaignBalance.worldUpdateTicks === 0) {
+     next = { ...next, rivals: refreshTruces(next) };
+     next = { ...next, rivals: updateRivals(next, content) };
+diff --git a/games/epoche/src/engine/campaign/events.ts b/games/epoche/src/engine/campaign/events.ts
+index 684502a..55c9727 100644
+--- a/games/epoche/src/engine/campaign/events.ts
++++ b/games/epoche/src/engine/campaign/events.ts
+@@ -1,3 +1,5 @@
++import { openHearing } from "./reckoning";
++import { winterRules, scriptedRules } from "@content/campaign/winter";
+ import { trialEvents } from "@content/campaign/trial";
+ import {
+   campaignBalance,
+@@ -83,7 +85,7 @@ export function applyResponse(
+       : crisis)
+     .filter(crisis => crisis.severity > 0);
+   if (risk) crises.push({ family: risk.family, severity: risk.after });
+-  const due = eraNumber(campaign.core.eraId) + 1;
++  const due = eraNumber(campaign.core.eraId) + (response.defer?.afterEras ?? 1);
+   let deferred = campaign.deferred;
+   let paid = 0;
+   if (response.repay) {
+@@ -99,13 +101,16 @@ export function applyResponse(
+     const prior = deferred.find(entry => entry.source === response.labelKey && entry.due === due);
+     deferred = prior
+       ? deferred.map(entry => entry === prior ? { ...entry, points: entry.points + response.defer!.points } : entry)
+-      : [...deferred, { ...response.defer, due, source: response.labelKey }];
++      : [...deferred, { family:response.defer.family, points:response.defer.points, due, source: response.labelKey }];
+   }
+   const used = response.founds ?? response.requires;
+   const resolved = appendLog(
+     {
+       ...campaign,
+       pending: null,
++      winterStock: winterRules(campaign.rules) && event.id==="winter" && index===3 ? Math.min(30,campaign.winterStock+30-paid) : campaign.winterStock,
++      marks: winterRules(campaign.rules) && event.id === "winter" && (index === 0 || index === 3)
++        ? { ...campaign.marks, ...(index === 0 ? {table:3} : {barter:3}) } : campaign.marks,
+       deferred,
+       renewedIn: used && isTradition(used)
+         ? { ...campaign.renewedIn, [used]: campaign.highestEra } : campaign.renewedIn,
+@@ -135,7 +140,11 @@ export function applyResponse(
+   );
+   const accounted = paid && response.repay ? appendLog(resolved, "log.debtPaid",
+     { nameKey: response.labelKey, setting: paid, result: "family." + response.repay.family }) : resolved;
+-  if (risk?.after !== 100) return accounted;
++  if (risk?.after !== 100) {
++    if(winterRules(campaign.rules) && event.id==="ledger" && (campaign.rules==="winterStudy" || Object.keys(campaign.marks).length>0))
++      return openHearing(accounted,2,"ledger");
++    return accounted;
++  }
+   return appendLog({
+     ...accounted,
+     outcome: { kind: "collapse", family: risk.family },
+@@ -174,7 +183,7 @@ export function settleEraChain(
+ ): Campaign {
+   if (campaign.pending || campaign.outcome) return campaign;
+   const stage = eraNumber(campaign.core.eraId);
+-  const scripted = campaign.rules === "trial" && trialEvents[campaign.core.eraId];
++  const scripted = scriptedRules(campaign.rules) && trialEvents[campaign.core.eraId];
+   if (scripted) {
+     const id = scripted.find(id => !Object.hasOwn(campaign.cooldowns, id));
+     return id ? maybeOpenEvent({ ...campaign, chain: [{ id, at: campaign.core.tick }] }, content) : campaign;
+@@ -196,7 +205,7 @@ export function maybeOpenEvent(
+     return campaign;
+   const stage = eraNumber(campaign.core.eraId);
+   const timed = campaignTiming(campaign.pace);
+-  const sequence = campaign.rules === "trial" ? trialEvents[campaign.core.eraId] : undefined;
++  const sequence = scriptedRules(campaign.rules) ? trialEvents[campaign.core.eraId] : undefined;
+   const scheduled = sequence?.find(id => !Object.hasOwn(campaign.cooldowns, id));
+   if (sequence && !scheduled) return campaign;
+   const promised = sequence ? campaign.chain.find(link => link.id === scheduled) : earliestEraLink(campaign, stage);
+@@ -206,7 +215,7 @@ export function maybeOpenEvent(
+   const age = tick - (campaign.core.eraOrigin?.tick ?? 0);
+   const periodic =
+     age >= timed.firstEventTick &&
+-    (age - timed.firstEventTick) % timed.eventEveryTicks === 0;
++    (age - timed.firstEventTick) % (timed.eventEveryTicks * (campaign.rules === "winterStudy" ? 2 : 1)) === 0;
+   if (!exactChain && !periodic) return campaign;
+   const rng = createRng(campaign.random);
+   // A village facility serves the settlement, not the entire territory that
+@@ -393,6 +402,10 @@ export function updateCrises(
+     }
+   }
+ 
++  const terminal = crises.find(crisis => crisis.severity >= 100);
++  if (campaign.rules === "winterStudy" && !campaign.outcome && terminal) {
++    return appendLog({ ...next, crises, pending: null, legacy: next.legacy + campaignBalance.legacyStructural, outcome: { kind: "collapse", family: terminal.family } }, "log.collapse", { nameKey: "family." + terminal.family });
++  }
+   let outcome: Outcome | null = campaign.outcome;
+   let legacy = campaign.legacy;
+   const severe = crises.find(
+@@ -442,6 +455,8 @@ export function preparation(campaign: Campaign): Campaign["core"] {
+       effects[crisisTargets[crisis.family]] = -crisis.severity / 39;
+     }
+   }
++  if ((campaign.marks.field ?? 0) > eraNumber(core.eraId))
++    effects.sustenance = (effects.sustenance ?? 0) - 2;
+   const relations = diplomacyEffects(campaign);
+   const fatigue = campaign.war?.fatigue ?? 0;
+   const modifiers = (core.modifiers ?? []).filter(
+diff --git a/games/epoche/src/engine/campaign/model.ts b/games/epoche/src/engine/campaign/model.ts
+index b916e4b..6369c6d 100644
+--- a/games/epoche/src/engine/campaign/model.ts
++++ b/games/epoche/src/engine/campaign/model.ts
+@@ -1,3 +1,4 @@
++import { winterRules } from "@content/campaign/winter";
+ import { eventsById, traditionLifetime } from "@content/campaign/definitions";
+ import type { Doctrine, Family, GameEvent, HeritageSite, Tradition, Trait } from "@content/campaign/definitions";
+ import type { GameState } from "../state/gameState";
+@@ -53,6 +54,7 @@ export interface ChronicleEntry {
+   setting?: number | undefined;
+   consequenceKey?: string | undefined;
+   result?: string | undefined;
++  offered?: string[] | undefined;
+ }
+ export interface PendingEvent {
+   id: string;
+@@ -73,7 +75,12 @@ export interface DeferredCost {
+ }
+ 
+ export interface Campaign {
+-  rules: "current" | "trial";
++  inherited: number;
++  reckoning: { token:number; target:number; kind:"advance"|"migration"|"ledger" } | null;
++  marks: Partial<Record<import("@content/campaign/winter").WinterMark, number>>;
++  studyFinished: boolean;
++  winterStock: number;
++  rules: "current" | "trial" | "winter" | "winterStudy";
+   version: 2;
+   pace: Pace;
+   id: string;
+@@ -119,7 +126,15 @@ export function availableResponses(campaign: Campaign, event: GameEvent) {
+     .map(response => response.overload && severity >= response.overload.at
+       ? { ...response, recovery: 0, strain: { family: event.family, points: response.overload.points },
+           consequenceKey: response.consequenceKey + ".overload" }
+-      : response);
++      : response)
++    .map(option=>{
++      if(!winterRules(campaign.rules))return option;
++      if(event.id==="winter" && option.choice===2)
++        return {...option,defer:{family:"health" as const,points:28,afterEras:1 as const}};
++      if(campaign.core.eraId==="neolithic" && campaign.marks.field && option.strain?.family==="food")
++        return {...option,strain:{...option.strain,points:option.strain.points+12}};
++      return option;
++    });
+ }
+ 
+ export function responseRisk(campaign: Campaign, response: GameEvent["responses"][number]) {
+@@ -130,8 +145,9 @@ export function responseRisk(campaign: Campaign, response: GameEvent["responses"
+ }
+ 
+ export function urgentDecision(campaign: Campaign): boolean {
++  if (campaign.reckoning || campaign.studyFinished) return true;
+   const event = eventsById.get(campaign.pending?.id ?? "");
+-  return !!event && ((campaign.rules === "trial" && event.id === "ledger") || event.decisive || availableResponses(campaign, event).some(response =>
++  return !!event && (campaign.rules === "winterStudy" || (campaign.rules === "trial" && event.id === "ledger") || event.decisive || availableResponses(campaign, event).some(response =>
+     response.cost <= campaign.core.influence && responseRisk(campaign, response)?.after === 100
+   ));
+ }
+@@ -145,6 +161,7 @@ export function campaignActionBlock(
+ 
+ export type CampaignAction =
+   | { type: "RESPOND"; choice: number; eventId?: string; openedAt?: number }
++  | { type: "RECKON"; token:number; remedy:import("@content/campaign/winter").Remedy }
+   | { type: "ADVANCE" }
+   | { type: "DOCTRINE"; doctrine: Doctrine }
+   | {
+diff --git a/games/epoche/src/engine/campaign/progression.ts b/games/epoche/src/engine/campaign/progression.ts
+index 8fa385b..8570a7d 100644
+--- a/games/epoche/src/engine/campaign/progression.ts
++++ b/games/epoche/src/engine/campaign/progression.ts
+@@ -1,3 +1,4 @@
++import {winterRules} from "@content/campaign/winter";
+ import {
+   campaignBalance,
+   campaignEras,
+@@ -125,6 +126,7 @@ export function settleDeferred(campaign: Campaign): Campaign {
+ export function advanceEra(
+   campaign: Campaign,
+   content: ContentBundle,
++  collect = true,
+ ): Campaign {
+   const progress = progression(campaign);
+   if (!progress.ready || campaign.pending || campaignActionBlock(campaign))
+@@ -139,7 +141,9 @@ export function advanceEra(
+       },
+       "log.ending",
+     );
+-  const core = enterEra(campaign.core, progress.nextId, content);
++  const enteredCore = enterEra(campaign.core, progress.nextId, content);
++  const core = winterRules(campaign.rules) && eraNumber(campaign.core.eraId)<2
++    ? {...enteredCore,influence:Math.min(enteredCore.influence,Math.max(6,campaign.core.influence))} : enteredCore;
+   const stage = eraNumber(core.eraId);
+   const inheritance = advanceHeritage(campaign, stage);
+   const invitations = stage === 9 && stage > campaign.highestEra
+@@ -147,11 +151,12 @@ export function advanceEra(
+         option.requires && inheritance.heritage.includes(option.requires)))
+     : [];
+   const interval = campaignTiming(campaign.pace).eventEveryTicks;
+-  return settleDeferred(appendLog(
++  const entered = appendLog(
+     {
+       ...campaign,
+       core,
+       ...inheritance,
++      marks:Object.fromEntries(Object.entries(campaign.marks).filter(([,until])=>until>stage)),
+       chain: [...campaign.chain, ...invitations.map((event, i) => ({
+         id: event.id, at: core.tick + (i + 1) * interval,
+       }))],
+@@ -161,7 +166,8 @@ export function advanceEra(
+     },
+     "log.era",
+     { name: campaign.identity.name },
+-  ));
++  );
++  return collect ? settleDeferred(entered) : entered;
+ }
+ 
+ export function revealTrait(campaign: Campaign): Campaign {
+diff --git a/games/epoche/src/engine/campaign/reckoning.ts b/games/epoche/src/engine/campaign/reckoning.ts
+new file mode 100644
+index 0000000..c9869f6
+--- /dev/null
++++ b/games/epoche/src/engine/campaign/reckoning.ts
+@@ -0,0 +1,212 @@
++import { winterRules, type Remedy } from "@content/campaign/winter";
++import { campaignBalance, type Family } from "@content/campaign/definitions";
++import type { ContentBundle } from "@content/schema";
++import type { Campaign } from "./model";
++import { appendLog, advanceEra, settleDeferred } from "./progression";
++import { eraNumber } from "./world";
++
++type Hearing = NonNullable<Campaign["reckoning"]>;
++function debts(state: Campaign, target: number) {
++  return state.deferred.filter((cost) => cost.due <= target);
++}
++export function needsHearing(c: Campaign, target: number) {
++  return (
++    winterRules(c.rules) &&
++    (eraNumber(c.core.eraId) < 2 ||
++      debts(c, target).some((cost) => cost.source === "remedy.renew")) &&
++    (debts(c, target).length > 0 || (target === 1 && !!c.marks.barter))
++  );
++}
++export function openHearing(
++  c: Campaign,
++  target: number,
++  kind: Hearing["kind"],
++) {
++  const hearing = { token: c.sequence + 1, target, kind };
++  const next = appendLog(c, "log.hearing", { offered: offers(c, hearing) });
++  return { ...next, reckoning: hearing };
++}
++function offers(c: Campaign, hearing: Hearing): Remedy[] {
++  const { target, kind } = hearing;
++  if (kind === "ledger")
++    return [
++      "carry",
++      ...(c.marks.table ? (["condone"] as const) : []),
++      ...(c.marks.table === 3 ? (["renew"] as const) : []),
++      ...(c.marks.clan ? (["returnClan"] as const) : []),
++      ...(c.marks.barter ? (["share"] as const) : []),
++    ];
++  if (target === 1 && c.marks.barter) {
++    const food = debts(c, target)
++      .filter((item) => item.family === "food")
++      .reduce((sum, item) => sum + item.points, 0);
++    return food +
++      (c.crises.find((item) => item.family === "food")?.severity ?? 0) >=
++      100
++      ? ["isolate", "care", "seeds"]
++      : ["isolate", "care"];
++  }
++  const due = debts(c, target);
++  return due.some((cost) => cost.family === "food")
++    ? ["carry", "seeds", "departure"]
++    : ["carry", "levy"];
++}
++function change(c: Campaign, family: Family, points: number): Campaign {
++  const before = c.crises.find((v) => v.family === family)?.severity ?? 0;
++  const severity = Math.max(0, Math.min(100, before + points));
++  return {
++    ...c,
++    crises: [
++      ...c.crises.filter((v) => v.family !== family),
++      ...(severity ? [{ family, severity }] : []),
++    ],
++  };
++}
++function adjust(c: Campaign, remedy: Remedy, h: Hearing) {
++  let next: Campaign = { ...c, marks: { ...c.marks } };
++  let population = 1;
++  const pay = (family: Family, amount: number) => {
++    next.deferred = next.deferred.flatMap((entry) => {
++      if (entry.due > h.target || entry.family !== family || amount <= 0)
++        return [entry];
++      const used = Math.min(entry.points, amount);
++      amount -= used;
++      return used < entry.points
++        ? [{ ...entry, points: entry.points - used }]
++        : [];
++    });
++  };
++  switch (remedy) {
++    case "seeds":
++      pay("food", 60);
++      next.marks.field = h.target + 1;
++      break;
++    case "departure":
++      pay("food", 70);
++      population = 0.8;
++      next = change(next, "clans", 15);
++      next.marks.clan = Math.max(3,h.target+1);
++      break;
++    case "levy": {
++      const due = debts(next, h.target);
++      const largest = [...due].sort((a, b) => b.points - a.points)[0];
++      if (largest) pay(largest.family, 35);
++      population = 0.85;
++      next = change(next, largest?.family === "clans" ? "food" : "clans", 18);
++      break;
++    }
++    case "isolate":
++      next = change(change(next, "health", -20), "clans", 22);
++      next.marks.hut = 3;
++      break;
++    case "care":
++      next = change(change(next, "health", -20), "food", 18);
++      next.marks.unseeded = 3;
++      break;
++    case "condone":
++      delete next.marks.table;
++      next = change(change(next, "food", 17), "clans", -20);
++      break;
++    case "renew":
++      next.marks.table = 5;
++      next = change(next, "food", 12);
++      break;
++    case "returnClan":
++      delete next.marks.clan;
++      next.marks.unseeded = 4;
++      population = 1.15;
++      next = change(next, "food", 15);
++      break;
++    case "share":
++      delete next.marks.barter;
++      population = 1.12;
++      next = change(change(next, "health", -12), "food", 14);
++      break;
++    case "carry":
++      if (h.kind === "ledger") {
++        next = change(next, "clans", 13);
++        if (c.marks.barter) {
++          // Families already sheltered at the thaw can settle on the stored provisions.
++          population = 1.03;
++          delete next.marks.barter;
++        }
++      }
++      break;
++  }
++  if (h.kind === "ledger" && remedy === "renew") {
++    next.deferred = [
++      ...next.deferred,
++      { due: h.target + 2, family: "food", points: 18, source: "remedy.renew" },
++    ];
++  }
++  if ((remedy === "isolate" || remedy === "care") && next.winterStock > 0) {
++    population += next.winterStock / 150;
++    next.winterStock = 0;
++  }
++  return { next, population };
++}
++export function previewHearing(c: Campaign) {
++  const h = c.reckoning;
++  if (!h) return [];
++  return offers(c, h).map((id) => {
++    const { next, population } = adjust(c, id, h);
++    const crises = next.crises.map((item) => ({ ...item }));
++    if (h.kind !== "ledger")
++      for (const entry of debts(next, h.target)) {
++        const existing = crises.find((v) => v.family === entry.family);
++        if (existing)
++          existing.severity = Math.min(100, existing.severity + entry.points);
++        else
++          crises.push({
++            family: entry.family,
++            severity: Math.min(100, entry.points),
++          });
++      }
++    return {
++      id,
++      crises,
++      population,
++      fatal: crises.some((v) => v.severity >= 100),
++    };
++  });
++}
++export function resolveHearing(
++  c: Campaign,
++  token: number,
++  remedy: Remedy,
++  content: ContentBundle,
++): Campaign {
++  const h = c.reckoning;
++  if (!h || h.token !== token || !offers(c, h).includes(remedy)) return c;
++  const cleared = { ...c, reckoning: null };
++  const entered =
++    h.kind === "advance" ? advanceEra(cleared, content, false) : cleared;
++  if (h.kind === "advance" && entered === cleared) return c;
++  const { next, population } = adjust(entered, remedy, h);
++  const modified = appendLog(
++    {
++      ...next,
++      core: {
++        ...next.core,
++        population: Math.max(10, next.core.population * population),
++        influence:
++          h.kind === "advance"
++            ? Math.min(next.core.influence, Math.max(6, c.core.influence))
++            : next.core.influence,
++      },
++    },
++    "log.remedy",
++    { nameKey: "remedy." + remedy },
++  );
++  if (h.kind === "ledger" && c.rules === "winterStudy")
++    modified.studyFinished = true;
++  const settled = h.kind === "ledger" ? modified : settleDeferred(modified);
++  const fatal = settled.crises.find((item) => item.severity >= 100);
++  if (!settled.outcome && fatal)
++    return appendLog(
++      { ...settled, legacy: settled.legacy + campaignBalance.legacyStructural, outcome: { kind: "collapse", family: fatal.family } },
++      "log.collapse",
++      { nameKey: "family." + fatal.family },
++    );
++  return settled;
++}
+diff --git a/games/epoche/src/i18n/campaign-en.json b/games/epoche/src/i18n/campaign-en.json
+index 9623f88..c17198c 100644
+--- a/games/epoche/src/i18n/campaign-en.json
++++ b/games/epoche/src/i18n/campaign-en.json
+@@ -480,5 +480,56 @@
+   "genesis.waterEffect": "Water chance in inland cells away from settlement centres: {chance}%.",
+   "slot.promise": "Guide one village through the ages. Your decisions change what its descendants can do.",
+   "genesis.modifier": "Effect on starting traits",
+-  "trial.wrongMode": "Open this save in its original mode (campaign or study)."
++  "trial.wrongMode": "Open this save in its original mode (campaign or study).",
++  "hearing.title": "Face the transition",
++  "hearing.ledger": "The household ledger",
++  "hearing.intro": "Before entering, decide which loss to bear. Each option shows crises after settlement. At 100 the village dissolves.",
++  "hearing.ledgerIntro": "The ledger remembers who paid during the winter. Who should bear the next share?",
++  "hearing.full": "Campaign with winter remedies",
++  "hearing.study": "Guided study through the Bronze Age",
++  "hearing.normal": "Original campaign",
++  "hearing.warning": "You can renegotiate the supplies before entering the next era.",
++  "council.hearing": "The village can advance. The council must still decide who bears the debt.",
++  "log.hearing": "The council opens the ledger of losses.",
++  "log.remedy": "The council chooses “{name}”.",
++  "hearing.replay": "Replay the same world",
++  "hearing.pickSlot": "Choose a slot to replay this world with the same starting conditions.",
++  "hearing.review": "Review the decisive choice",
++  "hearing.zero": "Influence 0",
++  "hearing.risk": "{family}: {before} → {after}/100",
++  "hearing.marks": "Traces of winter",
++  "mark.field": "Fallow eastern field",
++  "mark.clan": "Departed clan’s home",
++  "mark.hut": "Isolation hut",
++  "mark.table": "Common table",
++  "mark.unseeded": "Unsown plot",
++  "mark.barter": "Blanket agreement",
++  "price.carry.ledger": "Collecting the share raises clan tensions by 13. If barter supplies remain, use them to settle families sheltered at the thaw (+3% population).",
++  "remedy.carry": "Accept the debt",
++  "price.carry": "All debts are added to the current crises.",
++  "remedy.seeds": "Eat the seed grain",
++  "price.seeds": "Repay 60 food. For the next era the east field lies fallow and sustenance drops by 2. During the Neolithic, choices worsening the food crisis cost 12 extra points.",
++  "remedy.departure": "Let a clan depart",
++  "price.departure": "Repay 70 food. A fifth of the population leaves and tensions rise by 15. If the Bronze ledger opens, you can offer land for their return.",
++  "remedy.isolate": "Isolate the sick",
++  "price.isolate": "Health crisis −20, tensions +22. A hut stays separate through the Bronze Age; relatives claim a share at the ledger.",
++  "remedy.care": "Care for the sick together",
++  "price.care": "Health crisis −20, food crisis +18. Growers give up one plot through the Bronze Age.",
++  "remedy.levy": "Call up households",
++  "price.levy": "Reduce the largest bill by 35. Lose 15% of the population and another crisis rises by 18.",
++  "remedy.condone": "Forgive the poorest households’ share",
++  "price.condone": "Families of the common table give food: food crisis +17, tensions −20. The tradition is consumed.",
++  "remedy.renew": "Renew the common table",
++  "price.renew": "Food crisis +12 now and 18 more in two eras. The table lasts through the Middle Ages.",
++  "remedy.returnClan": "Give land to the returning clan",
++  "price.returnClan": "Population +15%, food crisis +15. A plot remains unsown through the Classical era.",
++  "remedy.share": "Support the relatives of the sick",
++  "price.share": "Growers give 14 food. The health crisis falls by 12 and welcoming families increases population by 12%.",
++  "hearing.collect": "Collect the share",
++  "deferred.winter.2": "Crowded shelters will spread illness at the thaw.",
++  "hearing.failedCrop": "The east field lies fallow. Responses that worsen the food crisis cost 12 additional points, included in the forecast.",
++  "winter.trace.0": "The common table is founded. In the Bronze Age households can use it to forgive a share.",
++  "winter.trace.3": "At the thaw you choose how to treat the sick. Supplies beyond the debt feed new families: up to 20% more inhabitants.",
++  "price.departure.late": "Repay 70 food debt. One in five inhabitants leaves and tensions rise by 15.",
++  "hearing.debtDanger": "Without a remedy, the {family} crisis reaches 100 at the transition."
+ }
+diff --git a/games/epoche/src/i18n/campaign-it.json b/games/epoche/src/i18n/campaign-it.json
+index a4fe49a..579851c 100644
+--- a/games/epoche/src/i18n/campaign-it.json
++++ b/games/epoche/src/i18n/campaign-it.json
+@@ -480,5 +480,56 @@
+   "genesis.waterEffect": "Probabilità di acqua nelle celle interne lontane dai centri abitati: {chance}%.",
+   "slot.promise": "Guida lo stesso villaggio attraverso le ere. Le decisioni di oggi cambiano le possibilità dei suoi discendenti.",
+   "genesis.modifier": "Effetto sul carattere iniziale",
+-  "trial.wrongMode": "Apri questo salvataggio nella sua modalità di origine (campagna o studio)."
++  "trial.wrongMode": "Apri questo salvataggio nella sua modalità di origine (campagna o studio).",
++  "hearing.title": "Affronta il passaggio",
++  "hearing.ledger": "Il registro delle famiglie",
++  "hearing.intro": "Prima di entrare, scegli quali perdite sostenere. Ogni risposta mostra le crisi dopo il pagamento. A 100 il villaggio si dissolve.",
++  "hearing.ledgerIntro": "Il registro ricorda chi ha pagato durante l’inverno. A chi assegni la prossima quota?",
++  "hearing.full": "Campagna con i rimedi dell’inverno",
++  "hearing.study": "Prova guidata fino al Bronzo",
++  "hearing.normal": "Campagna originale",
++  "hearing.warning": "Prima della nuova era potrai rinegoziare le scorte.",
++  "council.hearing": "Il villaggio può avanzare. Il consiglio deve ancora scegliere chi pagherà le scadenze.",
++  "log.hearing": "Il consiglio apre il registro delle perdite.",
++  "log.remedy": "Il consiglio sceglie «{name}».",
++  "hearing.replay": "Rigioca lo stesso mondo",
++  "hearing.pickSlot": "Scegli lo slot per rigiocare questo mondo con le stesse condizioni iniziali.",
++  "hearing.review": "Rivedi la scelta decisiva",
++  "hearing.zero": "Influenza 0",
++  "hearing.risk": "{family}: {before} → {after}/100",
++  "hearing.marks": "Tracce dell’inverno",
++  "mark.field": "Campo orientale incolto",
++  "mark.clan": "Casa del clan partito",
++  "mark.hut": "Capanna di isolamento",
++  "mark.table": "Tavola comune",
++  "mark.unseeded": "Lotto senza semina",
++  "mark.barter": "Patto delle coperte",
++  "price.carry.ledger": "Riscuotere la quota aumenta di 13 le tensioni fra i clan. Se restano scorte del baratto, le consumi per insediare le famiglie riparate al disgelo (+3% abitanti).",
++  "remedy.carry": "Accetta il conto",
++  "price.carry": "Le scadenze si sommano per intero alle crisi attuali.",
++  "remedy.seeds": "Mangia le sementi",
++  "price.seeds": "Ripaghi 60 di cibo. Per la prossima era il campo resta incolto e il Sostentamento cala di 2. Nel Neolitico le scelte che aggravano il cibo costano altri 12 punti.",
++  "remedy.departure": "Lascia partire un clan",
++  "price.departure": "Ripaghi 70 di cibo. Parte un abitante su cinque e le tensioni salgono di 15. Se si apre il registro del Bronzo, potrai offrire un lotto per il ritorno.",
++  "remedy.isolate": "Isola i malati",
++  "price.isolate": "Salute −20, tensioni +22. Una capanna resta separata fino alla fine del Bronzo, quando i parenti reclamano una quota.",
++  "remedy.care": "Cura insieme i malati",
++  "price.care": "Salute −20, cibo +18. I coltivatori cedono un lotto fino alla fine del Bronzo.",
++  "remedy.levy": "Convoca le famiglie per il servizio",
++  "price.levy": "Riduci di 35 la voce più pesante. Parte il 15% degli abitanti e un’altra crisi cresce di 18.",
++  "remedy.condone": "Condona la quota dei più poveri",
++  "price.condone": "Le famiglie della Tavola cedono cibo: Risorse +17, tensioni −20. La tradizione si consuma.",
++  "remedy.renew": "Rinnova la Tavola comune",
++  "price.renew": "Cibo +12 oggi e altri 18 fra due ere. La Tavola dura fino alla fine del Medioevo.",
++  "remedy.returnClan": "Cedi terra al clan che ritorna",
++  "price.returnClan": "Popolazione +15%, cibo +15. Un lotto resta senza semina fino alla fine del Classico.",
++  "remedy.share": "Sostieni i parenti dei malati",
++  "price.share": "I coltivatori cedono 14 di cibo. La crisi sanitaria cala di 12 e le famiglie accolte aumentano gli abitanti del 12%.",
++  "hearing.collect": "Riscuoti la quota",
++  "deferred.winter.2": "Nei ripari affollati i contagi peseranno sulla salute al disgelo.",
++  "hearing.failedCrop": "Il campo orientale è incolto. Le risposte che aggravano la crisi alimentare costano 12 punti in più, già inclusi nella previsione.",
++  "winter.trace.0": "Nasce la Tavola comune. Nel Bronzo le famiglie potranno usarla per condonare una quota.",
++  "winter.trace.3": "Al disgelo sceglierai come curare i malati. Le provviste oltre il debito nutrono nuove famiglie: fino al 20% di abitanti in più.",
++  "price.departure.late": "Settanta punti di debito alimentare vengono ripagati. Parte un abitante su cinque e le tensioni salgono di 15.",
++  "hearing.debtDanger": "Senza un rimedio, la crisi «{family}» raggiunge 100 al passaggio."
+ }
+diff --git a/games/epoche/src/map/diorama.ts b/games/epoche/src/map/diorama.ts
+index c06861e..cd6fd0a 100644
+--- a/games/epoche/src/map/diorama.ts
++++ b/games/epoche/src/map/diorama.ts
+@@ -29,6 +29,7 @@ export interface Scene {
+   palette: [string, string, string, string];
+   tick: number;
+   population: number;
++  marks?: readonly string[];
+   heritage: readonly HeritageSite[];
+   traditionLife: Readonly<Record<string, number>>;
+   speed: number;
+@@ -64,6 +65,13 @@ function settlement(g: Graphics, scene: Scene, x: number, warm: string, ill: boo
+     building(g, x + dx - size / 2, y, size, style, lot, warm, ill);
+   }
+   landmark(g, scene.era, x, -3, warm);
++  if(scene.era>4) { // Reused stone at the edge of the old keep.
++    g.rect(x-45,4,27,8).fill("#8e8575");
++    for(let i=0;i<4;i++)g.rect(x-45+i*7,0,4,5).fill("#8e8575");
++  }
++  if(scene.era>5) { // The brass instrument remains beside the rebuilt observatory.
++    g.circle(x+35,0,8).stroke({color:"#b39b69",width:2}); segment(g,[x+35,-8,x+35,12],"#776647",2);
++  }
+   // The worn track becomes a paved road, keeping the bend between the square and the ford.
+   const track = [terrain.fields + 30, 29, x - 90, 26, x, 19, x + 162, 28, terrain.river - 125, 12];
+   segment(g, track, "#584c39", scene.era < 3 ? 5 : 10);
+@@ -77,6 +85,16 @@ function drawHeritage(g: Graphics, scene: Scene) {
+   const outline = "#544536";
+   const block = (x: number, y: number, w: number, h: number, color: string) =>
+     g.rect(x,y,w,h).fill(color).stroke({color:outline,width:1.5});
++  if (scene.marks?.some(mark=>mark==="field" || mark==="unseeded")) {
++    for(let i=0;i<6;i++) segment(g,[terrain.fields+40+i*6,45,terrain.fields+56+i*6,36],"#735642",3);
++  }
++  if (scene.marks?.some(mark=>mark==="hut" || mark==="clan")) {
++    const x=terrain.village+75;
++    block(x,19,20,16,"#8b7157");shape(g,[x-4,20,x+10,8,x+24,20],"#594431");segment(g,[x+5,25,x+15,31],"#d0b996",2);
++  }
++  if (scene.marks?.includes("table")) {
++    const x=terrain.village-24;block(x,36,28,4,"#cb9c64");block(x+4,40,3,6,"#755333");block(x+21,40,3,6,"#755333");
++  }
+   if (scene.heritage.includes("hearth")) {
+     const x = terrain.village - 63;
+     g.ellipse(x,33,13,5).fill("#50493d").stroke({color:"#bbad93",width:3});
+@@ -435,7 +453,7 @@ export async function mountDiorama(host: HTMLElement) {
+     const landscape = JSON.stringify([
+       scene.era,
+       scene.palette,
+-      scene.heritage,
++      scene.heritage, scene.marks,
+       scene.traditionLife,
+       homeCount(scene),
+       scene.attributes,
+diff --git a/games/epoche/src/map/viewpoint.ts b/games/epoche/src/map/viewpoint.ts
+index 58ed813..e616310 100644
+--- a/games/epoche/src/map/viewpoint.ts
++++ b/games/epoche/src/map/viewpoint.ts
+@@ -23,3 +23,10 @@ export function focusFor(
+     (camera - stops[index - 1]!) / (stops[index]! - stops[index - 1]!);
+   return targets[index - 1]! + (targets[index]! - targets[index - 1]!) * weight;
+ }
++
++export const heritagePosition = {
++  hearth:[valley.village-63,27], wheel:[valley.village-133,20], romanRoad:[valley.village+90,24],
++  commonBridge:[valley.river-62,12], revolution:[valley.village+49,12], worldWars:[valley.woods-42,15],
++  mutualHall:[valley.village+205,10], fair:[valley.river-110,7], nightSchool:[valley.village+263,11],
++  spring:[valley.fields+62,18], seedStore:[valley.fields-58,10], council:[valley.village,21],
++} as const;
+diff --git a/games/epoche/src/persistence/library.ts b/games/epoche/src/persistence/library.ts
+index 2ee8100..52ad418 100644
+--- a/games/epoche/src/persistence/library.ts
++++ b/games/epoche/src/persistence/library.ts
+@@ -1,3 +1,4 @@
++import { playMode } from "../ui/playMode";
+ import Dexie, { type EntityTable } from "dexie";
+ import { validateSave, type SaveFile } from "./save";
+ 
+@@ -15,7 +16,7 @@ let database: LibraryDb | undefined;
+ 
+ function db() {
+   if (!database) {
+-    const storage = new Dexie(typeof location !== "undefined" && new URLSearchParams(location.search).has("studio") ? "epoche-studio" : "epoche") as LibraryDb;
++    const storage = new Dexie(({current:"epoche",trial:"epoche-studio",winter:"epoche-rimedi",winterStudy:"epoche-inverno"})[playMode()]) as LibraryDb;
+     storage.version(1).stores({ slots: "slot", legacy: "id" });
+     database = storage;
+   }
+diff --git a/games/epoche/src/persistence/save.ts b/games/epoche/src/persistence/save.ts
+index 9b733ee..871a8b1 100644
+--- a/games/epoche/src/persistence/save.ts
++++ b/games/epoche/src/persistence/save.ts
+@@ -1,3 +1,4 @@
++import {winterRules} from "@content/campaign/winter";
+ import { z } from "zod";
+ import { loadCampaignContent } from "@content/campaign/index";
+ import {
+@@ -87,7 +88,12 @@ const outcome = z.discriminatedUnion("kind", [
+ ]);
+ const campaignSchema = z.object({
+   version: z.literal(2),
+-  rules: z.enum(["current", "trial"]).default("current"),
++  inherited: z.number().nonnegative().default(0),
++  reckoning: z.object({token:tick,target:z.number().int().min(0).max(9),kind:z.enum(["advance","migration","ledger"])}).nullable().default(null),
++  marks: z.object({field:tick.optional(),clan:tick.optional(),hut:tick.optional(),table:tick.optional(),barter:tick.optional(),unseeded:tick.optional()}).default({}).transform(marks=>Object.fromEntries(Object.entries(marks).filter((entry): entry is [string,number]=>typeof entry[1]==="number"))),
++  winterStock:z.number().int().min(0).max(30).default(0),
++  studyFinished: z.boolean().default(false),
++  rules: z.enum(["current", "trial","winter","winterStudy"]).default("current"),
+   pace: z.enum(["standard", "rapid"]).default("rapid"),
+   id: smallId,
+   seed: uint,
+@@ -135,6 +141,7 @@ const campaignSchema = z.object({
+         setting: percent.optional(),
+         consequenceKey: smallId.optional(),
+         result: smallId.optional(),
++        offered: z.array(smallId).max(12).optional(),
+       }),
+     )
+     .max(1200),
+@@ -229,6 +236,13 @@ export function validateSave(input: unknown): SaveFile {
+   const save: SaveFile = fileSchema.parse(input);
+   const content = loadCampaignContent();
+   const { campaign } = save;
++  const hearing=campaign.reckoning;
++  const stage=campaignEras.findIndex(era=>era.id===campaign.core.eraId);
++  if(hearing && (!winterRules(campaign.rules) || campaign.outcome || campaign.pending ||
++    hearing.token!==campaign.sequence || hearing.target!==stage+(hearing.kind==="advance"?1:0) ||
++    (hearing.kind==="ledger" && stage!==2))) throw new Error("Invalid hearing");
++  if(campaign.studyFinished && (campaign.rules!=="winterStudy" || stage!==2 || hearing || campaign.pending))
++    throw new Error("Invalid study ending");
+   if (
+     save.queued.some(
+       ({ policyId }) => !content.policies.some(({ id }) => id === policyId),
+diff --git a/games/epoche/src/ui/App.tsx b/games/epoche/src/ui/App.tsx
+index 71c2074..e67aed2 100644
+--- a/games/epoche/src/ui/App.tsx
++++ b/games/epoche/src/ui/App.tsx
+@@ -227,7 +227,7 @@ function Settlement({
+ export function App({
+   language,
+   changeLanguage,
+-  onLeave,
++  onLeave, onReplay,
+   onDiscard,
+   onExport,
+   saveStatus,
+@@ -236,7 +236,7 @@ export function App({
+ }: {
+   language: Language;
+   changeLanguage: (language: Language) => void;
+-  onLeave: () => void;
++  onLeave: () => void; onReplay: () => void;
+   onDiscard: () => void;
+   onExport: () => void;
+   saveStatus: string;
+@@ -509,7 +509,7 @@ export function App({
+           view={campaign}
+           snapshot={snapshot}
+           language={language}
+-          onEnd={onLeave}
++          onEnd={onLeave} onReplay={onReplay}
+           onDiscard={onDiscard}
+           onExport={onExport}
+           leaving={leaving}
+diff --git a/games/epoche/src/ui/CampaignApp.tsx b/games/epoche/src/ui/CampaignApp.tsx
+index fe66608..c1c0551 100644
+--- a/games/epoche/src/ui/CampaignApp.tsx
++++ b/games/epoche/src/ui/CampaignApp.tsx
+@@ -1,3 +1,4 @@
++import { playMode } from "./playMode";
+ import { traits } from "@content/campaign/definitions";
+ import { genesisModifiers } from "@engine/campaign/world";
+ import { useCallback, useEffect, useRef, useState } from "react";
+@@ -170,6 +171,7 @@ function Genesis({
+ export function CampaignApp() {
+   const [language, setLanguage] = useState<Language>(initialLanguage);
+   const [screen, setScreen] = useState<"lobby" | "genesis" | "game">("lobby");
++  const [replay,setReplay]=useState<{seed:number;choices:GenesisChoices;pace:Pace;inherited:number}|null>(null);
+   const [library, setLibrary] = useState<{
+     records: SlotRecord[];
+     legacy: number;
+@@ -287,13 +289,14 @@ export function CampaignApp() {
+     seed: number,
+     choices: GenesisChoices,
+     pace: Pace,
++    selected = slot, inherited = new URLSearchParams(location.search).has("studio") ? 0 : library.legacy,
+   ): Promise<void> {
+     if (busy) return;
+     setBusy(true);
+     setError("");
+     setSaveStatus("slot.saving");
+     try {
+-      const { lease } = await claimSlot(slot, false);
++      const { lease } = await claimSlot(selected, false);
+       setLease(lease);
+       startGame({
+         start: {
+@@ -301,8 +304,8 @@ export function CampaignApp() {
+           seed,
+           choices,
+           pace,
+-          rules: new URLSearchParams(location.search).has("studio") ? "trial" : "current",
+-          inherited: new URLSearchParams(location.search).has("studio") ? 0 : library.legacy,
++          rules: playMode(),
++          inherited,
+         },
+       });
+       setScreen("game");
+@@ -314,6 +317,7 @@ export function CampaignApp() {
+   }
+   async function resume(selected: Slot): Promise<void> {
+     if (busy) return;
++    setReplay(null);
+     setBusy(true);
+     setError("");
+     setSaveStatus("slot.saving");
+@@ -342,6 +346,7 @@ export function CampaignApp() {
+       return;
+     setSlot(selected);
+     setError("");
++    if(replay){void launch(replay.seed,replay.choices,replay.pace,selected,replay.inherited);setReplay(null);return;}
+     setScreen("genesis");
+   }
+   async function importSlot(
+@@ -359,7 +364,7 @@ export function CampaignApp() {
+     try {
+       if (file.size > 2_000_000) throw new Error("Size limit");
+       const save = parseSave(await file.text());
+-      if ((save.campaign.rules === "trial") !== new URLSearchParams(location.search).has("studio")) { setError("trial.wrongMode"); return; }
++      if (save.campaign.rules !== playMode()) { setError("trial.wrongMode"); return; }
+       const { lease } = await claimSlot(selected, false);
+       await persist(
+         lease,
+@@ -395,6 +400,7 @@ export function CampaignApp() {
+       <App
+         language={language}
+         changeLanguage={setLanguage}
++        onReplay={() => { const config=useGameStore.getState().snapshot?.campaign?.replay; if(config){setReplay(config);void leave();} }}
+         onLeave={() => void leave()}
+         onDiscard={finishLeaving}
+         onExport={() => void exportGame()}
+@@ -458,6 +464,12 @@ export function CampaignApp() {
+           </span>
+         </div>
+         <p>{translate(language, "slot.promise")} {translate(language, "spirit.inherited")}</p>
++        <nav className="study-links">
++          {playMode() !== "winter" && <a href="?rimedi">{translate(language,"hearing.full")}</a>}
++          {playMode() !== "winterStudy" && <a href="?studio=inverno">{translate(language,"hearing.study")}</a>}
++          {playMode() !== "current" && <a href="?">{translate(language,"hearing.normal")}</a>}
++        </nav>
++        {replay && <p role="status">{translate(language,"hearing.pickSlot")}</p>}
+         {ready ? (
+           <div className="slot-list">
+             {slots.map((number) => {
+diff --git a/games/epoche/src/ui/campaign.css b/games/epoche/src/ui/campaign.css
+index 65c9313..21a738a 100644
+--- a/games/epoche/src/ui/campaign.css
++++ b/games/epoche/src/ui/campaign.css
+@@ -1038,3 +1038,18 @@
+     color: #d6d2c5;
+   }
+ }
++
++.hearing-options,.winter-cards {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
++.hearing-options button,.winter-cards button {text-align:left;padding:.55rem;min-width:0}
++.hearing-options button>* {display:block;margin:.25rem 0}
++.study-links,.winter-marks {display:flex;flex-wrap:wrap;gap:.6rem}
++.study-links a {color:var(--sage)}
++.winter-marks {position:relative;z-index:1;background:var(--panel)}
++.diorama:has(.winter-marks) .village-notice {position:static;transform:none;max-width:none}
++@media(max-width:680px){.hearing-options,.winter-cards{grid-template-columns:1fr}}
++
++.diorama .village-notice {position:static;transform:none;max-width:none;margin:0;order:2;}
++.diorama .village-notice:after{display:none}
++
++.diorama {grid-template-rows:minmax(0,1fr);grid-auto-rows:max-content}
++.diorama .diorama-canvas {min-height:0}
+diff --git a/games/epoche/src/ui/components/CampaignPanels.tsx b/games/epoche/src/ui/components/CampaignPanels.tsx
+index f965dad..9d4d00c 100644
+--- a/games/epoche/src/ui/components/CampaignPanels.tsx
++++ b/games/epoche/src/ui/components/CampaignPanels.tsx
+@@ -1,4 +1,4 @@
+-import { exportTrialLog, useTrialLog } from "../trialLog";
++import { exportTrialLog, useTrialLog, logTrialRemedy } from "../trialLog";
+ import { EventScene } from "./DecisionScenes";
+ import { useEffect, useRef, useState, type ReactNode } from "react";
+ import { subjectSymbols, incidentSymbols } from "../symbols";
+@@ -29,6 +29,10 @@ export function chronicleText(
+   entry: ChronicleEntry,
+   language: Language,
+ ): string {
++  if (entry.key === "log.hearing" && entry.offered?.length) {
++    const labels = entry.offered.map(id => translate(language, "remedy." + id));
++    return translate(language, entry.key) + " " + labels.join(" / ");
++  }
+   if (entry.key === "log.response" && entry.eventKey && entry.consequenceKey)
+     return translate(language, "log.response.detail", {
+       event: translate(language, entry.eventKey),
+@@ -476,7 +480,7 @@ function World({ view, language }: Props) {
+ export function Council({ view, language }: Props) {
+   const crisis = view.crises[0]?.family;
+   const advice = view.progress.ready
+-    ? "ready"
++    ? (view.hearingAhead ? "hearing" : "ready")
+     : crisis === "clans"
+       ? "social"
+       : crisis === "health"
+@@ -586,7 +590,7 @@ export function CampaignCenter({
+               </div>
+               <p>
+                 {translate(language, "center.capacitySummary", {
+-                  population: formatNumber(snapshot.population, language),
++                  population: formatNumber(Math.floor(snapshot.population), language),
+                   capacity: formatNumber(snapshot.capacity, language),
+                 })}
+               </p>
+@@ -629,7 +633,7 @@ export function CampaignCenter({
+                 >
+                   {translate(
+                     language,
+-                    view.progress.nextId
++                    view.hearingAhead ? "hearing.title" : view.progress.nextId
+                       ? "campaign.advance"
+                       : "campaign.complete",
+                   )}
+@@ -640,7 +644,7 @@ export function CampaignCenter({
+                 era: translate(language, "era." + campaignEras[entry.due]!.id), family: translate(language, "family." + entry.family),
+                 name: translate(language, entry.source), points: entry.points,
+               })}</p>)}
+-              {view.threatened.map(family => <p key={family}>{translate(language, "debt.danger", {
++              {view.threatened.map(family => <p key={family}>{translate(language, view.hearingAhead ? "hearing.debtDanger" : "debt.danger", {
+                 family: translate(language, "family." + family),
+               })}</p>)}
+               <div className="progress-checks">
+@@ -776,14 +780,14 @@ export function CampaignDialogs({
+   view,
+   snapshot,
+   language,
+-  onEnd,
++  onEnd, onReplay,
+   onDiscard,
+   onExport,
+   leaving,
+   endFailed,
+ }: Props & {
+   snapshot: Snapshot;
+-  onEnd: () => void;
++  onEnd: () => void; onReplay:()=>void;
+   onDiscard: () => void;
+   onExport: () => void;
+   leaving: boolean;
+@@ -799,9 +803,9 @@ export function CampaignDialogs({
+   const [openedDecision, setOpenedDecision] = useState("");
+   const event = view.event;
+   const decisionId = event ? event.id + ":" + event.openedAt : "";
+-  const cardVisible = !!event && !absence && !view.outcome && (event.id === "ledger" && view.rules === "trial" ||
++  const cardVisible = !!event && !absence && !view.outcome && !view.hearing && (event.id === "ledger" && view.rules === "trial" ||
+     (event.decisive ? closedDecision !== decisionId : openedDecision === decisionId));
+-  useTrialLog(view.rules === "trial" ? view.id : undefined, event?.id, decisionId, cardVisible, snapshot.speed);
++  useTrialLog((view.rules === "trial" || view.rules === "winterStudy") ? view.id : undefined, event?.id, decisionId, cardVisible, snapshot.speed);
+   const lastDecision = view.outcome
+     ? [...view.chronicle]
+         .reverse()
+@@ -809,7 +813,7 @@ export function CampaignDialogs({
+     : undefined;
+   const summary = {
+     name: view.identity.name,
+-    population: formatNumber(snapshot.population, language),
++    population: formatNumber(Math.floor(snapshot.population), language),
+     era: translate(language, "era." + view.eraId),
+     year: historicalYear(snapshot.year, language),
+     value: view.legacy,
+@@ -879,7 +883,23 @@ export function CampaignDialogs({
+         </button>
+       </Dialog>
+     );
+-  if (view.rules === "trial" && event?.id === "ledger" && !view.outcome) {
++  if(view.hearing){
++    const hearing=view.hearing;
++    return <Dialog key={hearing.token} title={translate(language,hearing.kind==="ledger"?"hearing.ledger":"hearing.title")}>
++      <p>{translate(language,hearing.kind==="ledger"?"hearing.ledgerIntro":"hearing.intro")}</p>
++      {hearing.kind!=="ledger" && view.deferred.filter(cost=>cost.due<=hearing.target).map(cost=><p key={cost.source+cost.due}>
++        {translate(language,cost.source)} · {translate(language,"family."+cost.family)} +{cost.points}</p>)}
++      <div className="hearing-options">{hearing.options.map(option=><button key={option.id} type="button"
++        onClick={()=>{if(view.rules==="winterStudy")logTrialRemedy(view.id,option.id,hearing.options.map(item=>item.id),hearing.target);send({type:"RECKON",token:hearing.token,remedy:option.id});}}>
++        <strong>{translate(language,option.id==="carry" && hearing.kind==="ledger"?"hearing.collect":"remedy."+option.id)}</strong>
++        <span>{translate(language,"price."+option.id+(option.id==="carry" && hearing.kind==="ledger"?".ledger":option.id==="departure" && hearing.target>2?".late":""))}</span>
++        <small>{option.crises.map(crisis=>translate(language,"family."+crisis.family)+" "+formatNumber(crisis.severity,language,1)+"/100").join(" · ")}</small>
++        {option.population!==1 && <small>{translate(language,"resource.population")} {formatNumber((option.population-1)*100,language,1,true)}%</small>}
++        {option.fatal && <strong>{translate(language,"outcome.collapse")}</strong>}
++      </button>)}</div>
++    </Dialog>;
++  }
++  if ((view.studyFinished || (view.rules === "trial" && event?.id === "ledger")) && !view.outcome) {
+     return <Dialog title={translate(language, "trial.complete")}>
+       <p>{translate(language, "trial.bronze")}</p>
+       <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>
+@@ -907,7 +927,7 @@ export function CampaignDialogs({
+     )[0];
+     return (
+       <Dialog key={outcome.kind} title={title}>
+-        {view.rules === "trial" && <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>}
++        {(view.rules === "trial" || view.rules === "winterStudy") && <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>}
+         <p>
+           {translate(
+             language,
+@@ -935,6 +955,10 @@ export function CampaignDialogs({
+                 {chronicleText(lastDecision, language)}
+               </p>
+             )}
++            {view.rules.startsWith("winter") && outcome.kind==="collapse" && <>
++              <details><summary>{translate(language,"hearing.review")}</summary>
++              {view.chronicle.filter(e=>["log.response","log.remedy","log.debtDue","log.collapse","log.debtCollapse"].includes(e.key)).slice(-7).map(e=><p key={e.id}>{chronicleText(e,language)}</p>)}</details>
++              <button onClick={onReplay} disabled={leaving}>{translate(language,"hearing.replay")}</button></>}
+             <button type="button" onClick={onEnd} disabled={leaving}>
+               {translate(
+                 language,
+@@ -1067,7 +1091,9 @@ export function CampaignDialogs({
+             </button>
+           </p>
+         )}
+-        <div className="event-responses">
++        {view.rules.startsWith("winter") && event.id==="winter" && <p>{translate(language,"hearing.warning")}</p>}
++        {view.rules.startsWith("winter") && view.eraId==="neolithic" && view.marks.field && <p>{translate(language,"hearing.failedCrop")}</p>}
++        <div className={"event-responses" + (view.rules.startsWith("winter") ? " winter-cards" : "")}>
+           {event.responses.map((response) => (
+             <button
+               type="button"
+@@ -1088,9 +1114,11 @@ export function CampaignDialogs({
+               <span>
+                 {response.cost
+                   ? translate(language, "event.cost", { cost: response.cost })
+-                  : translate(language, "event.noCost")}
++                  : translate(language, view.rules.startsWith("winter") ? "hearing.zero" : "event.noCost")}
+               </span>
+               <small>{translate(language, response.consequenceKey)}</small>
++              {view.rules.startsWith("winter") && event.id==="winter" && (response.choice===0 || response.choice===3) &&
++                <small>{translate(language,"winter.trace."+response.choice)}</small>}
+               {event.severity !== undefined && response.recovery > 0 && event.severity > 0 && (
+                 <small>{translate(language, "event.crisisRelief", {
+                   family: translate(language, "family." + event.family),
+@@ -1105,11 +1133,11 @@ export function CampaignDialogs({
+               )}
+               {response.founds && <small>{translate(language, isTradition(response.founds) ? "heritage.duration" : "heritage.lasting")}</small>}
+               {response.requires && isTradition(response.requires) && <small>{translate(language, "heritage.renew")}</small>}
+-              {response.defer && view.progress.nextId && <small>{translate(language, "debt.preview", {
++              {response.defer && campaignEras[view.stage+(response.defer.afterEras??1)] && <small>{translate(language, "debt.preview", {
+                 reason: translate(language, "deferred." + event.id + "." + response.choice),
+-                era: translate(language, "era." + view.progress.nextId), family: translate(language, "family." + response.defer.family),
++                era: translate(language, "era." + campaignEras[view.stage+(response.defer.afterEras??1)]!.id), family: translate(language, "family." + response.defer.family),
+                 points: response.defer.points, total: response.defer.points + view.deferred.reduce((sum, entry) =>
+-                  sum + (entry.due === view.stage + 1 && entry.family === response.defer!.family ? entry.points : 0), 0),
++                  sum + (entry.due === view.stage + (response.defer!.afterEras??1) && entry.family === response.defer!.family ? entry.points : 0), 0),
+               })}</small>}
+               {response.repay && view.deferred.some(entry => entry.family === response.repay!.family) && <small>{translate(language, "debt.repay", {
+                 family: translate(language, "family." + response.repay.family),
+@@ -1117,7 +1145,7 @@ export function CampaignDialogs({
+                   sum + (entry.family === response.repay!.family ? entry.points : 0), 0)),
+               })}</small>}
+               {response.risk && (
+-                <small>{translate(language, response.risk.after === 100 ? "event.collapseRisk" : "event.strain", {
++                <small>{translate(language, response.risk.after === 100 ? "event.collapseRisk" : view.rules.startsWith("winter") ? "hearing.risk" : "event.strain", {
+                   family: translate(language, "family." + response.risk.family),
+                   before: Math.floor(response.risk.before),
+                   after: Math.floor(response.risk.after),
+diff --git a/games/epoche/src/ui/components/Diorama.tsx b/games/epoche/src/ui/components/Diorama.tsx
+index c8336d9..98e587e 100644
+--- a/games/epoche/src/ui/components/Diorama.tsx
++++ b/games/epoche/src/ui/components/Diorama.tsx
+@@ -1,5 +1,5 @@
+ import { eventsById, isTradition } from "@content/campaign/definitions";
+-import { valley as terrain, focusFor, heritageCamera } from "../../map/viewpoint";
++import { valley as terrain, focusFor, heritageCamera, heritagePosition } from "../../map/viewpoint";
+ import { subjectSymbols } from "../symbols";
+ import { useEffect, useRef, useState } from "react";
+ import type { mountDiorama, Scene } from "../../map/diorama";
+@@ -22,6 +22,7 @@ export function Diorama({
+   const current = useRef<Awaited<ReturnType<typeof mountDiorama>> | null>(null);
+   const [loaded, markLoaded] = useState(false);
+   const [camera, setCamera] = useState(0.5);
++  const [selected,setSelected]=useState<(typeof view.heritage)[number] | null>(null);
+   const [zoom, setZoom] = useState(1);
+   const speed = useGameStore((state) => state.speed);
+   const [notice, setNotice] = useState<(typeof view.chronicle)[number] | null>(
+@@ -84,7 +85,7 @@ export function Diorama({
+       (terrain.river - terrain.fields + 285);
+   const scene: Scene = {
+     era: view.stage,
+-    heritage: view.heritage,
++    heritage: view.heritage, marks:Object.keys(view.marks),
+     traditionLife: view.traditionLife,
+     palette: view.palette,
+     tick: snapshot.tick,
+@@ -144,6 +145,14 @@ export function Diorama({
+       <div
+         ref={host}
+         className="diorama-canvas"
++        onClick={event=>{
++          const rect=event.currentTarget.getBoundingClientRect();
++          const scale=rect.width/(terrain.river-terrain.fields+285)*zoom;
++          const wx=(event.clientX-rect.left-rect.width/2)/scale+focusFor(camera,terrain);
++          const wy=(event.clientY-rect.top-rect.height*.68)/scale;
++          const hit=view.heritage.map(site=>({site,distance:Math.hypot(wx-heritagePosition[site][0],wy-heritagePosition[site][1])})).sort((a,b)=>a.distance-b.distance)[0];
++          if(hit && hit.distance<35){setSelected(hit.site);setCamera(heritageCamera[hit.site]);}
++        }}
+         role="img"
+         data-rendered={loaded}
+         aria-label={translate(language, "land.diorama", {
+@@ -152,11 +161,12 @@ export function Diorama({
+       />
+       <div className="diorama-label">
+         <h2>{view.identity.name}</h2>
++        {selected && view.heritage.includes(selected) && <span role="status">{translate(language,"heritage."+selected)}</span>}
+         <span>{translate(language, "culture." + view.identity.archetype)}</span>
+         {view.heritage.length > 0 && <details className="heritage-register" key={view.id}>
+           <summary>{translate(language, "heritage.register", { count: view.heritage.length })}</summary>
+           <div className="heritage-places">{view.heritage.map(site => <button key={site} type="button" onClick={event => {
+-            setCamera(heritageCamera[site]);
++            setSelected(site);setCamera(heritageCamera[site]);
+             setZoom(1.38);
+             event.currentTarget.closest("details")?.removeAttribute("open");
+           }}>{translate(language, "heritage." + site)} · {translate(language,
+@@ -189,6 +199,9 @@ export function Diorama({
+           })}
+         </div>
+       )}
++      {Object.keys(view.marks).length>0 && <div className="winter-marks" aria-label={translate(language,"hearing.marks")}>
++        {Object.keys(view.marks).map(mark=><button key={mark} onClick={()=>setCamera(["field","unseeded"].includes(mark)?0:1/3)}>{translate(language,"mark."+mark)}</button>)}
++      </div>}
+       <div className="diorama-controls">
+         <div className="diorama-places">
+           {(["fields", "village", "woods", "river"] as const).map(
+diff --git a/games/epoche/src/ui/playMode.ts b/games/epoche/src/ui/playMode.ts
+new file mode 100644
+index 0000000..5d58412
+--- /dev/null
++++ b/games/epoche/src/ui/playMode.ts
+@@ -0,0 +1,9 @@
++import type { Campaign } from "@engine/campaign/model";
++export function playMode(): Campaign["rules"] {
++  const q = new URLSearchParams(
++    typeof location === "undefined" ? "" : location.search,
++  );
++  if (q.get("studio") === "inverno") return "winterStudy";
++  if (q.has("studio")) return "trial";
++  return q.has("rimedi") ? "winter" : "current";
++}
+diff --git a/games/epoche/src/ui/trialLog.ts b/games/epoche/src/ui/trialLog.ts
+index 998750c..2ba056e 100644
+--- a/games/epoche/src/ui/trialLog.ts
++++ b/games/epoche/src/ui/trialLog.ts
+@@ -1,7 +1,7 @@
+ import { useEffect } from "react";
+ import { download } from "./download";
+ 
+-type Interaction = { ms: number; event: string; action: string; choice?: number; speed?: number };
++type Interaction = { ms: number; event: string; action: string; choice?: number; remedy?: string; offered?: string[]; target?: number; speed?: number };
+ 
+ function record(id: string, entry: Interaction) {
+   const key = "epoche.study." + id;
+@@ -41,3 +41,7 @@ export function useTrialLog(id: string | undefined, event: string | undefined, d
+ export function exportTrialLog(id: string) {
+   download("epoche-studio.json", sessionStorage.getItem("epoche.study." + id) ?? "[]", "application/json");
+ }
++
++export function logTrialRemedy(id: string, remedy: string, offered: string[], target: number) {
++  record(id,{ms:Math.round(performance.timeOrigin+performance.now()),event:"hearing",action:"choice",remedy,offered,target});
++}
+diff --git a/games/epoche/src/worker/campaignView.ts b/games/epoche/src/worker/campaignView.ts
+index 866f244..2a3f152 100644
+--- a/games/epoche/src/worker/campaignView.ts
++++ b/games/epoche/src/worker/campaignView.ts
+@@ -1,3 +1,4 @@
++import {needsHearing,previewHearing} from "../engine/campaign/reckoning";
+ import {
+   campaignBalance,
+   traditions,
+@@ -36,7 +37,10 @@ export function buildCampaignView(campaign: Campaign) {
+   return {
+     id: campaign.id,
+     seed: campaign.seed,
+-    rules: campaign.rules,
++    rules: campaign.rules, marks:campaign.marks, studyFinished:campaign.studyFinished,
++    hearing: campaign.reckoning ? {...campaign.reckoning,options:previewHearing(campaign)} : null,
++    hearingAhead: needsHearing(campaign,stage+1),
++    replay:{seed:campaign.seed,choices:campaign.choices,pace:campaign.pace,inherited:campaign.inherited},
+     stage,
+     eraId: campaign.core.eraId,
+     heritage: campaign.heritage,
+diff --git a/games/epoche/tests/reckoning.test.ts b/games/epoche/tests/reckoning.test.ts
+new file mode 100644
+index 0000000..f3752ec
+--- /dev/null
++++ b/games/epoche/tests/reckoning.test.ts
+@@ -0,0 +1,146 @@
++import { settleDeferred } from "@engine/campaign/progression";
++import { expect, it } from "vitest";
++import { loadCampaignContent } from "@content/campaign/index";
++import {
++  applyCampaignAction,
++  catchUp,
++  stepCampaign,
++} from "@engine/campaign/campaign";
++import bronzeFixture from "../artifacts/revisione-gameplay/prove/registro-bronzo.json";
++import { preparation, updateCrises } from "@engine/campaign/events";
++import { makeSave, parseSave } from "../src/persistence/save";
++import { previewHearing, openHearing } from "@engine/campaign/reckoning";
++import type { Remedy } from "@content/campaign/winter";
++import fixture from "../artifacts/qa/near-neolithic.json";
++const content = loadCampaignContent("rapid");
++function winter(choice: number) {
++  const original = parseSave(JSON.stringify(fixture)).campaign;
++  const state = {
++    ...original,
++    rules: "winter" as const,
++    crises: [],
++    deferred: [
++      {
++        family: "food" as const,
++        source: "response.drought.1",
++        points: 58,
++        due: 1,
++      },
++    ],
++    pending: { id: "winter", openedAt: original.core.tick },
++    core: { ...original.core, influence: 25 },
++    chain: [],
++  };
++  const after = applyCampaignAction(
++    state,
++    { type: "RESPOND", choice },
++    content,
++  );
++  const ready = {
++    ...after,
++    chain: [],
++    crises:
++      choice === 0 ? [{ family: "food" as const, severity: 12 }] : after.crises,
++  };
++  const hearing = applyCampaignAction(ready, { type: "ADVANCE" }, content);
++  expect(hearing.core.eraId).toBe("prehistory");
++  expect(hearing.reckoning).toBeTruthy();
++  return parseSave(JSON.stringify(makeSave(hearing, 0, 0))).campaign;
++}
++it.each([
++  [0, "seeds", 53],
++  [0, "departure", 43],
++  [0, "carry", 100],
++  [3, "isolate", 28],
++  [3, "care", 46],
++] as const)("resolves winter %i / %s to %i", (choice, id, food) => {
++  const state = winter(choice);
++  expect(stepCampaign(state, [], content).campaign).toBe(state);
++  expect(catchUp(state, 60000, 25, content).campaign).toEqual(state);
++  const preview = previewHearing(state).find((v) => v.id === id)!;
++  const action = {
++    type: "RECKON" as const,
++    token: state.reckoning!.token,
++    remedy: id,
++  };
++  expect(
++    applyCampaignAction(state, { ...action, token: action.token - 1 }, content),
++  ).toBe(state);
++  const result = applyCampaignAction(state, action, content);
++  expect(result.crises.find((c) => c.family === "food")?.severity).toBe(food);
++  expect(preview.fatal).toBe(result.outcome?.kind === "collapse");
++  expect(result.core.eraId).toBe("neolithic");
++  expect(result.reckoning).toBeNull();
++  expect(applyCampaignAction(result, action, content)).toBe(result);
++  if (id === "seeds")
++    expect(
++      preparation(result).modifiers?.find((m) => m.id === "system.crises")
++        ?.effects.sustenance,
++    ).toBeLessThanOrEqual(-2);
++  if (id === "departure")
++    expect(result.core.population).toBeCloseTo(
++      applyCampaignAction(state, { ...action, remedy: "seeds" }, content).core
++        .population * 0.8,
++    );
++});
++it("offers a two-era renewal and a price to bring the clan home", () => {
++  const state = winter(0);
++  const ledger = openHearing(
++    { ...state, marks: { table: 3, clan: 3 }, reckoning: null },
++    2,
++    "ledger",
++  );
++  const resolve = (remedy: Remedy) =>
++    applyCampaignAction(
++      ledger,
++      { type: "RECKON", token: ledger.reckoning!.token, remedy },
++      content,
++    );
++  expect(resolve("renew").deferred.at(-1)).toMatchObject({
++    due: 4,
++    points: 18,
++  });
++  expect(resolve("condone").marks.table).toBeUndefined();
++  expect(resolve("returnClan").marks.clan).toBeUndefined();
++});
++
++it("banks only surplus winter provisions and consumes them at the thaw",()=>{
++  const base=parseSave(JSON.stringify(fixture)).campaign;
++  const c=applyCampaignAction({...base, rules:"winter",chain:[],pending:{id:"winter",openedAt:base.core.tick},
++    core:{...base.core,influence:25},deferred:[]},{type:"RESPOND",choice:3},content);
++  expect(c.winterStock).toBe(30);
++  const h=applyCampaignAction({...c,chain:[]},{type:"ADVANCE"},content);
++  const option=previewHearing(h).find(o=>o.id==="isolate")!;
++  expect(option.population).toBe(1.2);
++  const resolved=applyCampaignAction(h,{type:"RECKON",remedy:"isolate",token:h.reckoning!.token},content);
++  expect(resolved.winterStock).toBe(0);
++});
++it("applies the two-era food debt exactly once",()=>{
++  const state={...winter(0),deferred:[{due:4,family:"food" as const,source:"remedy.renew",points:18}],reckoning:null};
++  expect(settleDeferred({...state,core:{...state.core,eraId:"classical"}}).deferred).toHaveLength(1);
++  const due=settleDeferred({...state,core:{...state.core,eraId:"medieval"}});
++  expect(due.deferred).toEqual([]);expect(settleDeferred(due)).toBe(due);
++});
++
++it("finishes the winter study at a terminal crisis despite strong legitimacy", () => {
++  const c = winter(0);
++  const core = {...c.core, tick: 0, legitimacy: 90, population: 1000000};
++  const state = {...c, rules: "winterStudy" as const, core, reckoning: null, crises: [{family:"food" as const, severity:100}]};
++  expect(updateCrises(state, content).outcome).toEqual({kind:"collapse",family:"food"});
++});
++it("preserves an importable hearing when the Bronze register times out", () => {
++  const c = parseSave(JSON.stringify(bronzeFixture)).campaign;
++  const state = {...c, rules:"winter" as const, marks:{table:3}, crises:[], pending:{id:"ledger",openedAt:0}};
++  const after = stepCampaign(state, [], content).campaign;
++  expect(after.reckoning?.token).toBe(after.sequence);
++  expect(after.pending).toBeNull();
++  expect(parseSave(JSON.stringify(makeSave(after,0,0))).campaign.reckoning).toEqual(after.reckoning);
++});
++
++it("uses the barter reserve once when sheltered families settle at the register", () => {
++  const c = parseSave(JSON.stringify(bronzeFixture)).campaign;
++  const h = openHearing({...c, rules:"winter", pending:null, marks:{barter:3}},2,"ledger");
++  const settled = applyCampaignAction(h,{type:"RECKON",token:h.reckoning!.token,remedy:"carry"},content);
++  expect(settled.core.population).toBeCloseTo(h.core.population*1.03);
++  expect(settled.marks.barter).toBeUndefined();
++});
+diff --git a/games/epoche/tools/sim/campaign.ts b/games/epoche/tools/sim/campaign.ts
+index 64edabf..9dc1b4f 100644
+--- a/games/epoche/tools/sim/campaign.ts
++++ b/games/epoche/tools/sim/campaign.ts
+@@ -1,3 +1,4 @@
++import {previewHearing} from "@engine/campaign/reckoning";
+ import { checkCampaignSeed } from "./holdout";
+ import { createRng } from "@engine/core/rng";
+ import { pathToFileURL } from "node:url";
+@@ -144,6 +145,17 @@ export function runCampaign(
+     pace,
+   });
+   const responseRng = createRng(seed ^ 0x51ac87);
++  const remediesUsed: string[]=[];
++  const selectRemedy=(state:Campaign)=>{
++    if(!state.reckoning)return state;
++    const options=previewHearing(state);
++    const score=(v:typeof options[number])=>(v.fatal?10000:0)+Math.max(0,...v.crises.map(c=>c.severity))
++      + (1-v.population)*100 + (narrative?.response==="foresight" && v.id==="renew"?18:0);
++    const selected=narrative?.response==="random"?options[responseRng.int(0,options.length-1)]!:
++      narrative?.response==="first"?options[0]!:options.sort((a,b)=>score(a)-score(b))[0]!;
++    remediesUsed.push(selected.id);
++    return applyCampaignAction(state,{type:"RECKON",token:state.reckoning.token,remedy:selected.id},content);
++  };
+   const fallbackRng = createRng(seed ^ 0x5c81c37);
+   const futureDecisions: {
+     event: string;
+@@ -178,6 +190,8 @@ export function runCampaign(
+   ) {
+     for (const { severity } of current.crises)
+       peakCrisis = Math.max(peakCrisis, severity);
++    if(current.reckoning)current=selectRemedy(current);
++    if(current.studyFinished || current.outcome?.kind==="collapse")break;
+     if (current.rules === "trial" && current.pending?.id === "ledger") break;
+     if (current.pending) {
+       const before = current;
+@@ -300,7 +314,7 @@ export function runCampaign(
+         : null;
+     const waitingForRecovery = narrative?.response === "wait" && shouldWait(current);
+     if (progress?.ready && !waitingForRecovery) {
+-      const next = applyCampaignAction(current, { type: "ADVANCE" }, content);
++      const next = selectRemedy(applyCampaignAction(current, { type: "ADVANCE" }, content));
+       if (next.core.eraId !== phase) {
+         narrative?.onAdvance?.(current, next);
+         path.push(next.core.eraId);
+@@ -378,7 +392,7 @@ export function runCampaign(
+     current = stepCampaign(current, commands, content).campaign;
+   }
+   return {
+-    current,
++    current, remediesUsed,
+     path,
+     arrived,
+     structural,
+diff --git a/games/epoche/tools/sim/compareResponses.ts b/games/epoche/tools/sim/compareResponses.ts
+index 00fbdb7..7b56c99 100644
+--- a/games/epoche/tools/sim/compareResponses.ts
++++ b/games/epoche/tools/sim/compareResponses.ts
+@@ -26,7 +26,7 @@ for (let seed = start; seed <= end; seed++) {
+     for (const response of strategies) {
+       const run = runCampaign(content, seed, "prudence", 25000, "rapid", {
+         route,
+-        response,
++        response, rules:process.argv.includes("--remedies")?"winter":"current",
+         extended: false,
+         withoutDeferredCosts: process.argv.includes("--no-deferred-costs"),
+       });
+@@ -34,7 +34,7 @@ for (let seed = start; seed <= end; seed++) {
+       let control;
+       if (arrival && process.argv.includes("--heritage")) {
+         const replay = runCampaign(content, seed, "prudence", 25000, "rapid", {
+-          route, response, extended: false, withoutFutureHeritage: true,
++          route, response, rules:process.argv.includes("--remedies")?"winter":"current", extended: false, withoutFutureHeritage: true,
+         });
+         assert.deepEqual(replay.arrived.find(campaign => campaign.core.eraId === "future"), arrival);
+         assert.ok(replay.futureDecisions.every(decision => decision.used === null));
+@@ -46,6 +46,7 @@ for (let seed = start; seed <= end; seed++) {
+       }
+       const row = JSON.stringify({
+           reachedBronze: run.arrived.some(state => state.core.eraId === "bronze" && !state.outcome),
++          remedies:run.remediesUsed,
+           seed,
+           route,
+           response,
+diff --git a/games/epoche/tools/sim/winterBranches.ts b/games/epoche/tools/sim/winterBranches.ts
+new file mode 100644
+index 0000000..a5875a2
+--- /dev/null
++++ b/games/epoche/tools/sim/winterBranches.ts
+@@ -0,0 +1,67 @@
++import { loadCampaignContent } from "@content/campaign/index";
++import { eventsById } from "@content/campaign/definitions";
++import { runCampaign } from "./campaign";
++import type { Campaign } from "@engine/campaign/model";
++import { responsesFor } from "@engine/campaign/events";
++import { applyCampaignAction } from "@engine/campaign/campaign";
++const content = loadCampaignContent("rapid");
++const start = Number(process.argv[2] ?? 101);
++const end = Number(process.argv[3] ?? 200);
++for (let seed = start; seed <= end; seed++)
++  for (const route of [0, 1] as const) {
++    const winter: Campaign[] = [];
++    runCampaign(content, seed, "prudence", 25000, "rapid", {
++      rules: "winterStudy",
++      route,
++      response: (["first","random","cautious","foresight"] as const)[(seed+route)%4]!,
++      extended: false,
++      onDecision(state) {
++        if (state.pending?.id === "winter" && !winter.length)
++          winter.push(state);
++      },
++    });
++    const state = winter[0];
++    if (!state) {
++      console.log(JSON.stringify({ seed, route, missing: true }));
++      continue;
++    }
++    for (const option of responsesFor(
++      state,
++      eventsById.get("winter")!,
++      content.attributes,
++    )) {
++      if (option.cost > state.core.influence) continue;
++      const initial = applyCampaignAction(
++        state,
++        { type: "RESPOND", choice: option.choice },
++        content,
++      );
++      for (const response of ["cautious", "foresight", "first"] as const) {
++        const { current, remediesUsed } = runCampaign(
++          content,
++          seed,
++          "prudence",
++          25000,
++          "rapid",
++          { route, response, extended: false, initial },
++        );
++        console.log(
++          JSON.stringify({
++            seed,
++            route,
++            tick: state.core.tick,
++            choice: option.choice,
++            response,
++            finished: current.studyFinished,
++            ending:
++              current.outcome?.kind ??
++              (current.studyFinished ? "ledger" : "open"),
++            population: current.core.population,
++            crisis: current.crises.reduce((n, c) => n + c.severity, 0),
++            heritage: current.heritage.length + Number(!!current.marks.table),
++            remediesUsed,
++          }),
++        );
++      }
++    }
++  }
+diff --git a/games/epoche/tools/sim/winterPace.ts b/games/epoche/tools/sim/winterPace.ts
+new file mode 100644
+index 0000000..19beecf
+--- /dev/null
++++ b/games/epoche/tools/sim/winterPace.ts
+@@ -0,0 +1,9 @@
++import {loadCampaignContent} from "@content/campaign/index";
++import {runCampaign} from "./campaign";
++const content=loadCampaignContent("rapid");
++for(let seed=1;seed<=25;seed++)for(const rules of ["trial","winterStudy"] as const){
++ const run=runCampaign(content,seed,"prudence",25000,"rapid",{rules,route:0,extended:false,response:"foresight"});
++ console.log(JSON.stringify({seed,rules,ticks:run.current.core.tick,exit:run.current.outcome?.kind ?? (run.current.studyFinished || run.current.pending?.id==="ledger"?"ledger":"open"),
++ eras:run.arrived.map((state,i)=>({era:state.core.eraId,ticks:(run.arrived[i+1]??run.current).core.tick-state.core.tick,
++ decisions:run.encounters[state.core.eraId]?.ticks.length??0}))}));
++}

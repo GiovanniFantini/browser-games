@@ -1,3 +1,4 @@
+import { needsHearing, openHearing, resolveHearing } from "./reckoning";
 import {
   campaignBalance,
   campaignEras,
@@ -72,6 +73,7 @@ export function createCampaign(
   return appendLog(
     {
       version: 2,
+      inherited: input.inherited, reckoning:null, marks:{}, studyFinished:false, winterStock:0,
       rules: input.rules ?? "current",
       pace: input.pace ?? "rapid",
       id: input.id,
@@ -210,7 +212,7 @@ function resolveOutcome(
       eraOrigin: { year: date, tick: core.tick },
       modifiers: [],
     };
-    return settleDeferred(appendLog(
+    const migrated = appendLog(
       {
         ...sheltered,
         regions,
@@ -221,7 +223,8 @@ function resolveOutcome(
       },
       "log.migrate",
       { name: victor.identity.name },
-    ));
+    );
+    return needsHearing(campaign,eraNumber(nextCore.eraId)) ? openHearing(migrated,eraNumber(nextCore.eraId),"migration") : settleDeferred(migrated);
   }
   return campaign;
 }
@@ -231,6 +234,8 @@ export function applyCampaignAction(
   action: CampaignAction,
   content: ContentBundle,
 ): Campaign {
+  if(action.type==="RECKON")return resolveHearing(campaign,action.token,action.remedy,content);
+  if(campaign.reckoning || campaign.studyFinished)return campaign;
   if (action.type === "DOCTRINE")
     return { ...campaign, doctrine: action.doctrine };
   if (action.type === "RESPOND") {
@@ -250,7 +255,10 @@ export function applyCampaignAction(
       const advanced = advanceEra(campaign, content);
       if (advanced === campaign) return campaign;
       const followUp = settleEraChain(campaign, content);
-      return followUp === campaign ? advanced : followUp;
+      if(followUp!==campaign)return followUp;
+      const target=eraNumber(advanced.core.eraId);
+      if(target>eraNumber(campaign.core.eraId) && needsHearing(campaign,target))return openHearing(campaign,target,"advance");
+      return advanced;
     }
     case "PACT":
       return pact(campaign, action);
@@ -277,6 +285,7 @@ export function stepCampaign(
   commands: readonly Command[],
   content: ContentBundle,
 ) {
+  if(campaign.reckoning || campaign.studyFinished)return {campaign,commandResults:[]};
   const minimumSupport = Math.min(
     ...socialGroups(campaign).map((group) => group.support),
   );
@@ -326,6 +335,7 @@ export function stepCampaign(
     !urgentDecision(next)
   )
     next = applyResponse(next, eventsById.get(next.pending.id)!.fallbackIndex, content);
+  if (next.reckoning) return { campaign: next, commandResults: result.commandResults };
   if (next.core.tick % campaignBalance.worldUpdateTicks === 0) {
     next = { ...next, rivals: refreshTruces(next) };
     next = { ...next, rivals: updateRivals(next, content) };

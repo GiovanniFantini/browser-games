@@ -1,3 +1,4 @@
+import {winterRules} from "@content/campaign/winter";
 import {
   campaignBalance,
   campaignEras,
@@ -125,6 +126,7 @@ export function settleDeferred(campaign: Campaign): Campaign {
 export function advanceEra(
   campaign: Campaign,
   content: ContentBundle,
+  collect = true,
 ): Campaign {
   const progress = progression(campaign);
   if (!progress.ready || campaign.pending || campaignActionBlock(campaign))
@@ -139,7 +141,9 @@ export function advanceEra(
       },
       "log.ending",
     );
-  const core = enterEra(campaign.core, progress.nextId, content);
+  const enteredCore = enterEra(campaign.core, progress.nextId, content);
+  const core = winterRules(campaign.rules) && eraNumber(campaign.core.eraId)<2
+    ? {...enteredCore,influence:Math.min(enteredCore.influence,Math.max(6,campaign.core.influence))} : enteredCore;
   const stage = eraNumber(core.eraId);
   const inheritance = advanceHeritage(campaign, stage);
   const invitations = stage === 9 && stage > campaign.highestEra
@@ -147,11 +151,12 @@ export function advanceEra(
         option.requires && inheritance.heritage.includes(option.requires)))
     : [];
   const interval = campaignTiming(campaign.pace).eventEveryTicks;
-  return settleDeferred(appendLog(
+  const entered = appendLog(
     {
       ...campaign,
       core,
       ...inheritance,
+      marks:Object.fromEntries(Object.entries(campaign.marks).filter(([,until])=>until>stage)),
       chain: [...campaign.chain, ...invitations.map((event, i) => ({
         id: event.id, at: core.tick + (i + 1) * interval,
       }))],
@@ -161,7 +166,8 @@ export function advanceEra(
     },
     "log.era",
     { name: campaign.identity.name },
-  ));
+  );
+  return collect ? settleDeferred(entered) : entered;
 }
 
 export function revealTrait(campaign: Campaign): Campaign {

@@ -1,5 +1,7 @@
 # Implementazione e verifiche
 
+La prova su carta con tre agenti è conclusa. La tappa successiva, con i rimedi giocabili, ha un [resoconto dedicato](inverno/Stato.md).
+
 La tappa pubblicabile comprende le attività autonome T01-T09, T11-T13, T28 e T29. Il controllo studio usa il parametro URL `?studio` e un archivio degli slot separato. La campagna normale usa le regole correnti. Un salvataggio senza `rules` si apre come campagna normale. Le build precedenti non supportano la modalità studio dei nuovi salvataggi.
 
 - T01, T07. [Registro e soglie](registro.md). Il test usa un intervallo fittizio. I semi 1001-1100 sono riservati.

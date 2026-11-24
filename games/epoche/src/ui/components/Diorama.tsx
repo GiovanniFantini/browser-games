@@ -1,5 +1,5 @@
 import { eventsById, isTradition } from "@content/campaign/definitions";
-import { valley as terrain, focusFor, heritageCamera } from "../../map/viewpoint";
+import { valley as terrain, focusFor, heritageCamera, heritagePosition } from "../../map/viewpoint";
 import { subjectSymbols } from "../symbols";
 import { useEffect, useRef, useState } from "react";
 import type { mountDiorama, Scene } from "../../map/diorama";
@@ -22,6 +22,7 @@ export function Diorama({
   const current = useRef<Awaited<ReturnType<typeof mountDiorama>> | null>(null);
   const [loaded, markLoaded] = useState(false);
   const [camera, setCamera] = useState(0.5);
+  const [selected,setSelected]=useState<(typeof view.heritage)[number] | null>(null);
   const [zoom, setZoom] = useState(1);
   const speed = useGameStore((state) => state.speed);
   const [notice, setNotice] = useState<(typeof view.chronicle)[number] | null>(
@@ -84,7 +85,7 @@ export function Diorama({
       (terrain.river - terrain.fields + 285);
   const scene: Scene = {
     era: view.stage,
-    heritage: view.heritage,
+    heritage: view.heritage, marks:Object.keys(view.marks),
     traditionLife: view.traditionLife,
     palette: view.palette,
     tick: snapshot.tick,
@@ -144,6 +145,14 @@ export function Diorama({
       <div
         ref={host}
         className="diorama-canvas"
+        onClick={event=>{
+          const rect=event.currentTarget.getBoundingClientRect();
+          const scale=rect.width/(terrain.river-terrain.fields+285)*zoom;
+          const wx=(event.clientX-rect.left-rect.width/2)/scale+focusFor(camera,terrain);
+          const wy=(event.clientY-rect.top-rect.height*.68)/scale;
+          const hit=view.heritage.map(site=>({site,distance:Math.hypot(wx-heritagePosition[site][0],wy-heritagePosition[site][1])})).sort((a,b)=>a.distance-b.distance)[0];
+          if(hit && hit.distance<35){setSelected(hit.site);setCamera(heritageCamera[hit.site]);}
+        }}
         role="img"
         data-rendered={loaded}
         aria-label={translate(language, "land.diorama", {
@@ -152,11 +161,12 @@ export function Diorama({
       />
       <div className="diorama-label">
         <h2>{view.identity.name}</h2>
+        {selected && view.heritage.includes(selected) && <span role="status">{translate(language,"heritage."+selected)}</span>}
         <span>{translate(language, "culture." + view.identity.archetype)}</span>
         {view.heritage.length > 0 && <details className="heritage-register" key={view.id}>
           <summary>{translate(language, "heritage.register", { count: view.heritage.length })}</summary>
           <div className="heritage-places">{view.heritage.map(site => <button key={site} type="button" onClick={event => {
-            setCamera(heritageCamera[site]);
+            setSelected(site);setCamera(heritageCamera[site]);
             setZoom(1.38);
             event.currentTarget.closest("details")?.removeAttribute("open");
           }}>{translate(language, "heritage." + site)} · {translate(language,
@@ -189,6 +199,9 @@ export function Diorama({
           })}
         </div>
       )}
+      {Object.keys(view.marks).length>0 && <div className="winter-marks" aria-label={translate(language,"hearing.marks")}>
+        {Object.keys(view.marks).map(mark=><button key={mark} onClick={()=>setCamera(["field","unseeded"].includes(mark)?0:1/3)}>{translate(language,"mark."+mark)}</button>)}
+      </div>}
       <div className="diorama-controls">
         <div className="diorama-places">
           {(["fields", "village", "woods", "river"] as const).map(

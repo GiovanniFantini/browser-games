@@ -1,0 +1,55 @@
+
+> epoche@0.2.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.8 building client environment for production...
+transforming...
+node_modules/zod/v4/core/regexes.js (74:0): A comment
+
+"/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+ * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+ * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+
+in "node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+node_modules/zod/v4/core/regexes.js (74:0): A comment
+
+"/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+ * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+ * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+
+in "node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+✓ 951 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                               0.48 kB │ gzip:   0.30 kB
+dist/assets/simulation.worker-CLs3PPhz.js   355.70 kB
+dist/assets/index-EYtCocJq.css               30.42 kB │ gzip:   8.03 kB
+dist/assets/Filter-DDgLKBYK.js                0.91 kB │ gzip:   0.48 kB
+dist/assets/CanvasPool-CgIL8tkQ.js            1.89 kB │ gzip:   0.83 kB
+dist/assets/canvasUtils-CaoJAQNR.js           6.06 kB │ gzip:   1.90 kB
+dist/assets/getTexelRangeRects-BqPRcVo2.js   11.50 kB │ gzip:   3.02 kB
+dist/assets/webworkerAll-CVTrR9sH.js         16.10 kB │ gzip:   5.04 kB
+dist/assets/CanvasRenderer-GIg0fehb.js       17.99 kB │ gzip:   6.04 kB
+dist/assets/BitmapFont-BUG_0VSc.js           33.85 kB │ gzip:  11.46 kB
+dist/assets/browserAll-B763CeLU.js           44.12 kB │ gzip:  11.48 kB
+dist/assets/RenderTargetSystem-Dikw-nh2.js   54.99 kB │ gzip:  15.15 kB
+dist/assets/WebGPURenderer-W_oYa9VJ.js       61.57 kB │ gzip:  17.64 kB
+dist/assets/WebGLRenderer-CJCi3avF.js        76.93 kB │ gzip:  21.09 kB
+dist/assets/diorama-DgQ94oXn.js             291.52 kB │ gzip:  93.94 kB
+dist/assets/index-CsAI5sro.js               718.99 kB │ gzip: 219.69 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 29.95s

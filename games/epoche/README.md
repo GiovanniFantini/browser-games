@@ -97,3 +97,5 @@ npm run sim:campaign -- 1 --standard
 Da definire. Il progetto è pensato per essere monetizzato in futuro: **non pubblicare il codice con licenza open source** finché la decisione non è presa.
 
 La [modalità di studio](artifacts/revisione-gameplay/Stato.md) si apre aggiungendo `?studio` all’indirizzo della campagna. Usa slot separati e termina al registro del Bronzo oppure alla dissoluzione. Dal finale puoi esportare il diario locale della prova.
+
+Dal menu iniziale puoi avviare la campagna con i rimedi dell’inverno (`?rimedi`) oppure la prova guidata fino al Bronzo (`?studio=inverno`). Ognuna usa slot propri. Prima di entrare nell’era successiva il consiglio mostra il prezzo di ogni rimedio. Il registro del Bronzo permette di condonare la quota, riaccogliere un clan o sostenere le famiglie dei malati secondo la storia del villaggio.

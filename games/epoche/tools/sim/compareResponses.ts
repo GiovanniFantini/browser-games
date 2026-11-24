@@ -26,7 +26,7 @@ for (let seed = start; seed <= end; seed++) {
     for (const response of strategies) {
       const run = runCampaign(content, seed, "prudence", 25000, "rapid", {
         route,
-        response,
+        response, rules:process.argv.includes("--remedies")?"winter":"current",
         extended: false,
         withoutDeferredCosts: process.argv.includes("--no-deferred-costs"),
       });
@@ -34,7 +34,7 @@ for (let seed = start; seed <= end; seed++) {
       let control;
       if (arrival && process.argv.includes("--heritage")) {
         const replay = runCampaign(content, seed, "prudence", 25000, "rapid", {
-          route, response, extended: false, withoutFutureHeritage: true,
+          route, response, rules:process.argv.includes("--remedies")?"winter":"current", extended: false, withoutFutureHeritage: true,
         });
         assert.deepEqual(replay.arrived.find(campaign => campaign.core.eraId === "future"), arrival);
         assert.ok(replay.futureDecisions.every(decision => decision.used === null));
@@ -46,6 +46,7 @@ for (let seed = start; seed <= end; seed++) {
       }
       const row = JSON.stringify({
           reachedBronze: run.arrived.some(state => state.core.eraId === "bronze" && !state.outcome),
+          remedies:run.remediesUsed,
           seed,
           route,
           response,

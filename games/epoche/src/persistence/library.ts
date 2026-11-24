@@ -1,3 +1,4 @@
+import { playMode } from "../ui/playMode";
 import Dexie, { type EntityTable } from "dexie";
 import { validateSave, type SaveFile } from "./save";
 
@@ -15,7 +16,7 @@ let database: LibraryDb | undefined;
 
 function db() {
   if (!database) {
-    const storage = new Dexie(typeof location !== "undefined" && new URLSearchParams(location.search).has("studio") ? "epoche-studio" : "epoche") as LibraryDb;
+    const storage = new Dexie(({current:"epoche",trial:"epoche-studio",winter:"epoche-rimedi",winterStudy:"epoche-inverno"})[playMode()]) as LibraryDb;
     storage.version(1).stores({ slots: "slot", legacy: "id" });
     database = storage;
   }

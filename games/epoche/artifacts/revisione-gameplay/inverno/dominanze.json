@@ -1,0 +1,27 @@
+{
+  "0": {
+    "observations": 600,
+    "preferred": 72,
+    "undominated": 568
+  },
+  "1": {
+    "observations": 600,
+    "preferred": 0,
+    "undominated": 27
+  },
+  "2": {
+    "observations": 600,
+    "preferred": 10,
+    "undominated": 391
+  },
+  "3": {
+    "observations": 600,
+    "preferred": 60,
+    "undominated": 567
+  },
+  "4": {
+    "observations": 600,
+    "preferred": 9,
+    "undominated": 177
+  }
+}

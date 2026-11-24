@@ -1,4 +1,4 @@
-import { exportTrialLog, useTrialLog } from "../trialLog";
+import { exportTrialLog, useTrialLog, logTrialRemedy } from "../trialLog";
 import { EventScene } from "./DecisionScenes";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { subjectSymbols, incidentSymbols } from "../symbols";
@@ -29,6 +29,10 @@ export function chronicleText(
   entry: ChronicleEntry,
   language: Language,
 ): string {
+  if (entry.key === "log.hearing" && entry.offered?.length) {
+    const labels = entry.offered.map(id => translate(language, "remedy." + id));
+    return translate(language, entry.key) + " " + labels.join(" / ");
+  }
   if (entry.key === "log.response" && entry.eventKey && entry.consequenceKey)
     return translate(language, "log.response.detail", {
       event: translate(language, entry.eventKey),
@@ -476,7 +480,7 @@ function World({ view, language }: Props) {
 export function Council({ view, language }: Props) {
   const crisis = view.crises[0]?.family;
   const advice = view.progress.ready
-    ? "ready"
+    ? (view.hearingAhead ? "hearing" : "ready")
     : crisis === "clans"
       ? "social"
       : crisis === "health"
@@ -586,7 +590,7 @@ export function CampaignCenter({
               </div>
               <p>
                 {translate(language, "center.capacitySummary", {
-                  population: formatNumber(snapshot.population, language),
+                  population: formatNumber(Math.floor(snapshot.population), language),
                   capacity: formatNumber(snapshot.capacity, language),
                 })}
               </p>
@@ -629,7 +633,7 @@ export function CampaignCenter({
                 >
                   {translate(
                     language,
-                    view.progress.nextId
+                    view.hearingAhead ? "hearing.title" : view.progress.nextId
                       ? "campaign.advance"
                       : "campaign.complete",
                   )}
@@ -640,7 +644,7 @@ export function CampaignCenter({
                 era: translate(language, "era." + campaignEras[entry.due]!.id), family: translate(language, "family." + entry.family),
                 name: translate(language, entry.source), points: entry.points,
               })}</p>)}
-              {view.threatened.map(family => <p key={family}>{translate(language, "debt.danger", {
+              {view.threatened.map(family => <p key={family}>{translate(language, view.hearingAhead ? "hearing.debtDanger" : "debt.danger", {
                 family: translate(language, "family." + family),
               })}</p>)}
               <div className="progress-checks">
@@ -776,14 +780,14 @@ export function CampaignDialogs({
   view,
   snapshot,
   language,
-  onEnd,
+  onEnd, onReplay,
   onDiscard,
   onExport,
   leaving,
   endFailed,
 }: Props & {
   snapshot: Snapshot;
-  onEnd: () => void;
+  onEnd: () => void; onReplay:()=>void;
   onDiscard: () => void;
   onExport: () => void;
   leaving: boolean;
@@ -799,9 +803,9 @@ export function CampaignDialogs({
   const [openedDecision, setOpenedDecision] = useState("");
   const event = view.event;
   const decisionId = event ? event.id + ":" + event.openedAt : "";
-  const cardVisible = !!event && !absence && !view.outcome && (event.id === "ledger" && view.rules === "trial" ||
+  const cardVisible = !!event && !absence && !view.outcome && !view.hearing && (event.id === "ledger" && view.rules === "trial" ||
     (event.decisive ? closedDecision !== decisionId : openedDecision === decisionId));
-  useTrialLog(view.rules === "trial" ? view.id : undefined, event?.id, decisionId, cardVisible, snapshot.speed);
+  useTrialLog((view.rules === "trial" || view.rules === "winterStudy") ? view.id : undefined, event?.id, decisionId, cardVisible, snapshot.speed);
   const lastDecision = view.outcome
     ? [...view.chronicle]
         .reverse()
@@ -809,7 +813,7 @@ export function CampaignDialogs({
     : undefined;
   const summary = {
     name: view.identity.name,
-    population: formatNumber(snapshot.population, language),
+    population: formatNumber(Math.floor(snapshot.population), language),
     era: translate(language, "era." + view.eraId),
     year: historicalYear(snapshot.year, language),
     value: view.legacy,
@@ -879,7 +883,23 @@ export function CampaignDialogs({
         </button>
       </Dialog>
     );
-  if (view.rules === "trial" && event?.id === "ledger" && !view.outcome) {
+  if(view.hearing){
+    const hearing=view.hearing;
+    return <Dialog key={hearing.token} title={translate(language,hearing.kind==="ledger"?"hearing.ledger":"hearing.title")}>
+      <p>{translate(language,hearing.kind==="ledger"?"hearing.ledgerIntro":"hearing.intro")}</p>
+      {hearing.kind!=="ledger" && view.deferred.filter(cost=>cost.due<=hearing.target).map(cost=><p key={cost.source+cost.due}>
+        {translate(language,cost.source)} · {translate(language,"family."+cost.family)} +{cost.points}</p>)}
+      <div className="hearing-options">{hearing.options.map(option=><button key={option.id} type="button"
+        onClick={()=>{if(view.rules==="winterStudy")logTrialRemedy(view.id,option.id,hearing.options.map(item=>item.id),hearing.target);send({type:"RECKON",token:hearing.token,remedy:option.id});}}>
+        <strong>{translate(language,option.id==="carry" && hearing.kind==="ledger"?"hearing.collect":"remedy."+option.id)}</strong>
+        <span>{translate(language,"price."+option.id+(option.id==="carry" && hearing.kind==="ledger"?".ledger":option.id==="departure" && hearing.target>2?".late":""))}</span>
+        <small>{option.crises.map(crisis=>translate(language,"family."+crisis.family)+" "+formatNumber(crisis.severity,language,1)+"/100").join(" · ")}</small>
+        {option.population!==1 && <small>{translate(language,"resource.population")} {formatNumber((option.population-1)*100,language,1,true)}%</small>}
+        {option.fatal && <strong>{translate(language,"outcome.collapse")}</strong>}
+      </button>)}</div>
+    </Dialog>;
+  }
+  if ((view.studyFinished || (view.rules === "trial" && event?.id === "ledger")) && !view.outcome) {
     return <Dialog title={translate(language, "trial.complete")}>
       <p>{translate(language, "trial.bronze")}</p>
       <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>
@@ -907,7 +927,7 @@ export function CampaignDialogs({
     )[0];
     return (
       <Dialog key={outcome.kind} title={title}>
-        {view.rules === "trial" && <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>}
+        {(view.rules === "trial" || view.rules === "winterStudy") && <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>}
         <p>
           {translate(
             language,
@@ -935,6 +955,10 @@ export function CampaignDialogs({
                 {chronicleText(lastDecision, language)}
               </p>
             )}
+            {view.rules.startsWith("winter") && outcome.kind==="collapse" && <>
+              <details><summary>{translate(language,"hearing.review")}</summary>
+              {view.chronicle.filter(e=>["log.response","log.remedy","log.debtDue","log.collapse","log.debtCollapse"].includes(e.key)).slice(-7).map(e=><p key={e.id}>{chronicleText(e,language)}</p>)}</details>
+              <button onClick={onReplay} disabled={leaving}>{translate(language,"hearing.replay")}</button></>}
             <button type="button" onClick={onEnd} disabled={leaving}>
               {translate(
                 language,
@@ -1067,7 +1091,9 @@ export function CampaignDialogs({
             </button>
           </p>
         )}
-        <div className="event-responses">
+        {view.rules.startsWith("winter") && event.id==="winter" && <p>{translate(language,"hearing.warning")}</p>}
+        {view.rules.startsWith("winter") && view.eraId==="neolithic" && view.marks.field && <p>{translate(language,"hearing.failedCrop")}</p>}
+        <div className={"event-responses" + (view.rules.startsWith("winter") ? " winter-cards" : "")}>
           {event.responses.map((response) => (
             <button
               type="button"
@@ -1088,9 +1114,11 @@ export function CampaignDialogs({
               <span>
                 {response.cost
                   ? translate(language, "event.cost", { cost: response.cost })
-                  : translate(language, "event.noCost")}
+                  : translate(language, view.rules.startsWith("winter") ? "hearing.zero" : "event.noCost")}
               </span>
               <small>{translate(language, response.consequenceKey)}</small>
+              {view.rules.startsWith("winter") && event.id==="winter" && (response.choice===0 || response.choice===3) &&
+                <small>{translate(language,"winter.trace."+response.choice)}</small>}
               {event.severity !== undefined && response.recovery > 0 && event.severity > 0 && (
                 <small>{translate(language, "event.crisisRelief", {
                   family: translate(language, "family." + event.family),
@@ -1105,11 +1133,11 @@ export function CampaignDialogs({
               )}
               {response.founds && <small>{translate(language, isTradition(response.founds) ? "heritage.duration" : "heritage.lasting")}</small>}
               {response.requires && isTradition(response.requires) && <small>{translate(language, "heritage.renew")}</small>}
-              {response.defer && view.progress.nextId && <small>{translate(language, "debt.preview", {
+              {response.defer && campaignEras[view.stage+(response.defer.afterEras??1)] && <small>{translate(language, "debt.preview", {
                 reason: translate(language, "deferred." + event.id + "." + response.choice),
-                era: translate(language, "era." + view.progress.nextId), family: translate(language, "family." + response.defer.family),
+                era: translate(language, "era." + campaignEras[view.stage+(response.defer.afterEras??1)]!.id), family: translate(language, "family." + response.defer.family),
                 points: response.defer.points, total: response.defer.points + view.deferred.reduce((sum, entry) =>
-                  sum + (entry.due === view.stage + 1 && entry.family === response.defer!.family ? entry.points : 0), 0),
+                  sum + (entry.due === view.stage + (response.defer!.afterEras??1) && entry.family === response.defer!.family ? entry.points : 0), 0),
               })}</small>}
               {response.repay && view.deferred.some(entry => entry.family === response.repay!.family) && <small>{translate(language, "debt.repay", {
                 family: translate(language, "family." + response.repay.family),
@@ -1117,7 +1145,7 @@ export function CampaignDialogs({
                   sum + (entry.family === response.repay!.family ? entry.points : 0), 0)),
               })}</small>}
               {response.risk && (
-                <small>{translate(language, response.risk.after === 100 ? "event.collapseRisk" : "event.strain", {
+                <small>{translate(language, response.risk.after === 100 ? "event.collapseRisk" : view.rules.startsWith("winter") ? "hearing.risk" : "event.strain", {
                   family: translate(language, "family." + response.risk.family),
                   before: Math.floor(response.risk.before),
                   after: Math.floor(response.risk.after),

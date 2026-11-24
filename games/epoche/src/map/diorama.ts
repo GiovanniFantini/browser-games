@@ -29,6 +29,7 @@ export interface Scene {
   palette: [string, string, string, string];
   tick: number;
   population: number;
+  marks?: readonly string[];
   heritage: readonly HeritageSite[];
   traditionLife: Readonly<Record<string, number>>;
   speed: number;
@@ -64,6 +65,13 @@ function settlement(g: Graphics, scene: Scene, x: number, warm: string, ill: boo
     building(g, x + dx - size / 2, y, size, style, lot, warm, ill);
   }
   landmark(g, scene.era, x, -3, warm);
+  if(scene.era>4) { // Reused stone at the edge of the old keep.
+    g.rect(x-45,4,27,8).fill("#8e8575");
+    for(let i=0;i<4;i++)g.rect(x-45+i*7,0,4,5).fill("#8e8575");
+  }
+  if(scene.era>5) { // The brass instrument remains beside the rebuilt observatory.
+    g.circle(x+35,0,8).stroke({color:"#b39b69",width:2}); segment(g,[x+35,-8,x+35,12],"#776647",2);
+  }
   // The worn track becomes a paved road, keeping the bend between the square and the ford.
   const track = [terrain.fields + 30, 29, x - 90, 26, x, 19, x + 162, 28, terrain.river - 125, 12];
   segment(g, track, "#584c39", scene.era < 3 ? 5 : 10);
@@ -77,6 +85,16 @@ function drawHeritage(g: Graphics, scene: Scene) {
   const outline = "#544536";
   const block = (x: number, y: number, w: number, h: number, color: string) =>
     g.rect(x,y,w,h).fill(color).stroke({color:outline,width:1.5});
+  if (scene.marks?.some(mark=>mark==="field" || mark==="unseeded")) {
+    for(let i=0;i<6;i++) segment(g,[terrain.fields+40+i*6,45,terrain.fields+56+i*6,36],"#735642",3);
+  }
+  if (scene.marks?.some(mark=>mark==="hut" || mark==="clan")) {
+    const x=terrain.village+75;
+    block(x,19,20,16,"#8b7157");shape(g,[x-4,20,x+10,8,x+24,20],"#594431");segment(g,[x+5,25,x+15,31],"#d0b996",2);
+  }
+  if (scene.marks?.includes("table")) {
+    const x=terrain.village-24;block(x,36,28,4,"#cb9c64");block(x+4,40,3,6,"#755333");block(x+21,40,3,6,"#755333");
+  }
   if (scene.heritage.includes("hearth")) {
     const x = terrain.village - 63;
     g.ellipse(x,33,13,5).fill("#50493d").stroke({color:"#bbad93",width:3});
@@ -435,7 +453,7 @@ export async function mountDiorama(host: HTMLElement) {
     const landscape = JSON.stringify([
       scene.era,
       scene.palette,
-      scene.heritage,
+      scene.heritage, scene.marks,
       scene.traditionLife,
       homeCount(scene),
       scene.attributes,

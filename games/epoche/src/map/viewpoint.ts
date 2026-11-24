@@ -23,3 +23,10 @@ export function focusFor(
     (camera - stops[index - 1]!) / (stops[index]! - stops[index - 1]!);
   return targets[index - 1]! + (targets[index]! - targets[index - 1]!) * weight;
 }
+
+export const heritagePosition = {
+  hearth:[valley.village-63,27], wheel:[valley.village-133,20], romanRoad:[valley.village+90,24],
+  commonBridge:[valley.river-62,12], revolution:[valley.village+49,12], worldWars:[valley.woods-42,15],
+  mutualHall:[valley.village+205,10], fair:[valley.river-110,7], nightSchool:[valley.village+263,11],
+  spring:[valley.fields+62,18], seedStore:[valley.fields-58,10], council:[valley.village,21],
+} as const;

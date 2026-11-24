@@ -1,3 +1,4 @@
+import { winterRules } from "@content/campaign/winter";
 import { eventsById, traditionLifetime } from "@content/campaign/definitions";
 import type { Doctrine, Family, GameEvent, HeritageSite, Tradition, Trait } from "@content/campaign/definitions";
 import type { GameState } from "../state/gameState";
@@ -53,6 +54,7 @@ export interface ChronicleEntry {
   setting?: number | undefined;
   consequenceKey?: string | undefined;
   result?: string | undefined;
+  offered?: string[] | undefined;
 }
 export interface PendingEvent {
   id: string;
@@ -73,7 +75,12 @@ export interface DeferredCost {
 }
 
 export interface Campaign {
-  rules: "current" | "trial";
+  inherited: number;
+  reckoning: { token:number; target:number; kind:"advance"|"migration"|"ledger" } | null;
+  marks: Partial<Record<import("@content/campaign/winter").WinterMark, number>>;
+  studyFinished: boolean;
+  winterStock: number;
+  rules: "current" | "trial" | "winter" | "winterStudy";
   version: 2;
   pace: Pace;
   id: string;
@@ -119,7 +126,15 @@ export function availableResponses(campaign: Campaign, event: GameEvent) {
     .map(response => response.overload && severity >= response.overload.at
       ? { ...response, recovery: 0, strain: { family: event.family, points: response.overload.points },
           consequenceKey: response.consequenceKey + ".overload" }
-      : response);
+      : response)
+    .map(option=>{
+      if(!winterRules(campaign.rules))return option;
+      if(event.id==="winter" && option.choice===2)
+        return {...option,defer:{family:"health" as const,points:28,afterEras:1 as const}};
+      if(campaign.core.eraId==="neolithic" && campaign.marks.field && option.strain?.family==="food")
+        return {...option,strain:{...option.strain,points:option.strain.points+12}};
+      return option;
+    });
 }
 
 export function responseRisk(campaign: Campaign, response: GameEvent["responses"][number]) {
@@ -130,8 +145,9 @@ export function responseRisk(campaign: Campaign, response: GameEvent["responses"
 }
 
 export function urgentDecision(campaign: Campaign): boolean {
+  if (campaign.reckoning || campaign.studyFinished) return true;
   const event = eventsById.get(campaign.pending?.id ?? "");
-  return !!event && ((campaign.rules === "trial" && event.id === "ledger") || event.decisive || availableResponses(campaign, event).some(response =>
+  return !!event && (campaign.rules === "winterStudy" || (campaign.rules === "trial" && event.id === "ledger") || event.decisive || availableResponses(campaign, event).some(response =>
     response.cost <= campaign.core.influence && responseRisk(campaign, response)?.after === 100
   ));
 }
@@ -145,6 +161,7 @@ export function campaignActionBlock(
 
 export type CampaignAction =
   | { type: "RESPOND"; choice: number; eventId?: string; openedAt?: number }
+  | { type: "RECKON"; token:number; remedy:import("@content/campaign/winter").Remedy }
   | { type: "ADVANCE" }
   | { type: "DOCTRINE"; doctrine: Doctrine }
   | {
