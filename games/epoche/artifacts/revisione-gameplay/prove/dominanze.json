@@ -1,0 +1,650 @@
+[
+  {
+    "event": "animals",
+    "choice": 0,
+    "observations": 15,
+    "preferred": 15,
+    "beats_any": 15,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "animals",
+    "choice": 1,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 15,
+    "flag": ""
+  },
+  {
+    "event": "animals",
+    "choice": 2,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "cartAxle",
+    "choice": 0,
+    "observations": 12,
+    "preferred": 12,
+    "beats_any": 12,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "cartAxle",
+    "choice": 1,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "cistern",
+    "choice": 0,
+    "observations": 15,
+    "preferred": 15,
+    "beats_any": 15,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "cistern",
+    "choice": 1,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 15,
+    "flag": ""
+  },
+  {
+    "event": "cistern",
+    "choice": 2,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "common",
+    "choice": 0,
+    "observations": 18,
+    "preferred": 0,
+    "beats_any": 18,
+    "flag": ""
+  },
+  {
+    "event": "common",
+    "choice": 1,
+    "observations": 18,
+    "preferred": 18,
+    "beats_any": 18,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "common",
+    "choice": 2,
+    "observations": 18,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "crafters",
+    "choice": 0,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 12,
+    "flag": ""
+  },
+  {
+    "event": "crafters",
+    "choice": 1,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "crafters",
+    "choice": 2,
+    "observations": 12,
+    "preferred": 12,
+    "beats_any": 12,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "creek",
+    "choice": 0,
+    "observations": 9,
+    "preferred": 0,
+    "beats_any": 9,
+    "flag": ""
+  },
+  {
+    "event": "creek",
+    "choice": 1,
+    "observations": 9,
+    "preferred": 9,
+    "beats_any": 9,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "creek",
+    "choice": 2,
+    "observations": 9,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "crowding",
+    "choice": 0,
+    "observations": 27,
+    "preferred": 17,
+    "beats_any": 23,
+    "flag": ""
+  },
+  {
+    "event": "crowding",
+    "choice": 1,
+    "observations": 27,
+    "preferred": 0,
+    "beats_any": 19,
+    "flag": ""
+  },
+  {
+    "event": "crowding",
+    "choice": 2,
+    "observations": 27,
+    "preferred": 3,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "exchange",
+    "choice": 0,
+    "observations": 15,
+    "preferred": 15,
+    "beats_any": 15,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "exchange",
+    "choice": 1,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "exchange",
+    "choice": 2,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 15,
+    "flag": ""
+  },
+  {
+    "event": "fences",
+    "choice": 0,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "fences",
+    "choice": 1,
+    "observations": 15,
+    "preferred": 4,
+    "beats_any": 4,
+    "flag": ""
+  },
+  {
+    "event": "fever",
+    "choice": 0,
+    "observations": 9,
+    "preferred": 0,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "fever",
+    "choice": 1,
+    "observations": 9,
+    "preferred": 9,
+    "beats_any": 9,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "fever",
+    "choice": 2,
+    "observations": 9,
+    "preferred": 0,
+    "beats_any": 6,
+    "flag": ""
+  },
+  {
+    "event": "flood",
+    "choice": 0,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 12,
+    "flag": ""
+  },
+  {
+    "event": "flood",
+    "choice": 1,
+    "observations": 12,
+    "preferred": 9,
+    "beats_any": 12,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "flood",
+    "choice": 2,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "grazing",
+    "choice": 0,
+    "observations": 6,
+    "preferred": 0,
+    "beats_any": 5,
+    "flag": ""
+  },
+  {
+    "event": "grazing",
+    "choice": 1,
+    "observations": 6,
+    "preferred": 5,
+    "beats_any": 6,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "grazing",
+    "choice": 2,
+    "observations": 6,
+    "preferred": 1,
+    "beats_any": 1,
+    "flag": ""
+  },
+  {
+    "event": "ledger",
+    "choice": 0,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "ledger",
+    "choice": 1,
+    "observations": 3,
+    "preferred": 3,
+    "beats_any": 3,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "ledger",
+    "choice": 2,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "ledger",
+    "choice": 3,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "marketDay",
+    "choice": 0,
+    "observations": 12,
+    "preferred": 10,
+    "beats_any": 12,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "marketDay",
+    "choice": 1,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 2,
+    "flag": ""
+  },
+  {
+    "event": "marketDay",
+    "choice": 2,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "mice",
+    "choice": 0,
+    "observations": 9,
+    "preferred": 0,
+    "beats_any": 9,
+    "flag": ""
+  },
+  {
+    "event": "mice",
+    "choice": 1,
+    "observations": 9,
+    "preferred": 9,
+    "beats_any": 9,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "mice",
+    "choice": 2,
+    "observations": 9,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "mourning",
+    "choice": 0,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "mourning",
+    "choice": 1,
+    "observations": 12,
+    "preferred": 12,
+    "beats_any": 12,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "mourning",
+    "choice": 2,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "repair",
+    "choice": 0,
+    "observations": 9,
+    "preferred": 3,
+    "beats_any": 9,
+    "flag": ""
+  },
+  {
+    "event": "repair",
+    "choice": 1,
+    "observations": 9,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "repair",
+    "choice": 2,
+    "observations": 9,
+    "preferred": 4,
+    "beats_any": 7,
+    "flag": ""
+  },
+  {
+    "event": "saplings",
+    "choice": 0,
+    "observations": 18,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "saplings",
+    "choice": 1,
+    "observations": 18,
+    "preferred": 18,
+    "beats_any": 18,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "saplings",
+    "choice": 2,
+    "observations": 18,
+    "preferred": 0,
+    "beats_any": 18,
+    "flag": ""
+  },
+  {
+    "event": "seed",
+    "choice": 0,
+    "observations": 12,
+    "preferred": 12,
+    "beats_any": 12,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "seed",
+    "choice": 1,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 11,
+    "flag": ""
+  },
+  {
+    "event": "seed",
+    "choice": 2,
+    "observations": 12,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "slopes",
+    "choice": 0,
+    "observations": 15,
+    "preferred": 9,
+    "beats_any": 15,
+    "flag": ""
+  },
+  {
+    "event": "slopes",
+    "choice": 1,
+    "observations": 15,
+    "preferred": 6,
+    "beats_any": 6,
+    "flag": ""
+  },
+  {
+    "event": "slopes",
+    "choice": 2,
+    "observations": 15,
+    "preferred": 0,
+    "beats_any": 9,
+    "flag": ""
+  },
+  {
+    "event": "storeroom",
+    "choice": 0,
+    "observations": 15,
+    "preferred": 5,
+    "beats_any": 12,
+    "flag": ""
+  },
+  {
+    "event": "storeroom",
+    "choice": 1,
+    "observations": 15,
+    "preferred": 1,
+    "beats_any": 6,
+    "flag": ""
+  },
+  {
+    "event": "storeroom",
+    "choice": 2,
+    "observations": 15,
+    "preferred": 1,
+    "beats_any": 1,
+    "flag": ""
+  },
+  {
+    "event": "subsidies",
+    "choice": 0,
+    "observations": 108,
+    "preferred": 33,
+    "beats_any": 74,
+    "flag": ""
+  },
+  {
+    "event": "subsidies",
+    "choice": 1,
+    "observations": 108,
+    "preferred": 5,
+    "beats_any": 108,
+    "flag": ""
+  },
+  {
+    "event": "subsidies",
+    "choice": 2,
+    "observations": 108,
+    "preferred": 0,
+    "beats_any": 7,
+    "flag": ""
+  },
+  {
+    "event": "subsidies",
+    "choice": 3,
+    "observations": 108,
+    "preferred": 53,
+    "beats_any": 99,
+    "flag": ""
+  },
+  {
+    "event": "trail",
+    "choice": 0,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "trail",
+    "choice": 1,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "trail",
+    "choice": 2,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "wards",
+    "choice": 0,
+    "observations": 45,
+    "preferred": 28,
+    "beats_any": 45,
+    "flag": ""
+  },
+  {
+    "event": "wards",
+    "choice": 1,
+    "observations": 45,
+    "preferred": 10,
+    "beats_any": 29,
+    "flag": ""
+  },
+  {
+    "event": "wards",
+    "choice": 2,
+    "observations": 45,
+    "preferred": 0,
+    "beats_any": 45,
+    "flag": ""
+  },
+  {
+    "event": "wards",
+    "choice": 3,
+    "observations": 45,
+    "preferred": 0,
+    "beats_any": 1,
+    "flag": ""
+  },
+  {
+    "event": "wells",
+    "choice": 0,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "wells",
+    "choice": 1,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 3,
+    "flag": ""
+  },
+  {
+    "event": "wells",
+    "choice": 2,
+    "observations": 3,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "winterHouses",
+    "choice": 0,
+    "observations": 6,
+    "preferred": 6,
+    "beats_any": 6,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "winterHouses",
+    "choice": 1,
+    "observations": 6,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "winterHouses",
+    "choice": 2,
+    "observations": 6,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  },
+  {
+    "event": "worldWarLetters",
+    "choice": 0,
+    "observations": 144,
+    "preferred": 144,
+    "beats_any": 144,
+    "flag": "oltre 65%"
+  },
+  {
+    "event": "worldWarLetters",
+    "choice": 1,
+    "observations": 144,
+    "preferred": 0,
+    "beats_any": 0,
+    "flag": "mai preferita nel campione"
+  }
+]

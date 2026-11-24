@@ -1,0 +1,807 @@
+[
+  {
+    "id": "fields",
+    "eraMin": "neolithic",
+    "eraMax": "neolithic",
+    "nameKey": "policy.fields",
+    "leftLabelKey": "policy.fields.left",
+    "rightLabelKey": "policy.fields.right",
+    "tradeoffKey": "policy.fields.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "sustenance",
+        "at0": -1,
+        "at100": 4
+      },
+      {
+        "attribute": "environment",
+        "at0": 2,
+        "at100": -4
+      }
+    ]
+  },
+  {
+    "id": "husbandry",
+    "eraMin": "neolithic",
+    "eraMax": "neolithic",
+    "nameKey": "policy.husbandry",
+    "leftLabelKey": "policy.husbandry.left",
+    "rightLabelKey": "policy.husbandry.right",
+    "tradeoffKey": "policy.husbandry.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "sustenance",
+        "at0": 0,
+        "at100": 2
+      },
+      {
+        "attribute": "prosperity",
+        "at0": -1,
+        "at100": 2
+      },
+      {
+        "attribute": "health",
+        "at0": 1,
+        "at100": -1.5
+      }
+    ]
+  },
+  {
+    "id": "shares",
+    "eraMin": "neolithic",
+    "eraMax": "neolithic",
+    "nameKey": "policy.shares",
+    "leftLabelKey": "policy.shares.left",
+    "rightLabelKey": "policy.shares.right",
+    "tradeoffKey": "policy.shares.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "cohesion",
+        "at0": 2,
+        "at100": -1.5
+      },
+      {
+        "attribute": "prosperity",
+        "at0": -1,
+        "at100": 2
+      },
+      {
+        "attribute": "freedom",
+        "at0": -0.5,
+        "at100": 2
+      }
+    ]
+  },
+  {
+    "id": "irrigation",
+    "eraMin": "bronze",
+    "eraMax": "bronze",
+    "nameKey": "policy.irrigation",
+    "leftLabelKey": "policy.irrigation.left",
+    "rightLabelKey": "policy.irrigation.right",
+    "tradeoffKey": "policy.irrigation.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "sustenance",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "infrastructure",
+        "at0": -1,
+        "at100": 3
+      },
+      {
+        "attribute": "environment",
+        "at0": 1,
+        "at100": -2
+      }
+    ]
+  },
+  {
+    "id": "script",
+    "eraMin": "bronze",
+    "eraMax": "bronze",
+    "nameKey": "policy.script",
+    "leftLabelKey": "policy.script.left",
+    "rightLabelKey": "policy.script.right",
+    "tradeoffKey": "policy.script.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "knowledge",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "faith",
+        "at0": 2,
+        "at100": -1
+      },
+      {
+        "attribute": "stability",
+        "at0": 0,
+        "at100": 2
+      }
+    ]
+  },
+  {
+    "id": "tributes",
+    "eraMin": "bronze",
+    "eraMax": "bronze",
+    "nameKey": "policy.tributes",
+    "leftLabelKey": "policy.tributes.left",
+    "rightLabelKey": "policy.tributes.right",
+    "tradeoffKey": "policy.tributes.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "prosperity",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "stability",
+        "at0": -1,
+        "at100": 2
+      },
+      {
+        "attribute": "cohesion",
+        "at0": 1,
+        "at100": -2
+      }
+    ]
+  },
+  {
+    "id": "law",
+    "eraMin": "classical",
+    "eraMax": "classical",
+    "nameKey": "policy.law",
+    "leftLabelKey": "policy.law.left",
+    "rightLabelKey": "policy.law.right",
+    "tradeoffKey": "policy.law.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "stability",
+        "at0": -1,
+        "at100": 4
+      },
+      {
+        "attribute": "knowledge",
+        "at0": 1,
+        "at100": 3
+      },
+      {
+        "attribute": "freedom",
+        "at0": 2,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "roads",
+    "eraMin": "classical",
+    "eraMax": "classical",
+    "nameKey": "policy.roads",
+    "leftLabelKey": "policy.roads.left",
+    "rightLabelKey": "policy.roads.right",
+    "tradeoffKey": "policy.roads.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "infrastructure",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "environment",
+        "at0": 1,
+        "at100": -2
+      }
+    ]
+  },
+  {
+    "id": "levy",
+    "eraMin": "classical",
+    "eraMax": "classical",
+    "nameKey": "policy.levy",
+    "leftLabelKey": "policy.levy.left",
+    "rightLabelKey": "policy.levy.right",
+    "tradeoffKey": "policy.levy.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "military",
+        "at0": -1,
+        "at100": 5
+      },
+      {
+        "attribute": "freedom",
+        "at0": 2,
+        "at100": -3
+      }
+    ]
+  },
+  {
+    "id": "guilds",
+    "eraMin": "medieval",
+    "eraMax": "medieval",
+    "nameKey": "policy.guilds",
+    "leftLabelKey": "policy.guilds.left",
+    "rightLabelKey": "policy.guilds.right",
+    "tradeoffKey": "policy.guilds.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "prosperity",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "stability",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "innovation",
+        "at0": 2,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "feudal",
+    "eraMin": "medieval",
+    "eraMax": "medieval",
+    "nameKey": "policy.feudal",
+    "leftLabelKey": "policy.feudal.left",
+    "rightLabelKey": "policy.feudal.right",
+    "tradeoffKey": "policy.feudal.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "stability",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "infrastructure",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "freedom",
+        "at0": 1,
+        "at100": -2
+      }
+    ]
+  },
+  {
+    "id": "cloisters",
+    "eraMin": "medieval",
+    "eraMax": "medieval",
+    "nameKey": "policy.cloisters",
+    "leftLabelKey": "policy.cloisters.left",
+    "rightLabelKey": "policy.cloisters.right",
+    "tradeoffKey": "policy.cloisters.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "faith",
+        "at0": 2,
+        "at100": -1
+      },
+      {
+        "attribute": "knowledge",
+        "at0": 1,
+        "at100": 5
+      },
+      {
+        "attribute": "health",
+        "at0": 0,
+        "at100": 3
+      }
+    ]
+  },
+  {
+    "id": "printing",
+    "eraMin": "earlymodern",
+    "eraMax": "earlymodern",
+    "nameKey": "policy.printing",
+    "leftLabelKey": "policy.printing.left",
+    "rightLabelKey": "policy.printing.right",
+    "tradeoffKey": "policy.printing.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "knowledge",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "freedom",
+        "at0": -1,
+        "at100": 4
+      },
+      {
+        "attribute": "stability",
+        "at0": 2,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "mercantilism",
+    "eraMin": "earlymodern",
+    "eraMax": "earlymodern",
+    "nameKey": "policy.mercantilism",
+    "leftLabelKey": "policy.mercantilism.left",
+    "rightLabelKey": "policy.mercantilism.right",
+    "tradeoffKey": "policy.mercantilism.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "prosperity",
+        "at0": 3,
+        "at100": 0
+      },
+      {
+        "attribute": "stability",
+        "at0": 0,
+        "at100": 2
+      },
+      {
+        "attribute": "prestige",
+        "at0": 3,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "schools",
+    "eraMin": "earlymodern",
+    "eraMax": "earlymodern",
+    "nameKey": "policy.schools",
+    "leftLabelKey": "policy.schools.left",
+    "rightLabelKey": "policy.schools.right",
+    "tradeoffKey": "policy.schools.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "knowledge",
+        "at0": 1,
+        "at100": 5
+      },
+      {
+        "attribute": "innovation",
+        "at0": 0,
+        "at100": 4
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 1,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "factories",
+    "eraMin": "industrial",
+    "eraMax": "industrial",
+    "nameKey": "policy.factories",
+    "leftLabelKey": "policy.factories.left",
+    "rightLabelKey": "policy.factories.right",
+    "tradeoffKey": "policy.factories.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "prosperity",
+        "at0": 0,
+        "at100": 6
+      },
+      {
+        "attribute": "environment",
+        "at0": 2,
+        "at100": -5
+      },
+      {
+        "attribute": "innovation",
+        "at0": 0,
+        "at100": 4
+      }
+    ]
+  },
+  {
+    "id": "unions",
+    "eraMin": "industrial",
+    "eraMax": "industrial",
+    "nameKey": "policy.unions",
+    "leftLabelKey": "policy.unions.left",
+    "rightLabelKey": "policy.unions.right",
+    "tradeoffKey": "policy.unions.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "cohesion",
+        "at0": -1,
+        "at100": 4
+      },
+      {
+        "attribute": "freedom",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 2,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "sanitation",
+    "eraMin": "industrial",
+    "eraMax": "industrial",
+    "nameKey": "policy.sanitation",
+    "leftLabelKey": "policy.sanitation.left",
+    "rightLabelKey": "policy.sanitation.right",
+    "tradeoffKey": "policy.sanitation.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "health",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "infrastructure",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 1,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "welfare",
+    "eraMin": "contemporary",
+    "eraMax": "contemporary",
+    "nameKey": "policy.welfare",
+    "leftLabelKey": "policy.welfare.left",
+    "rightLabelKey": "policy.welfare.right",
+    "tradeoffKey": "policy.welfare.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "health",
+        "at0": 0,
+        "at100": 4
+      },
+      {
+        "attribute": "cohesion",
+        "at0": 0,
+        "at100": 4
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 1,
+        "at100": -1
+      }
+    ]
+  },
+  {
+    "id": "broadcast",
+    "eraMin": "contemporary",
+    "eraMax": "contemporary",
+    "nameKey": "policy.broadcast",
+    "leftLabelKey": "policy.broadcast.left",
+    "rightLabelKey": "policy.broadcast.right",
+    "tradeoffKey": "policy.broadcast.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "freedom",
+        "at0": -1,
+        "at100": 4
+      },
+      {
+        "attribute": "culture",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "stability",
+        "at0": 2,
+        "at100": -1
+      },
+      {
+        "attribute": "knowledge",
+        "at0": 1,
+        "at100": 4
+      }
+    ]
+  },
+  {
+    "id": "mobilization",
+    "eraMin": "contemporary",
+    "eraMax": "contemporary",
+    "nameKey": "policy.mobilization",
+    "leftLabelKey": "policy.mobilization.left",
+    "rightLabelKey": "policy.mobilization.right",
+    "tradeoffKey": "policy.mobilization.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "military",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 2,
+        "at100": -3
+      },
+      {
+        "attribute": "stability",
+        "at0": 0,
+        "at100": 3
+      }
+    ]
+  },
+  {
+    "id": "network",
+    "eraMin": "information",
+    "eraMax": "information",
+    "nameKey": "policy.network",
+    "leftLabelKey": "policy.network.left",
+    "rightLabelKey": "policy.network.right",
+    "tradeoffKey": "policy.network.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "knowledge",
+        "at0": 0,
+        "at100": 6
+      },
+      {
+        "attribute": "innovation",
+        "at0": 0,
+        "at100": 4
+      },
+      {
+        "attribute": "cohesion",
+        "at0": 1,
+        "at100": -2
+      }
+    ]
+  },
+  {
+    "id": "privacy",
+    "eraMin": "information",
+    "eraMax": "information",
+    "nameKey": "policy.privacy",
+    "leftLabelKey": "policy.privacy.left",
+    "rightLabelKey": "policy.privacy.right",
+    "tradeoffKey": "policy.privacy.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "freedom",
+        "at0": -2,
+        "at100": 5
+      },
+      {
+        "attribute": "stability",
+        "at0": 2,
+        "at100": -1
+      },
+      {
+        "attribute": "prestige",
+        "at0": -1,
+        "at100": 2
+      }
+    ]
+  },
+  {
+    "id": "transition",
+    "eraMin": "information",
+    "eraMax": "information",
+    "nameKey": "policy.transition",
+    "leftLabelKey": "policy.transition.left",
+    "rightLabelKey": "policy.transition.right",
+    "tradeoffKey": "policy.transition.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "environment",
+        "at0": -2,
+        "at100": 6
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 3,
+        "at100": 0
+      },
+      {
+        "attribute": "innovation",
+        "at0": 0,
+        "at100": 3
+      }
+    ]
+  },
+  {
+    "id": "habitats",
+    "eraMin": "future",
+    "eraMax": "future",
+    "nameKey": "policy.habitats",
+    "leftLabelKey": "policy.habitats.left",
+    "rightLabelKey": "policy.habitats.right",
+    "tradeoffKey": "policy.habitats.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "infrastructure",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "environment",
+        "at0": 3,
+        "at100": -4
+      },
+      {
+        "attribute": "innovation",
+        "at0": 0,
+        "at100": 5
+      }
+    ]
+  },
+  {
+    "id": "automation",
+    "eraMin": "future",
+    "eraMax": "future",
+    "nameKey": "policy.automation",
+    "leftLabelKey": "policy.automation.left",
+    "rightLabelKey": "policy.automation.right",
+    "tradeoffKey": "policy.automation.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "prosperity",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "knowledge",
+        "at0": 0,
+        "at100": 5
+      },
+      {
+        "attribute": "cohesion",
+        "at0": 2,
+        "at100": -4
+      }
+    ]
+  },
+  {
+    "id": "commons",
+    "eraMin": "future",
+    "eraMax": "future",
+    "nameKey": "policy.commons",
+    "leftLabelKey": "policy.commons.left",
+    "rightLabelKey": "policy.commons.right",
+    "tradeoffKey": "policy.commons.tradeoff",
+    "default": 50,
+    "delayYears": 3,
+    "rampYears": 16,
+    "costPerPoint": 0.16,
+    "effects": [
+      {
+        "attribute": "cohesion",
+        "at0": -1,
+        "at100": 5
+      },
+      {
+        "attribute": "freedom",
+        "at0": 0,
+        "at100": 3
+      },
+      {
+        "attribute": "prosperity",
+        "at0": 3,
+        "at100": -1
+      }
+    ]
+  }
+]

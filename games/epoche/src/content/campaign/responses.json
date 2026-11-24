@@ -1,0 +1,2500 @@
+{
+  "drought": [
+    {
+      "cost": 9,
+      "recovery": 20,
+      "effects": {
+        "health": 3,
+        "knowledge": 1,
+        "sustenance": -1
+      },
+      "founds": "spring"
+    },
+    {
+      "cost": 5,
+      "recovery": 15,
+      "effects": {
+        "cohesion": 3,
+        "sustenance": -1
+      },
+      "defer": {
+        "family": "food",
+        "points": 26
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "health": -1,
+        "sustenance": -1
+      },
+      "followUp": "dryHarvest",
+      "strain": {
+        "family": "food",
+        "points": 37
+      }
+    }
+  ],
+  "dryHarvest": [
+    {
+      "cost": 9,
+      "recovery": 20,
+      "effects": {
+        "sustenance": 2,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 15,
+      "effects": {
+        "sustenance": 3,
+        "environment": -1
+      },
+      "defer": {
+        "family": "food",
+        "points": 32
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 4,
+      "effects": {
+        "health": -1,
+        "knowledge": 0.5
+      },
+      "strain": {
+        "family": "health",
+        "points": 30
+      },
+      "defer": {
+        "family": "health",
+        "points": 27
+      }
+    }
+  ],
+  "winter": [
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 3,
+        "sustenance": 1
+      },
+      "strain": {
+        "family": "food",
+        "points": 17
+      },
+      "defer": {
+        "family": "food",
+        "points": 43
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 17,
+      "effects": {
+        "sustenance": 3,
+        "health": -1
+      },
+      "strain": {
+        "family": "health",
+        "points": 27
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 7,
+      "effects": {
+        "health": 1,
+        "cohesion": 1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 19
+      }
+    },
+    {
+      "cost": 6,
+      "recovery": 14,
+      "strain": {
+        "family": "health",
+        "points": 24
+      },
+      "repay": {
+        "family": "food",
+        "points": 30
+      },
+      "effects": {
+        "sustenance": 2,
+        "health": -1
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 16,
+      "strain": {
+        "family": "clans",
+        "points": 26
+      },
+      "effects": {
+        "sustenance": 2,
+        "cohesion": -1
+      }
+    }
+  ],
+  "split": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "cohesion": 4,
+        "knowledge": 1
+      },
+      "founds": "council"
+    },
+    {
+      "cost": 5,
+      "recovery": 14,
+      "effects": {
+        "military": 2,
+        "cohesion": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "cohesion": -2,
+        "sustenance": 1
+      },
+      "followUp": "feud",
+      "strain": {
+        "family": "clans",
+        "points": 38
+      }
+    }
+  ],
+  "feud": [
+    {
+      "cost": 9,
+      "recovery": 32,
+      "effects": {
+        "cohesion": 4,
+        "sustenance": -1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 16,
+      "effects": {
+        "cohesion": 2,
+        "military": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "military": -1,
+        "cohesion": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 37
+      }
+    }
+  ],
+  "inherit": [
+    {
+      "cost": 9,
+      "recovery": 23,
+      "effects": {
+        "knowledge": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 16,
+      "effects": {
+        "faith": 3,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "faith": 1,
+        "cohesion": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 26
+      }
+    }
+  ],
+  "injury": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "health": 4,
+        "cohesion": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 24,
+      "effects": {
+        "health": 3,
+        "sustenance": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 12,
+      "effects": {
+        "cohesion": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 27
+      }
+    }
+  ],
+  "spring": [
+    {
+      "cost": 9,
+      "recovery": 22,
+      "effects": {
+        "knowledge": 3,
+        "health": 1
+      },
+      "founds": "spring"
+    },
+    {
+      "cost": 5,
+      "recovery": 0,
+      "effects": {
+        "health": 3,
+        "military": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 25
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 8,
+      "effects": {
+        "knowledge": 1,
+        "environment": 1
+      }
+    }
+  ],
+  "nuts": [
+    {
+      "cost": 9,
+      "recovery": 26,
+      "effects": {
+        "cohesion": 3,
+        "sustenance": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 15,
+      "effects": {
+        "sustenance": 3,
+        "health": -1
+      },
+      "strain": {
+        "family": "health",
+        "points": 24
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "environment": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 27
+      }
+    }
+  ],
+  "flocks": [
+    {
+      "cost": 9,
+      "recovery": 25,
+      "effects": {
+        "knowledge": 3,
+        "sustenance": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 20,
+      "effects": {
+        "sustenance": 3,
+        "health": -1
+      },
+      "strain": {
+        "family": "health",
+        "points": 25
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 1,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 32
+      }
+    }
+  ],
+  "embers": [
+    {
+      "cost": 9,
+      "recovery": 22,
+      "effects": {
+        "sustenance": 2,
+        "cohesion": 2
+      },
+      "founds": "hearth"
+    },
+    {
+      "cost": 5,
+      "recovery": 18,
+      "effects": {
+        "health": 2,
+        "environment": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 11,
+      "effects": {
+        "knowledge": 2,
+        "sustenance": -0.5
+      }
+    }
+  ],
+  "singers": [
+    {
+      "cost": 9,
+      "recovery": 25,
+      "effects": {
+        "cohesion": 3,
+        "faith": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 15,
+      "effects": {
+        "knowledge": 2,
+        "faith": 2
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 9,
+      "effects": {
+        "knowledge": 1,
+        "cohesion": 1
+      }
+    }
+  ],
+  "trail": [
+    {
+      "cost": 9,
+      "recovery": 24,
+      "effects": {
+        "knowledge": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 0,
+      "effects": {
+        "sustenance": 3,
+        "cohesion": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 27
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "military": 1,
+        "cohesion": 1
+      }
+    }
+  ],
+  "guests": [
+    {
+      "cost": 9,
+      "recovery": 27,
+      "effects": {
+        "cohesion": 3,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 20
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 18,
+      "effects": {
+        "sustenance": 2,
+        "knowledge": 2
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 6,
+      "effects": {
+        "knowledge": 1,
+        "cohesion": 0.5
+      }
+    },
+    {
+      "cost": 7,
+      "recovery": 16,
+      "effects": {
+        "cohesion": 2,
+        "health": -1
+      },
+      "strain": {
+        "family": "health",
+        "points": 23
+      }
+    }
+  ],
+  "shell": [
+    {
+      "cost": 9,
+      "recovery": 23,
+      "effects": {
+        "cohesion": 3,
+        "faith": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 17,
+      "effects": {
+        "knowledge": 2,
+        "faith": 2
+      },
+      "requires": "council"
+    },
+    {
+      "cost": 0,
+      "recovery": 4,
+      "effects": {
+        "faith": -1,
+        "cohesion": 1
+      }
+    }
+  ],
+  "smoke": [
+    {
+      "cost": 9,
+      "recovery": 31,
+      "effects": {
+        "health": 4,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 0,
+      "effects": {
+        "health": 2,
+        "sustenance": -0.5
+      },
+      "strain": {
+        "family": "health",
+        "points": 21
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 12,
+      "effects": {
+        "health": 1,
+        "environment": -1
+      }
+    }
+  ],
+  "coldwater": [
+    {
+      "cost": 9,
+      "recovery": 27,
+      "effects": {
+        "health": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 19,
+      "effects": {
+        "knowledge": 2,
+        "health": 1,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 24
+      }
+    }
+  ],
+  "caregivers": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "knowledge": 3,
+        "health": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "health": 3,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 25
+      },
+      "requires": "council"
+    },
+    {
+      "cost": 0,
+      "recovery": 12,
+      "effects": {
+        "cohesion": 2,
+        "health": 0.5
+      }
+    }
+  ],
+  "shelters": [
+    {
+      "cost": 9,
+      "recovery": 28,
+      "effects": {
+        "health": 3,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 23,
+      "effects": {
+        "health": 3,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 26
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 2,
+        "health": 1
+      },
+      "strain": {
+        "family": "health",
+        "points": 29
+      }
+    }
+  ],
+  "grazing": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "environment": 4,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 18,
+      "effects": {
+        "sustenance": 3,
+        "prosperity": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "environment": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 25
+      },
+      "defer": {
+        "family": "food",
+        "points": 30
+      }
+    }
+  ],
+  "storeroom": [
+    {
+      "cost": 9,
+      "recovery": 28,
+      "effects": {
+        "sustenance": -2,
+        "cohesion": 3,
+        "stability": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 20,
+      "effects": {
+        "sustenance": -2,
+        "infrastructure": 3
+      },
+      "defer": {
+        "family": "food",
+        "points": 35
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "sustenance": -1,
+        "health": -1
+      },
+      "followUp": "mice",
+      "strain": {
+        "family": "food",
+        "points": 33
+      }
+    }
+  ],
+  "flood": [
+    {
+      "cost": 9,
+      "recovery": 0,
+      "effects": {
+        "infrastructure": 3,
+        "health": 1,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 21
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 20,
+      "effects": {
+        "infrastructure": 2,
+        "sustenance": 1,
+        "environment": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "environment": 3,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 30
+      }
+    }
+  ],
+  "common": [
+    {
+      "cost": 9,
+      "recovery": 27,
+      "effects": {
+        "cohesion": 3,
+        "freedom": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 17,
+      "effects": {
+        "stability": 3,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 9,
+      "effects": {
+        "cohesion": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 30
+      }
+    }
+  ],
+  "crowding": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "health": 4,
+        "infrastructure": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 19,
+      "effects": {
+        "health": 2,
+        "infrastructure": 2,
+        "cohesion": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "health": -2,
+        "prosperity": 1
+      },
+      "followUp": "fever",
+      "strain": {
+        "family": "health",
+        "points": 40
+      }
+    }
+  ],
+  "fever": [
+    {
+      "cost": 9,
+      "recovery": 32,
+      "effects": {
+        "health": 3,
+        "cohesion": 2,
+        "sustenance": -1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 25,
+      "effects": {
+        "health": 3,
+        "infrastructure": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "health": 1,
+        "cohesion": -1
+      },
+      "strain": {
+        "family": "health",
+        "points": 26
+      }
+    }
+  ],
+  "wells": [
+    {
+      "cost": 9,
+      "recovery": 31,
+      "effects": {
+        "health": 3,
+        "infrastructure": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 21,
+      "effects": {
+        "health": 3,
+        "prosperity": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 7,
+      "effects": {
+        "health": 1,
+        "sustenance": -1
+      }
+    },
+    {
+      "cost": 1,
+      "recovery": 24,
+      "effects": {
+        "health": 2,
+        "environment": 1
+      },
+      "requires": "spring"
+    }
+  ],
+  "animals": [
+    {
+      "cost": 9,
+      "recovery": 29,
+      "effects": {
+        "health": 4,
+        "infrastructure": -1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 21,
+      "effects": {
+        "health": 2,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "health": 1,
+        "sustenance": -1
+      }
+    }
+  ],
+  "exchange": [
+    {
+      "cost": 9,
+      "recovery": 24,
+      "effects": {
+        "knowledge": 2,
+        "prosperity": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 16,
+      "effects": {
+        "prosperity": 3,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 27
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 8,
+      "effects": {
+        "knowledge": 1,
+        "cohesion": 1
+      }
+    }
+  ],
+  "seed": [
+    {
+      "cost": 9,
+      "recovery": 0,
+      "effects": {
+        "knowledge": 3,
+        "stability": 1,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 24
+      },
+      "founds": "seedStore",
+      "repay": {
+        "family": "food",
+        "points": 26
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 18,
+      "effects": {
+        "knowledge": 3,
+        "environment": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 12,
+      "effects": {
+        "cohesion": 2,
+        "infrastructure": -0.5
+      }
+    }
+  ],
+  "mice": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "infrastructure": 3,
+        "health": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "health": 2,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "sustenance": -2,
+        "health": 2
+      },
+      "strain": {
+        "family": "food",
+        "points": 24
+      }
+    }
+  ],
+  "creek": [
+    {
+      "cost": 9,
+      "recovery": 28,
+      "effects": {
+        "cohesion": 3,
+        "environment": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "infrastructure": 3,
+        "sustenance": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "environment": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 25
+      }
+    }
+  ],
+  "saplings": [
+    {
+      "cost": 9,
+      "recovery": 27,
+      "effects": {
+        "environment": 4,
+        "sustenance": -1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 21,
+      "effects": {
+        "environment": 2,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 8,
+      "effects": {
+        "environment": 1,
+        "prosperity": -0.5
+      }
+    }
+  ],
+  "crafters": [
+    {
+      "cost": 9,
+      "recovery": 28,
+      "effects": {
+        "freedom": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 18,
+      "effects": {
+        "cohesion": 2,
+        "sustenance": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 11,
+      "effects": {
+        "knowledge": 2,
+        "freedom": 1
+      }
+    }
+  ],
+  "fences": [
+    {
+      "cost": 9,
+      "recovery": 29,
+      "effects": {
+        "freedom": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 22,
+      "effects": {
+        "stability": 3,
+        "infrastructure": 1
+      }
+    }
+  ],
+  "mourning": [
+    {
+      "cost": 9,
+      "recovery": 29,
+      "effects": {
+        "cohesion": 3,
+        "freedom": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 20,
+      "effects": {
+        "culture": 3,
+        "knowledge": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 11,
+      "effects": {
+        "freedom": 2,
+        "cohesion": -1
+      }
+    }
+  ],
+  "repair": [
+    {
+      "cost": 9,
+      "recovery": 28,
+      "effects": {
+        "infrastructure": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "infrastructure": 3,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 24
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 5,
+      "effects": {
+        "cohesion": 1,
+        "infrastructure": -1
+      },
+      "strain": {
+        "family": "health",
+        "points": 30
+      }
+    }
+  ],
+  "slopes": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "health": 3,
+        "infrastructure": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 21,
+      "effects": {
+        "environment": 2,
+        "infrastructure": 2,
+        "prosperity": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "knowledge": 2,
+        "health": 1
+      },
+      "strain": {
+        "family": "health",
+        "points": 32
+      }
+    }
+  ],
+  "cistern": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "health": 3,
+        "infrastructure": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 18,
+      "effects": {
+        "cohesion": 2,
+        "stability": 2
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "health": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 27
+      },
+      "defer": {
+        "family": "food",
+        "points": 34
+      }
+    }
+  ],
+  "shade": [
+    {
+      "cost": 9,
+      "recovery": 29,
+      "effects": {
+        "health": 3,
+        "infrastructure": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "health": 3,
+        "cohesion": -1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "health": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 22
+      }
+    }
+  ],
+  "winterHouses": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "health": 3,
+        "infrastructure": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 20,
+      "effects": {
+        "health": 2,
+        "cohesion": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 12,
+      "effects": {
+        "health": 2,
+        "cohesion": -1
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 14,
+      "effects": {
+        "health": 2
+      },
+      "requires": "hearth"
+    }
+  ],
+  "marketDay": [
+    {
+      "cost": 9,
+      "recovery": 26,
+      "effects": {
+        "knowledge": 2,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 19,
+      "effects": {
+        "infrastructure": 3,
+        "stability": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 11,
+      "effects": {
+        "cohesion": 2,
+        "culture": 1
+      }
+    }
+  ],
+  "silt": [
+    {
+      "cost": 8,
+      "recovery": 0,
+      "effects": {
+        "infrastructure": 3,
+        "sustenance": 2
+      },
+      "strain": {
+        "family": "food",
+        "points": 30
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 19,
+      "effects": {
+        "knowledge": 3,
+        "stability": 1
+      },
+      "followUp": "weights"
+    },
+    {
+      "cost": 4,
+      "recovery": 0,
+      "effects": {
+        "environment": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 29
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 21,
+      "effects": {
+        "sustenance": 2,
+        "knowledge": 1
+      },
+      "requires": "seedStore"
+    }
+  ],
+  "ledger": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "cohesion": 3,
+        "prosperity": -2
+      },
+      "strain": {
+        "family": "state",
+        "points": 29
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "knowledge": 2,
+        "stability": 2
+      },
+      "followUp": "weights"
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 2,
+        "stability": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 33
+      },
+      "defer": {
+        "family": "state",
+        "points": 44
+      }
+    },
+    {
+      "cost": 11,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 2,
+        "sustenance": -2
+      },
+      "strain": {
+        "family": "food",
+        "points": 33
+      }
+    }
+  ],
+  "weights": [
+    {
+      "cost": 8,
+      "recovery": 0,
+      "effects": {
+        "knowledge": 3,
+        "prosperity": 2
+      },
+      "strain": {
+        "family": "state",
+        "points": 28
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 20,
+      "effects": {
+        "stability": 3,
+        "cohesion": 1
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 14,
+      "effects": {
+        "knowledge": 2
+      },
+      "requires": "wheel"
+    }
+  ],
+  "quarrel": [
+    {
+      "cost": 0,
+      "recovery": 30,
+      "effects": {
+        "cohesion": 3,
+        "stability": 2
+      }
+    },
+    {
+      "cost": 8,
+      "recovery": 20,
+      "effects": {
+        "knowledge": 2,
+        "infrastructure": 1
+      },
+      "followUp": "clerks",
+      "strain": {
+        "family": "state",
+        "points": 38
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 0,
+      "effects": {
+        "stability": 2,
+        "cohesion": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 39
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 23,
+      "effects": {
+        "cohesion": 3
+      },
+      "requires": "council"
+    }
+  ],
+  "roadSickness": [
+    {
+      "cost": 10,
+      "recovery": 0,
+      "effects": {
+        "health": 4,
+        "infrastructure": 1
+      },
+      "strain": {
+        "family": "health",
+        "points": 33
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 21,
+      "effects": {
+        "health": 3,
+        "prosperity": -1
+      }
+    }
+  ],
+  "clerks": [
+    {
+      "cost": 9,
+      "recovery": 28,
+      "effects": {
+        "infrastructure": 3,
+        "stability": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 0,
+      "effects": {
+        "freedom": 3,
+        "stability": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 38
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "prosperity": 1,
+        "stability": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 41
+      }
+    },
+    {
+      "cost": 10,
+      "recovery": 0,
+      "effects": {
+        "knowledge": 2,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 34
+      }
+    }
+  ],
+  "creed": [
+    {
+      "cost": 9,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 3,
+        "prosperity": 1
+      },
+      "followUp": "borderTax",
+      "strain": {
+        "family": "clans",
+        "points": 37
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 21,
+      "effects": {
+        "freedom": 3,
+        "culture": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 10,
+      "effects": {
+        "culture": 2,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 36
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 22,
+      "effects": {
+        "cohesion": 2,
+        "knowledge": 1
+      },
+      "requires": "council"
+    }
+  ],
+  "borderTax": [
+    {
+      "cost": 8,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 3,
+        "infrastructure": 2
+      },
+      "strain": {
+        "family": "state",
+        "points": 36
+      },
+      "founds": "commonBridge"
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "infrastructure": 3,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 34
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 14,
+      "effects": {
+        "prosperity": 2
+      },
+      "founds": "fair"
+    }
+  ],
+  "shortage": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "sustenance": 3,
+        "cohesion": 2,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 22
+      },
+      "defer": {
+        "family": "state",
+        "points": 38
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "sustenance": 3,
+        "prosperity": -1
+      },
+      "followUp": "credit",
+      "strain": {
+        "family": "state",
+        "points": 47
+      },
+      "defer": {
+        "family": "state",
+        "points": 45
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 11,
+      "effects": {
+        "sustenance": 2,
+        "prestige": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 20
+      },
+      "defer": {
+        "family": "clans",
+        "points": 30
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 2,
+        "sustenance": -2
+      },
+      "strain": {
+        "family": "food",
+        "points": 47
+      },
+      "defer": {
+        "family": "food",
+        "points": 48
+      }
+    },
+    {
+      "cost": 6,
+      "recovery": 17,
+      "strain": {
+        "family": "clans",
+        "points": 25
+      },
+      "repay": {
+        "family": "state",
+        "points": 32
+      },
+      "effects": {
+        "sustenance": 2,
+        "cohesion": -1
+      }
+    }
+  ],
+  "pamphlets": [
+    {
+      "cost": 4,
+      "recovery": 27,
+      "effects": {
+        "freedom": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 10,
+      "recovery": 0,
+      "effects": {
+        "culture": 2,
+        "stability": 1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 37
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 9,
+      "effects": {
+        "freedom": 2,
+        "stability": -1
+      }
+    }
+  ],
+  "credit": [
+    {
+      "cost": 0,
+      "recovery": 29,
+      "effects": {
+        "stability": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 7,
+      "recovery": 0,
+      "effects": {
+        "stability": 3,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 36
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 14,
+      "effects": {
+        "stability": 2
+      },
+      "requires": "fair"
+    }
+  ],
+  "soil": [
+    {
+      "cost": 9,
+      "recovery": 0,
+      "effects": {
+        "environment": 4,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 33
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "knowledge": 3,
+        "environment": 2
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "environment": 2,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 37
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 24,
+      "effects": {
+        "environment": 2,
+        "sustenance": 1
+      },
+      "requires": "seedStore"
+    }
+  ],
+  "strike": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "cohesion": 3,
+        "stability": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 19,
+      "effects": {
+        "stability": 2,
+        "prosperity": 1
+      },
+      "followUp": "lobby",
+      "strain": {
+        "family": "state",
+        "points": 44
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "freedom": 2,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 40
+      }
+    },
+    {
+      "cost": 10,
+      "recovery": 0,
+      "effects": {
+        "prosperity": 2,
+        "cohesion": -2
+      },
+      "strain": {
+        "family": "clans",
+        "points": 48
+      }
+    }
+  ],
+  "cityAir": [
+    {
+      "cost": 10,
+      "recovery": 32,
+      "effects": {
+        "environment": 3,
+        "health": 2,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 41
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 24,
+      "effects": {
+        "health": 3,
+        "infrastructure": -1
+      },
+      "defer": {
+        "family": "health",
+        "points": 34
+      }
+    },
+    {
+      "cost": 4,
+      "recovery": 14,
+      "effects": {
+        "health": 2,
+        "knowledge": 1
+      },
+      "founds": "nightSchool"
+    }
+  ],
+  "lobby": [
+    {
+      "cost": 9,
+      "recovery": 28,
+      "effects": {
+        "freedom": 3,
+        "stability": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 0,
+      "effects": {
+        "infrastructure": 3,
+        "cohesion": 1
+      },
+      "strain": {
+        "family": "state",
+        "points": 41
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "freedom": 2,
+        "infrastructure": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 37
+      }
+    },
+    {
+      "cost": 4,
+      "recovery": 14,
+      "effects": {
+        "health": 2,
+        "cohesion": 1
+      },
+      "founds": "mutualHall"
+    }
+  ],
+  "wards": [
+    {
+      "cost": 9,
+      "recovery": 32,
+      "effects": {
+        "health": 4,
+        "infrastructure": 1
+      },
+      "repay": {
+        "family": "health",
+        "points": 28
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 23,
+      "effects": {
+        "health": 3,
+        "prosperity": -1
+      },
+      "followUp": "subsidies",
+      "strain": {
+        "family": "state",
+        "points": 47
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 13,
+      "effects": {
+        "health": 2,
+        "cohesion": 1
+      },
+      "defer": {
+        "family": "health",
+        "points": 40
+      }
+    },
+    {
+      "cost": 10,
+      "recovery": 0,
+      "effects": {
+        "health": 1,
+        "cohesion": -1
+      },
+      "strain": {
+        "family": "health",
+        "points": 45
+      }
+    }
+  ],
+  "subsidies": [
+    {
+      "cost": 11,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 3,
+        "health": 1,
+        "prosperity": -1
+      },
+      "strain": {
+        "family": "state",
+        "points": 47
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 20,
+      "effects": {
+        "knowledge": 2,
+        "prosperity": 2
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 7,
+      "effects": {
+        "stability": 2,
+        "cohesion": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 50
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 14,
+      "effects": {
+        "knowledge": 2,
+        "prosperity": 1
+      },
+      "requires": "nightSchool"
+    }
+  ],
+  "heat": [
+    {
+      "cost": 9,
+      "recovery": 30,
+      "effects": {
+        "environment": 3,
+        "infrastructure": 2
+      },
+      "defer": {
+        "family": "state",
+        "points": 28
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 0,
+      "effects": {
+        "health": 3,
+        "sustenance": -1
+      },
+      "strain": {
+        "family": "food",
+        "points": 43
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "knowledge": 2,
+        "environment": 1
+      },
+      "strain": {
+        "family": "food",
+        "points": 52
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 23,
+      "effects": {
+        "health": 2,
+        "environment": 1
+      },
+      "requires": "spring"
+    }
+  ],
+  "polarization": [
+    {
+      "cost": 9,
+      "recovery": 29,
+      "effects": {
+        "cohesion": 3,
+        "freedom": 1
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 21,
+      "effects": {
+        "knowledge": 2,
+        "stability": 1
+      },
+      "followUp": "servers",
+      "strain": {
+        "family": "state",
+        "points": 44
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 12,
+      "effects": {
+        "culture": 2,
+        "cohesion": 1
+      }
+    }
+  ],
+  "burnout": [
+    {
+      "cost": 0,
+      "recovery": 31,
+      "effects": {
+        "health": 3,
+        "freedom": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 23,
+      "effects": {
+        "health": 3,
+        "prosperity": -1
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 20,
+      "effects": {
+        "health": 2,
+        "knowledge": 1
+      },
+      "requires": "nightSchool"
+    }
+  ],
+  "servers": [
+    {
+      "cost": 5,
+      "recovery": 30,
+      "effects": {
+        "infrastructure": 3,
+        "freedom": 2
+      },
+      "repay": {
+        "family": "state",
+        "points": 25
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 20,
+      "effects": {
+        "freedom": 3,
+        "innovation": 1
+      },
+      "defer": {
+        "family": "state",
+        "points": 30
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 0,
+      "effects": {
+        "stability": 1,
+        "freedom": 2
+      },
+      "strain": {
+        "family": "state",
+        "points": 49
+      }
+    },
+    {
+      "cost": 11,
+      "recovery": 0,
+      "effects": {
+        "infrastructure": 2,
+        "stability": -2
+      },
+      "strain": {
+        "family": "state",
+        "points": 52
+      }
+    }
+  ],
+  "orbitCare": [
+    {
+      "cost": 11,
+      "recovery": 31,
+      "effects": {
+        "health": 4,
+        "infrastructure": 1
+      },
+      "strain": {
+        "family": "state",
+        "points": 45
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 20,
+      "effects": {
+        "health": 2,
+        "knowledge": 3
+      },
+      "overload": {
+        "at": 58,
+        "points": 27
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 52,
+      "effects": {
+        "health": 3,
+        "cohesion": 1
+      },
+      "requires": "mutualHall"
+    },
+    {
+      "cost": 2,
+      "recovery": 41,
+      "effects": {
+        "health": 2,
+        "knowledge": 2
+      },
+      "requires": "worldWars"
+    }
+  ],
+  "automationGap": [
+    {
+      "cost": 10,
+      "recovery": 0,
+      "effects": {
+        "cohesion": 3,
+        "freedom": 2
+      },
+      "strain": {
+        "family": "state",
+        "points": 33
+      }
+    },
+    {
+      "cost": 6,
+      "recovery": 24,
+      "effects": {
+        "freedom": 3,
+        "stability": 1
+      },
+      "followUp": "newHarbor"
+    },
+    {
+      "cost": 0,
+      "recovery": 13,
+      "effects": {
+        "health": 2,
+        "cohesion": 1
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 39,
+      "effects": {
+        "freedom": 3,
+        "cohesion": 1
+      },
+      "requires": "revolution"
+    }
+  ],
+  "newHarbor": [
+    {
+      "cost": 9,
+      "recovery": 29,
+      "effects": {
+        "freedom": 3,
+        "cohesion": 2
+      }
+    },
+    {
+      "cost": 5,
+      "recovery": 22,
+      "effects": {
+        "infrastructure": 3,
+        "health": 1
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 12,
+      "effects": {
+        "sustenance": 2,
+        "stability": -1
+      },
+      "strain": {
+        "family": "clans",
+        "points": 52
+      }
+    },
+    {
+      "cost": 10,
+      "recovery": 0,
+      "effects": {
+        "prosperity": 2,
+        "stability": -2
+      },
+      "strain": {
+        "family": "state",
+        "points": 54
+      }
+    }
+  ],
+  "cartAxle": [
+    {
+      "cost": 4,
+      "recovery": 14,
+      "effects": {
+        "knowledge": 2,
+        "sustenance": 1
+      },
+      "founds": "wheel"
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "sustenance": 2
+      }
+    }
+  ],
+  "romanPaving": [
+    {
+      "cost": 6,
+      "recovery": 14,
+      "effects": {
+        "infrastructure": 3
+      },
+      "founds": "romanRoad"
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "cohesion": 2
+      }
+    }
+  ],
+  "citizensCharter": [
+    {
+      "cost": 5,
+      "recovery": 14,
+      "effects": {
+        "freedom": 3,
+        "cohesion": 1
+      },
+      "founds": "revolution"
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "freedom": 2
+      }
+    }
+  ],
+  "worldWarLetters": [
+    {
+      "cost": 3,
+      "recovery": 14,
+      "effects": {
+        "cohesion": 2,
+        "knowledge": 2
+      },
+      "founds": "worldWars"
+    },
+    {
+      "cost": 0,
+      "recovery": 14,
+      "effects": {
+        "cohesion": 2
+      }
+    }
+  ],
+  "orbitalCrossing": [
+    {
+      "cost": 0,
+      "recovery": 16,
+      "effects": {
+        "cohesion": 1
+      },
+      "overload": {
+        "at": 65,
+        "points": 21
+      }
+    },
+    {
+      "cost": 6,
+      "recovery": 14,
+      "effects": {
+        "prosperity": 2
+      },
+      "strain": {
+        "family": "state",
+        "points": 40
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 43,
+      "effects": {
+        "infrastructure": 3,
+        "cohesion": 1
+      },
+      "requires": "commonBridge"
+    },
+    {
+      "cost": 3,
+      "recovery": 35,
+      "effects": {
+        "infrastructure": 2,
+        "knowledge": 2
+      },
+      "requires": "romanRoad"
+    }
+  ],
+  "habitatWorkshop": [
+    {
+      "cost": 0,
+      "recovery": 8,
+      "effects": {
+        "cohesion": 1
+      },
+      "strain": {
+        "family": "health",
+        "points": 17
+      }
+    },
+    {
+      "cost": 0,
+      "recovery": 0,
+      "effects": {
+        "infrastructure": 2
+      },
+      "strain": {
+        "family": "state",
+        "points": 20
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 37,
+      "effects": {
+        "knowledge": 2,
+        "infrastructure": 1
+      },
+      "requires": "nightSchool",
+      "strain": {
+        "family": "food",
+        "points": 14
+      }
+    },
+    {
+      "cost": 2,
+      "recovery": 29,
+      "effects": {
+        "infrastructure": 2,
+        "knowledge": 1
+      },
+      "requires": "wheel",
+      "strain": {
+        "family": "clans",
+        "points": 15
+      }
+    },
+    {
+      "cost": 3,
+      "recovery": 15,
+      "strain": {
+        "family": "food",
+        "points": 21
+      },
+      "effects": {
+        "infrastructure": 2,
+        "sustenance": -1
+      }
+    },
+    {
+      "cost": 4,
+      "recovery": 16,
+      "strain": {
+        "family": "health",
+        "points": 23
+      },
+      "effects": {
+        "sustenance": 2,
+        "health": -1
+      }
+    }
+  ]
+}

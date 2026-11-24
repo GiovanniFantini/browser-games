@@ -1,0 +1,692 @@
+[
+  {
+    "id": "drought",
+    "family": "food",
+    "era": 0,
+    "metric": "environment",
+    "value": 14.9,
+    "localRange": 4,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "dryHarvest",
+    "family": "food",
+    "era": 0,
+    "metric": "sustenance",
+    "value": 13,
+    "localRange": 2.5,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "winter",
+    "family": "food",
+    "era": 0,
+    "metric": "sustenance",
+    "value": 13,
+    "localRange": 2.5,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "grazing",
+    "family": "food",
+    "era": 1,
+    "metric": "environment",
+    "value": 14.6,
+    "localRange": 3.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "storeroom",
+    "family": "food",
+    "era": 1,
+    "metric": "sustenance",
+    "value": 11.5,
+    "localRange": 2.5,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "flood",
+    "family": "food",
+    "era": 1,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "silt",
+    "family": "food",
+    "era": 2,
+    "metric": "environment",
+    "value": 14.8,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "shortage",
+    "family": "food",
+    "era": 5,
+    "metric": "settlement_load",
+    "value": 0.95,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "soil",
+    "family": "food",
+    "era": 6,
+    "metric": "environment",
+    "value": 14.3,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "heat",
+    "family": "food",
+    "era": 8,
+    "metric": "environment",
+    "value": 14.7,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "split",
+    "family": "clans",
+    "era": 0,
+    "metric": "cohesion",
+    "value": 14,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "feud",
+    "family": "clans",
+    "era": 0,
+    "metric": "cohesion",
+    "value": 13.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "inherit",
+    "family": "clans",
+    "era": 0,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "common",
+    "family": "clans",
+    "era": 1,
+    "metric": "settlement_load",
+    "value": 0.924,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "ledger",
+    "family": "clans",
+    "era": 2,
+    "metric": "prosperity",
+    "value": 9,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "quarrel",
+    "family": "clans",
+    "era": 3,
+    "metric": "freedom",
+    "value": 8,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "creed",
+    "family": "clans",
+    "era": 4,
+    "metric": "faith",
+    "value": 6.8,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "pamphlets",
+    "family": "clans",
+    "era": 5,
+    "metric": "knowledge",
+    "value": 9.5,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "strike",
+    "family": "clans",
+    "era": 6,
+    "metric": "stability",
+    "value": 14,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "polarization",
+    "family": "clans",
+    "era": 8,
+    "metric": "cohesion",
+    "value": 15.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "injury",
+    "family": "health",
+    "era": 0,
+    "metric": "health",
+    "value": 12.6,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "crowding",
+    "family": "health",
+    "era": 1,
+    "metric": "settlement_load",
+    "value": 0.952,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "fever",
+    "family": "health",
+    "era": 1,
+    "metric": "health",
+    "value": 12.5,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "wells",
+    "family": "health",
+    "era": 1,
+    "metric": "environment",
+    "value": 13.8,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "animals",
+    "family": "health",
+    "era": 1,
+    "metric": "settlement_load",
+    "value": 1.092,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "roadSickness",
+    "family": "health",
+    "era": 3,
+    "metric": "health",
+    "value": 13.5,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "cityAir",
+    "family": "health",
+    "era": 6,
+    "metric": "environment",
+    "value": 15.5,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "wards",
+    "family": "health",
+    "era": 7,
+    "metric": "settlement_load",
+    "value": 0.95,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "burnout",
+    "family": "health",
+    "era": 8,
+    "metric": "cohesion",
+    "value": 15,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "orbitCare",
+    "family": "health",
+    "era": 9,
+    "metric": "health",
+    "value": 15,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": false,
+    "pressureRange": [
+      6,
+      78
+    ],
+    "spillover": {
+      "family": "state",
+      "at": 46,
+      "multiplier": 2,
+      "buffer": "infrastructure"
+    }
+  },
+  {
+    "id": "exchange",
+    "family": "state",
+    "era": 1,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "weights",
+    "family": "state",
+    "era": 2,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "clerks",
+    "family": "state",
+    "era": 3,
+    "metric": "settlement_load",
+    "value": 0.952,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "borderTax",
+    "family": "state",
+    "era": 4,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "credit",
+    "family": "state",
+    "era": 5,
+    "metric": "prosperity",
+    "value": 10.5,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "lobby",
+    "family": "state",
+    "era": 6,
+    "metric": "prosperity",
+    "value": 10.5,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "subsidies",
+    "family": "state",
+    "era": 7,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "servers",
+    "family": "state",
+    "era": 8,
+    "metric": "knowledge",
+    "value": 10.5,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "automationGap",
+    "family": "state",
+    "era": 9,
+    "metric": "prosperity",
+    "value": 9.8,
+    "direction": "above",
+    "decisive": false,
+    "pressureRange": [
+      3,
+      24
+    ]
+  },
+  {
+    "id": "newHarbor",
+    "family": "state",
+    "era": 9,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false,
+    "pressureRange": [
+      2,
+      18
+    ]
+  },
+  {
+    "id": "spring",
+    "family": "food",
+    "era": 0,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "nuts",
+    "family": "food",
+    "era": 0,
+    "metric": "sustenance",
+    "value": 12.7,
+    "localRange": 3.2,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "flocks",
+    "family": "food",
+    "era": 0,
+    "metric": "environment",
+    "value": 14.5,
+    "localRange": 3.5,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "embers",
+    "family": "food",
+    "era": 0,
+    "metric": "health",
+    "value": 12.2,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "seed",
+    "family": "food",
+    "era": 1,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "mice",
+    "family": "food",
+    "era": 1,
+    "metric": "sustenance",
+    "value": 11.8,
+    "localRange": 2.5,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "creek",
+    "family": "food",
+    "era": 1,
+    "metric": "environment",
+    "value": 14.6,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "saplings",
+    "family": "food",
+    "era": 1,
+    "metric": "environment",
+    "value": 14.7,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "singers",
+    "family": "clans",
+    "era": 0,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "trail",
+    "family": "clans",
+    "era": 0,
+    "metric": "cohesion",
+    "value": 14,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "guests",
+    "family": "clans",
+    "era": 0,
+    "metric": "cohesion",
+    "value": 15.5,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "shell",
+    "family": "clans",
+    "era": 0,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "crafters",
+    "family": "clans",
+    "era": 1,
+    "metric": "prosperity",
+    "value": 8,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "fences",
+    "family": "clans",
+    "era": 1,
+    "metric": "settlement_load",
+    "value": 0.994,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "mourning",
+    "family": "clans",
+    "era": 1,
+    "metric": "faith",
+    "value": 7.4,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "repair",
+    "family": "clans",
+    "era": 1,
+    "metric": "stability",
+    "value": 13.5,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "smoke",
+    "family": "health",
+    "era": 0,
+    "metric": "health",
+    "value": 13,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "coldwater",
+    "family": "health",
+    "era": 0,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "caregivers",
+    "family": "health",
+    "era": 0,
+    "metric": "cohesion",
+    "value": 14.4,
+    "direction": "below",
+    "decisive": true
+  },
+  {
+    "id": "shelters",
+    "family": "health",
+    "era": 0,
+    "metric": "environment",
+    "value": 14.8,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "slopes",
+    "family": "health",
+    "era": 1,
+    "metric": "settlement_load",
+    "value": 1.078,
+    "direction": "above",
+    "decisive": false
+  },
+  {
+    "id": "cistern",
+    "family": "health",
+    "era": 1,
+    "metric": "environment",
+    "value": 14.8,
+    "localRange": 3.6,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "shade",
+    "family": "health",
+    "era": 1,
+    "metric": "health",
+    "value": 13.1,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "winterHouses",
+    "family": "health",
+    "era": 1,
+    "metric": "health",
+    "value": 13.1,
+    "localRange": 2.8,
+    "direction": "below",
+    "decisive": false
+  },
+  {
+    "id": "marketDay",
+    "family": "state",
+    "era": 1,
+    "metric": "prosperity",
+    "value": 8,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "cartAxle",
+    "era": 1,
+    "family": "food",
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "romanPaving",
+    "era": 3,
+    "family": "state",
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "citizensCharter",
+    "era": 5,
+    "family": "clans",
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "worldWarLetters",
+    "era": 7,
+    "family": "clans",
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true
+  },
+  {
+    "id": "orbitalCrossing",
+    "era": 9,
+    "family": "state",
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true,
+    "pressureRange": [
+      4,
+      42
+    ]
+  },
+  {
+    "id": "habitatWorkshop",
+    "family": "state",
+    "era": 9,
+    "metric": "always",
+    "value": 1,
+    "direction": "above",
+    "decisive": true,
+    "pressureRange": [
+      3,
+      23
+    ]
+  }
+]

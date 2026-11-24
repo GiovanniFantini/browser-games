@@ -1,0 +1,26 @@
+[
+  {
+    "language": "it",
+    "width": 1366,
+    "right": 1194.3125,
+    "left": 1243.6875
+  },
+  {
+    "language": "en",
+    "width": 1366,
+    "right": 1185.609375,
+    "left": 1243.6875
+  },
+  {
+    "language": "it",
+    "width": 1920,
+    "right": 1669.875,
+    "left": 1791
+  },
+  {
+    "language": "en",
+    "width": 1920,
+    "right": 1744.65625,
+    "left": 1791
+  }
+]

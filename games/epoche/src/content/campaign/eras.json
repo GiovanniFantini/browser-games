@@ -1,0 +1,223 @@
+[
+  {
+    "id": "prehistory",
+    "startYear": -300000,
+    "yearsPerMinute": 200,
+    "baseCapacity": 150,
+    "startPopulation": 40,
+    "baseGrowthPerYear": 0.01,
+    "requiredPopulation": 78,
+    "policyIds": ["settlement", "subsistence", "elders"],
+    "reformRoutes": [[["settlement", "right"]]],
+    "palette": ["#22343a", "#54705b", "#96643d", "#d7b376"],
+    "minTicks": 360,
+    "knowledge": 6
+  },
+  {
+    "id": "neolithic",
+    "startYear": -10000,
+    "yearsPerMinute": 150,
+    "baseCapacity": 550,
+    "startPopulation": 100,
+    "baseGrowthPerYear": 0.013,
+    "requiredPopulation": 140,
+    "policyIds": ["fields", "husbandry", "shares"],
+    "reformRoutes": [
+      [
+        ["fields", "right"],
+        ["shares", "left"]
+      ],
+      [
+        ["husbandry", "right"],
+        ["fields", "left"]
+      ]
+    ],
+    "palette": ["#202f36", "#637359", "#9c7548", "#e0b065"],
+    "minTicks": 400,
+    "knowledge": 7.36
+  },
+  {
+    "id": "bronze",
+    "startYear": -3300,
+    "yearsPerMinute": 120,
+    "baseCapacity": 1500,
+    "startPopulation": 260,
+    "baseGrowthPerYear": 0.014,
+    "requiredPopulation": 330,
+    "policyIds": ["irrigation", "script", "tributes"],
+    "reformRoutes": [
+      [
+        ["script", "right"],
+        ["tributes", "left"]
+      ],
+      [
+        ["irrigation", "right"],
+        ["script", "left"]
+      ]
+    ],
+    "palette": ["#28303b", "#6c7158", "#967051", "#e7ac68"],
+    "minTicks": 440,
+    "knowledge": 7.72
+  },
+  {
+    "id": "classical",
+    "startYear": -800,
+    "yearsPerMinute": 105,
+    "baseCapacity": 4300,
+    "startPopulation": 500,
+    "baseGrowthPerYear": 0.015,
+    "requiredPopulation": 700,
+    "policyIds": ["law", "roads", "levy"],
+    "reformRoutes": [
+      [
+        ["law", "right"],
+        ["levy", "left"]
+      ],
+      [
+        ["roads", "right"],
+        ["law", "left"]
+      ]
+    ],
+    "palette": ["#273940", "#60745e", "#aa886b", "#e1bd83"],
+    "minTicks": 480,
+    "knowledge": 8.08
+  },
+  {
+    "id": "medieval",
+    "startYear": 500,
+    "yearsPerMinute": 90,
+    "baseCapacity": 10000,
+    "startPopulation": 1100,
+    "baseGrowthPerYear": 0.016,
+    "requiredPopulation": 1600,
+    "policyIds": ["guilds", "feudal", "cloisters"],
+    "reformRoutes": [
+      [
+        ["guilds", "right"],
+        ["feudal", "left"]
+      ],
+      [
+        ["cloisters", "right"],
+        ["guilds", "left"]
+      ]
+    ],
+    "palette": ["#23343a", "#4a6251", "#80664e", "#d7ae75"],
+    "minTicks": 520,
+    "knowledge": 8.44
+  },
+  {
+    "id": "earlymodern",
+    "startYear": 1450,
+    "yearsPerMinute": 80,
+    "baseCapacity": 23500,
+    "startPopulation": 2600,
+    "baseGrowthPerYear": 0.017,
+    "requiredPopulation": 3800,
+    "policyIds": ["printing", "mercantilism", "schools"],
+    "reformRoutes": [
+      [
+        ["printing", "right"],
+        ["mercantilism", "left"]
+      ],
+      [
+        ["schools", "right"],
+        ["printing", "left"]
+      ]
+    ],
+    "palette": ["#30383f", "#667451", "#927156", "#d0a578"],
+    "minTicks": 560,
+    "knowledge": 8.8
+  },
+  {
+    "id": "industrial",
+    "startYear": 1760,
+    "yearsPerMinute": 70,
+    "baseCapacity": 65000,
+    "startPopulation": 6000,
+    "baseGrowthPerYear": 0.018,
+    "requiredPopulation": 8000,
+    "policyIds": ["factories", "unions", "sanitation"],
+    "reformRoutes": [
+      [
+        ["sanitation", "right"],
+        ["factories", "left"]
+      ],
+      [
+        ["unions", "right"],
+        ["sanitation", "left"]
+      ]
+    ],
+    "palette": ["#323136", "#595e53", "#866747", "#d19e63"],
+    "minTicks": 600,
+    "knowledge": 9.16
+  },
+  {
+    "id": "contemporary",
+    "startYear": 1914,
+    "yearsPerMinute": 60,
+    "baseCapacity": 170000,
+    "startPopulation": 14000,
+    "baseGrowthPerYear": 0.019,
+    "requiredPopulation": 19000,
+    "policyIds": ["welfare", "broadcast", "mobilization"],
+    "reformRoutes": [
+      [
+        ["welfare", "right"],
+        ["mobilization", "left"]
+      ],
+      [
+        ["broadcast", "right"],
+        ["welfare", "left"]
+      ]
+    ],
+    "palette": ["#273948", "#4f756e", "#8b785f", "#d5b07c"],
+    "minTicks": 640,
+    "knowledge": 9.52
+  },
+  {
+    "id": "information",
+    "startYear": 1990,
+    "yearsPerMinute": 55,
+    "baseCapacity": 420000,
+    "startPopulation": 32000,
+    "baseGrowthPerYear": 0.02,
+    "requiredPopulation": 43000,
+    "policyIds": ["network", "privacy", "transition"],
+    "reformRoutes": [
+      [
+        ["network", "right"],
+        ["privacy", "left"]
+      ],
+      [
+        ["transition", "right"],
+        ["network", "left"]
+      ]
+    ],
+    "palette": ["#223444", "#517483", "#726e63", "#b4c59b"],
+    "minTicks": 680,
+    "knowledge": 9.879999999999999
+  },
+  {
+    "id": "future",
+    "startYear": 2100,
+    "yearsPerMinute": 50,
+    "baseCapacity": 1100000,
+    "startPopulation": 76000,
+    "baseGrowthPerYear": 0.021,
+    "requiredPopulation": 105000,
+    "policyIds": ["habitats", "automation", "commons"],
+    "reformRoutes": [
+      [
+        ["habitats", "right"],
+        ["automation", "left"]
+      ],
+      [
+        ["automation", "right"],
+        ["commons", "right"]
+      ]
+    ],
+    "palette": ["#292d49", "#525f8a", "#746477", "#e6b9a2"],
+    "minTicks": 720,
+    "knowledge": 10.24
+  }
+]

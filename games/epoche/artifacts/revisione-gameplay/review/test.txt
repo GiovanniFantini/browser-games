@@ -1,0 +1,13 @@
+
+> epoche@0.2.0 test
+> vitest run
+
+
+ RUN  v4.1.12 C:/repos/browser-games/games/epoche
+
+
+ Test Files  13 passed (13)
+      Tests  77 passed (77)
+   Start at  12:13:17
+   Duration  17.13s (transform 3.71s, setup 0ms, import 15.80s, tests 18.18s, environment 5ms)
+

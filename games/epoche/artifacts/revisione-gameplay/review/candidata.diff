@@ -1,0 +1,880 @@
+--- prima/src/content/campaign/trial.ts
++++ adesso/src/content/campaign/trial.ts
+@@ -0,0 +1,4 @@
++export const trialEvents: Readonly<Record<string, readonly string[]>> = {
++  prehistory: ["drought", "dryHarvest", "winter"],
++  bronze: ["ledger"],
++};
+--- prima/src/engine/campaign/campaign.ts
++++ adesso/src/engine/campaign/campaign.ts
+@@ -7,7 +7,6 @@
+ import type { ContentBundle } from "@content/schema";
+ import type { Command, Speed } from "../core/commands";
+ import { clamp } from "../core/math";
+-import { createRng } from "../core/rng";
+ import { TICKS_PER_SECOND } from "../core/time";
+ import { getEra } from "../state/contentIndex";
+ import { createNewGame } from "../state/newGame";
+@@ -47,6 +46,7 @@
+ } from "./progression";
+ import {
+   createIdentity,
++  genesisRng,
+   enterEra,
+   eraNumber,
+   makeWorld,
+@@ -58,11 +58,7 @@
+   content: ContentBundle,
+   input: StartCampaign,
+ ): Campaign {
+-  const combined = input.choices.reduce(
+-    (value, next) => Math.imul(value ^ next, 16777619),
+-    input.seed,
+-  );
+-  const rng = createRng(combined);
++  const rng = genesisRng(input.seed, input.choices);
+   const identity = createIdentity(rng, input.choices, 0);
+   const rivals: Rival[] = Array.from({ length: 3 }, (_, index) => ({
+     id: "rival-" + index,
+@@ -76,6 +72,7 @@
+   return appendLog(
+     {
+       version: 2,
++      rules: input.rules ?? "current",
+       pace: input.pace ?? "rapid",
+       id: input.id,
+       seed: input.seed,
+--- prima/src/engine/campaign/events.ts
++++ adesso/src/engine/campaign/events.ts
+@@ -1,3 +1,4 @@
++import { trialEvents } from "@content/campaign/trial";
+ import {
+   campaignBalance,
+   campaignEras,
+@@ -56,6 +57,7 @@
+   index: number,
+   content: ContentBundle,
+ ): Campaign {
++  if (campaign.rules === "trial" && campaign.pending?.id === "ledger") return campaign;
+   const event = eventsById.get(campaign.pending?.id ?? "");
+   if (!event || !Number.isSafeInteger(index) || index < 0 || index >= event.responses.length)
+     return campaign;
+@@ -172,6 +174,11 @@
+ ): Campaign {
+   if (campaign.pending || campaign.outcome) return campaign;
+   const stage = eraNumber(campaign.core.eraId);
++  const scripted = campaign.rules === "trial" && trialEvents[campaign.core.eraId];
++  if (scripted) {
++    const id = scripted.find(id => !Object.hasOwn(campaign.cooldowns, id));
++    return id ? maybeOpenEvent({ ...campaign, chain: [{ id, at: campaign.core.tick }] }, content) : campaign;
++  }
+   const next = earliestEraLink(campaign, stage);
+   if (!next) return campaign;
+   const chain = campaign.chain.map((link) =>
+@@ -189,7 +196,10 @@
+     return campaign;
+   const stage = eraNumber(campaign.core.eraId);
+   const timed = campaignTiming(campaign.pace);
+-  const promised = earliestEraLink(campaign, stage);
++  const sequence = campaign.rules === "trial" ? trialEvents[campaign.core.eraId] : undefined;
++  const scheduled = sequence?.find(id => !Object.hasOwn(campaign.cooldowns, id));
++  if (sequence && !scheduled) return campaign;
++  const promised = sequence ? campaign.chain.find(link => link.id === scheduled) : earliestEraLink(campaign, stage);
+   // Allow a promised return to play out before opening an unrelated incident.
+   if (promised && promised.at > tick) return campaign;
+   const exactChain = promised;
+@@ -248,7 +258,7 @@
+       : urgent.length
+         ? urgent
+         : available;
+-  const event = exactChain
++  const event = scheduled ? eventsById.get(scheduled) : exactChain
+     ? eventsById.get(exactChain.id)
+     : list.length
+       ? list[rng.int(0, list.length - 1)]
+--- prima/src/engine/campaign/model.ts
++++ adesso/src/engine/campaign/model.ts
+@@ -73,6 +73,7 @@
+ }
+ 
+ export interface Campaign {
++  rules: "current" | "trial";
+   version: 2;
+   pace: Pace;
+   id: string;
+@@ -130,7 +131,7 @@
+ 
+ export function urgentDecision(campaign: Campaign): boolean {
+   const event = eventsById.get(campaign.pending?.id ?? "");
+-  return !!event && (event.decisive || availableResponses(campaign, event).some(response =>
++  return !!event && ((campaign.rules === "trial" && event.id === "ledger") || event.decisive || availableResponses(campaign, event).some(response =>
+     response.cost <= campaign.core.influence && responseRisk(campaign, response)?.after === 100
+   ));
+ }
+@@ -163,6 +164,7 @@
+   | { type: "OUTCOME"; choice: number };
+ 
+ export type StartCampaign = {
++  rules?: Campaign["rules"];
+   id: string;
+   seed: number;
+   choices: GenesisChoices;
+--- prima/src/engine/campaign/world.ts
++++ adesso/src/engine/campaign/world.ts
+@@ -61,24 +61,32 @@
+   );
+ }
+ 
+-export function createIdentity(
+-  rng: Rng,
+-  choices: GenesisChoices,
+-  index: number,
+-): Identity {
+-  const modifiers = [
++export function genesisRng(seed: number, choices: GenesisChoices) {
++  return createRng(choices.reduce((value, next) => Math.imul(value ^ next, 16777619), seed));
++}
++
++export function genesisModifiers(choices: GenesisChoices) {
++  return [
+     choices[2],
+     choices[0],
+     choices[3],
+     100 - choices[3],
+     choices[2],
+     100 - choices[2],
+-  ];
++  ].map(value => (value - 50) / 14);
++}
++
++export function createIdentity(
++  rng: Rng,
++  choices: GenesisChoices,
++  index: number,
++): Identity {
++  const modifiers = genesisModifiers(choices);
+   const character = Object.fromEntries(
+     traits.map((trait, i) => [
+       trait,
+       clamp(
+-        Math.round(rng.int(6, 14) + ((modifiers[i] ?? 50) - 50) / 14),
++        Math.round(rng.int(6, 14) + (modifiers[i] ?? 0)),
+         1,
+         20,
+       ),
+--- prima/src/i18n/campaign-en.json
++++ adesso/src/i18n/campaign-en.json
+@@ -246,7 +246,7 @@
+   "genesis.seedHint": "Reuse the seed and the same choices to generate the same world.",
+   "genesis.0": "Cosmos",
+   "genesis.0.body": "Before there are peoples, there are stars. Choose how much energy your world’s sky will hold.",
+-  "genesis.0.low": "Balance",
++  "genesis.0.low": "Stillness",
+   "genesis.0.high": "Energy",
+   "genesis.1": "Planet",
+   "genesis.1.body": "Water opens routes and separates lands. Your world takes shape.",
+@@ -472,5 +472,13 @@
+   "event.winterHouses.title": "The season indoors",
+   "event.winterHouses.body": "More people are spending longer under the same roof.",
+   "event.marketDay.title": "Market day",
+-  "event.marketDay.body": "Neighbouring villages propose a shared day for meeting and trading."
++  "event.marketDay.body": "Neighbouring villages propose a shared day for meeting and trading.",
++  "trial.complete": "Study complete",
++  "trial.bronze": "You have reached the Bronze Age debt ledger.",
++  "trial.export": "Export study log",
++  "genesis.advanced": "Advanced options",
++  "genesis.waterEffect": "Water chance in inland cells away from settlement centres: {chance}%.",
++  "slot.promise": "Guide one village through the ages. Your decisions change what its descendants can do.",
++  "genesis.modifier": "Effect on starting traits",
++  "trial.wrongMode": "Open this save in its original mode (campaign or study)."
+ }
+--- prima/src/i18n/campaign-it.json
++++ adesso/src/i18n/campaign-it.json
+@@ -246,7 +246,7 @@
+   "genesis.seedHint": "Riusa il seme e le stesse scelte per rigenerare il mondo.",
+   "genesis.0": "Cosmo",
+   "genesis.0.body": "Prima che ci siano popoli, ci sono stelle. Scegli quanta energia avrà il cielo del tuo mondo.",
+-  "genesis.0.low": "Equilibrio",
++  "genesis.0.low": "Quiete",
+   "genesis.0.high": "Energia",
+   "genesis.1": "Pianeta",
+   "genesis.1.body": "L’acqua apre vie e separa le terre. Il tuo mondo prende forma.",
+@@ -472,5 +472,13 @@
+   "event.winterHouses.title": "La stagione dentro casa",
+   "event.winterHouses.body": "Più gente trascorre più tempo sotto lo stesso tetto.",
+   "event.marketDay.title": "Il giorno di mercato",
+-  "event.marketDay.body": "I villaggi vicini propongono un giorno comune per incontrarsi e scambiare."
++  "event.marketDay.body": "I villaggi vicini propongono un giorno comune per incontrarsi e scambiare.",
++  "trial.complete": "Prova conclusa",
++  "trial.bronze": "Hai raggiunto il registro dei debiti del Bronzo.",
++  "trial.export": "Esporta il diario della prova",
++  "genesis.advanced": "Opzioni avanzate",
++  "genesis.waterEffect": "Probabilità di acqua nelle celle interne lontane dai centri abitati: {chance}%.",
++  "slot.promise": "Guida lo stesso villaggio attraverso le ere. Le decisioni di oggi cambiano le possibilità dei suoi discendenti.",
++  "genesis.modifier": "Effetto sul carattere iniziale",
++  "trial.wrongMode": "Apri questo salvataggio nella sua modalità di origine (campagna o studio)."
+ }
+--- prima/src/persistence/library.ts
++++ adesso/src/persistence/library.ts
+@@ -15,7 +15,7 @@
+ 
+ function db() {
+   if (!database) {
+-    const storage = new Dexie("epoche") as LibraryDb;
++    const storage = new Dexie(typeof location !== "undefined" && new URLSearchParams(location.search).has("studio") ? "epoche-studio" : "epoche") as LibraryDb;
+     storage.version(1).stores({ slots: "slot", legacy: "id" });
+     database = storage;
+   }
+--- prima/src/persistence/save.ts
++++ adesso/src/persistence/save.ts
+@@ -87,6 +87,7 @@
+ ]);
+ const campaignSchema = z.object({
+   version: z.literal(2),
++  rules: z.enum(["current", "trial"]).default("current"),
+   pace: z.enum(["standard", "rapid"]).default("rapid"),
+   id: smallId,
+   seed: uint,
+--- prima/src/ui/App.tsx
++++ adesso/src/ui/App.tsx
+@@ -118,7 +118,7 @@
+           <dl className="resources">
+             <div>
+               <dt>{translate(language, "resource.population")}</dt>
+-              <dd>{formatNumber(snapshot.population, language)}</dd>
++              <dd>{formatNumber(Math.floor(snapshot.population), language)}</dd>
+             </div>
+             <div>
+               <dt>{translate(language, "resource.influence")}</dt>
+@@ -186,7 +186,7 @@
+             <h3>{translate(language, "center.capacity")}</h3>
+             <p>
+               {translate(language, "center.capacitySummary", {
+-                population: formatNumber(snapshot.population, language),
++                population: formatNumber(Math.floor(snapshot.population), language),
+                 capacity: formatNumber(snapshot.capacity, language),
+               })}
+             </p>
+--- prima/src/ui/CampaignApp.tsx
++++ adesso/src/ui/CampaignApp.tsx
+@@ -1,3 +1,5 @@
++import { traits } from "@content/campaign/definitions";
++import { genesisModifiers } from "@engine/campaign/world";
+ import { useCallback, useEffect, useRef, useState } from "react";
+ import type { GenesisChoices, Pace } from "@engine/campaign/model";
+ import { translate, type Language } from "../i18n";
+@@ -44,6 +46,8 @@
+   const [choices, setChoices] = useState<GenesisChoices>([...blankChoices]);
+   const [seed, setSeed] = useState(() => initialSeed());
+   const text = "genesis." + act;
++  const modifiers = genesisModifiers(choices);
++  const affected = [["ambition"], [], ["resilience", "coherence", "corruptibility"], ["adaptability", "memory"]] as const;
+   return (
+     <main
+       className="genesis gate"
+@@ -87,8 +91,10 @@
+           )}{" "}
+           · {choices[act]}/100
+         </output>
++        <p className="genesis-effect">{act === 1 ? translate(language, "genesis.waterEffect", {chance: Math.round(choices[1] / 610 * 100)}) :
++          translate(language, "genesis.modifier") + " " + affected[act]?.map(trait => translate(language, "trait." + trait) + " " + new Intl.NumberFormat(language, {signDisplay:"exceptZero", maximumFractionDigits:1}).format(modifiers[traits.indexOf(trait)] ?? 0)).join(" · ")}</p>
+         {act === 0 && (
+-          <label className="genesis-seed">
++          <details><summary>{translate(language, "genesis.advanced")}</summary><label className="genesis-seed">
+             {translate(language, "genesis.seed")}
+             <input
+               type="number"
+@@ -109,7 +115,7 @@
+               }
+             />
+             <small>{translate(language, "genesis.seedHint")}</small>
+-          </label>
++          </label></details>
+         )}
+         {act === 3 && (
+           <label className="genesis-seed">
+@@ -295,7 +301,8 @@
+           seed,
+           choices,
+           pace,
+-          inherited: library.legacy,
++          rules: new URLSearchParams(location.search).has("studio") ? "trial" : "current",
++          inherited: new URLSearchParams(location.search).has("studio") ? 0 : library.legacy,
+         },
+       });
+       setScreen("game");
+@@ -352,6 +359,7 @@
+     try {
+       if (file.size > 2_000_000) throw new Error("Size limit");
+       const save = parseSave(await file.text());
++      if ((save.campaign.rules === "trial") !== new URLSearchParams(location.search).has("studio")) { setError("trial.wrongMode"); return; }
+       const { lease } = await claimSlot(selected, false);
+       await persist(
+         lease,
+@@ -449,6 +457,7 @@
+             {translate(language, "spirit.legacy")} {library.legacy}
+           </span>
+         </div>
++        <p>{translate(language, "slot.promise")} {translate(language, "spirit.inherited")}</p>
+         {ready ? (
+           <div className="slot-list">
+             {slots.map((number) => {
+--- prima/src/ui/components/CampaignPanels.tsx
++++ adesso/src/ui/components/CampaignPanels.tsx
+@@ -1,3 +1,4 @@
++import { exportTrialLog, useTrialLog } from "../trialLog";
+ import { EventScene } from "./DecisionScenes";
+ import { useEffect, useRef, useState, type ReactNode } from "react";
+ import { subjectSymbols, incidentSymbols } from "../symbols";
+@@ -564,6 +565,16 @@
+       </nav>
+       {tab === "region" ? (
+         <>
++              {view.pressures.length > 0 && (
++                <div className="crisis-list">
++                  {view.pressures.map(({ family, severity }) => (
++                    <span key={family}>
++                      {translate(language, "family." + family)}{" "}
++                      {severity < 1 ? "<1" : formatNumber(severity, language)}%
++                    </span>
++                  ))}
++                </div>
++              )}
+           <Diorama snapshot={snapshot} language={language} reduced={reduced} />
+           <div className="campaign-metrics">
+             <section className="demography" data-pressure={pressure}>
+@@ -648,14 +659,14 @@
+                             target: clockAtNormalSpeed(target),
+                             remaining: clockAtNormalSpeed(target - value),
+                           })
+-                        : formatNumber(value, language, 1) +
++                        : formatNumber(key === "resource.population" ? Math.floor(value) : value, language, key === "resource.population" ? 0 : 1) +
+                           " / " +
+                           formatNumber(target, language, 1)}
+                     </span>
+                   );
+                 })}
+               </div>
+-              <details className="progress-reforms" key={view.eraId}>
++              <details open className="progress-reforms" key={view.eraId}>
+                 <summary>{translate(language, "campaign.reforms")}</summary>
+                 {view.progress.reforms.map((route, index) => (
+                   <div className="progress-checks" key={index}>
+@@ -702,16 +713,7 @@
+                   </div>
+                 ))}
+               </details>
+-              {view.crises.length > 0 && (
+-                <div className="crisis-list">
+-                  {view.crises.map(({ family, severity }) => (
+-                    <span key={family}>
+-                      {translate(language, "family." + family)}{" "}
+-                      {formatNumber(severity, language)}%
+-                    </span>
+-                  ))}
+-                </div>
+-              )}
++
+             </section>
+           </div>
+         </>
+@@ -797,6 +799,9 @@
+   const [openedDecision, setOpenedDecision] = useState("");
+   const event = view.event;
+   const decisionId = event ? event.id + ":" + event.openedAt : "";
++  const cardVisible = !!event && !absence && !view.outcome && (event.id === "ledger" && view.rules === "trial" ||
++    (event.decisive ? closedDecision !== decisionId : openedDecision === decisionId));
++  useTrialLog(view.rules === "trial" ? view.id : undefined, event?.id, decisionId, cardVisible, snapshot.speed);
+   const lastDecision = view.outcome
+     ? [...view.chronicle]
+         .reverse()
+@@ -874,6 +879,15 @@
+         </button>
+       </Dialog>
+     );
++  if (view.rules === "trial" && event?.id === "ledger" && !view.outcome) {
++    return <Dialog title={translate(language, "trial.complete")}>
++      <p>{translate(language, "trial.bronze")}</p>
++      <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>
++      <button onClick={onEnd} disabled={leaving}>{translate(language, "outcome.end")}</button>
++      {endFailed && <><button onClick={onExport}>{translate(language, "slot.export")}</button>
++        <button onClick={onDiscard}>{translate(language, "slot.discardExit")}</button></>}
++    </Dialog>;
++  }
+   if (view.outcome) {
+     const outcome = view.outcome;
+     const end =
+@@ -893,6 +907,7 @@
+     )[0];
+     return (
+       <Dialog key={outcome.kind} title={title}>
++        {view.rules === "trial" && <button onClick={() => exportTrialLog(view.id)}>{translate(language, "trial.export")}</button>}
+         <p>
+           {translate(
+             language,
+@@ -1057,6 +1072,7 @@
+             <button
+               type="button"
+               className="event-option"
++              data-choice={response.choice}
+               key={response.choice}
+               disabled={influence < response.cost}
+               onClick={() =>
+--- prima/src/ui/theme.css
++++ adesso/src/ui/theme.css
+@@ -920,3 +920,9 @@
+     }
+   }
+ }
++
++.game-header .resources, .game-header .resources > div { min-width: 0; }
++.game-header .resources dd { white-space: normal; overflow-wrap: normal; }
++@media (min-width: 1100px) { .game-header .resources { grid-template-columns: 1fr 1fr 0.85fr 1.35fr; } }
++.campaign-center > .crisis-list { flex: none; margin: 0; padding: 5px 10px; }
++.genesis-effect { font-variant-numeric: tabular-nums; }
+--- prima/src/ui/trialLog.ts
++++ adesso/src/ui/trialLog.ts
+@@ -0,0 +1,43 @@
++import { useEffect } from "react";
++import { download } from "./download";
++
++type Interaction = { ms: number; event: string; action: string; choice?: number; speed?: number };
++
++function record(id: string, entry: Interaction) {
++  const key = "epoche.study." + id;
++  try {
++    const previous: Interaction[] = JSON.parse(sessionStorage.getItem(key) ?? "[]");
++    sessionStorage.setItem(key, JSON.stringify([...previous.slice(-1999), entry]));
++  } catch { /* The study can still run when browser storage is unavailable. */ }
++}
++export function useTrialLog(id: string | undefined, event: string | undefined, decision: string, visible: boolean, speed: number) {
++  const stamp = () => Math.round(performance.timeOrigin + performance.now());
++  useEffect(() => {
++    if (id && event) record(id, {ms:stamp(), event, action:"arrive"});
++  }, [id, event, decision]);
++  useEffect(() => {
++    if (id) record(id, {ms:stamp(), event:"", action:speed === 0 ? "pause" : "running", speed});
++  }, [id, speed]);
++  useEffect(() => {
++    if (!id || !event || !visible) return;
++    const add = (action: string, choice?: number) => record(id, { ms:stamp(), event, action, ...(choice !== undefined ? {choice} : {}) });
++    add("open");
++    const click = (e: MouseEvent) => {
++      if (!(e.target instanceof Element)) return;
++      const option = e.target.closest<HTMLButtonElement>(".event-option");
++      if (option && !option.disabled) add("choice", Number(option.dataset.choice));
++    };
++    let lastScroll = -500;
++    const scroll = (e: Event) => {
++      if (e.target instanceof Element && e.target.closest('dialog, [role="dialog"]') && performance.now() - lastScroll > 450) {
++        lastScroll = performance.now(); add("scroll");
++      }
++    };
++    document.addEventListener("click", click, true);
++    document.addEventListener("scroll", scroll, true);
++    return () => { document.removeEventListener("click", click, true); document.removeEventListener("scroll", scroll, true); add("close"); };
++  }, [id, event, decision, visible]);
++}
++export function exportTrialLog(id: string) {
++  download("epoche-studio.json", sessionStorage.getItem("epoche.study." + id) ?? "[]", "application/json");
++}
+--- prima/src/worker/campaignView.ts
++++ adesso/src/worker/campaignView.ts
+@@ -36,6 +36,7 @@
+   return {
+     id: campaign.id,
+     seed: campaign.seed,
++    rules: campaign.rules,
+     stage,
+     eraId: campaign.core.eraId,
+     heritage: campaign.heritage,
+@@ -96,6 +97,7 @@
+     chronicle: campaign.chronicle,
+     progress: progression(campaign),
+     groups: socialGroups(campaign),
++    pressures: campaign.crises.filter(({severity}) => severity > 0),
+     crises: campaign.crises.filter(
+       ({ severity }) => severity >= campaignBalance.crisisTrigger,
+     ),
+--- prima/tools/sim/branches.ts
++++ adesso/tools/sim/branches.ts
+@@ -0,0 +1,40 @@
++import { loadCampaignContent } from "@content/campaign/index";
++import { eventsById } from "@content/campaign/definitions";
++import { applyCampaignAction } from "@engine/campaign/campaign";
++import { responsesFor } from "@engine/campaign/events";
++import type { Campaign } from "@engine/campaign/model";
++import { runCampaign } from "./campaign";
++import { gzipSync } from "node:zlib";
++import { mkdirSync } from "node:fs";
++import { join } from "node:path";
++import { appendFileSync, writeFileSync } from "node:fs";
++
++const content = loadCampaignContent("rapid");
++const file = process.argv[2];
++if (!file) throw new Error("Supply an output path");
++writeFileSync(file, "", {flag:"wx"});
++const archive = process.argv[3];
++if (archive) mkdirSync(archive,{recursive:true});
++for (let seed = 101; seed <= 200; seed++) {
++  const route = (seed % 2) as 0 | 1;
++  const states: Campaign[] = [];
++  runCampaign(content, seed, "prudence", 25000, "rapid", {
++    route, extended:false, response:"foresight",
++    onDecision(state) { states.push(state); }
++  });
++  // Sample an early and a late decision without favoring long campaigns.
++  for (const state of [states[Math.floor(states.length / 4)], states[Math.floor(3 * states.length / 4)]]) {
++    if (!state?.pending) continue;
++    if (archive) writeFileSync(join(archive,seed+"-"+state.core.tick+".json.gz"),gzipSync(JSON.stringify(state)),{flag:"wx"});
++    const event = eventsById.get(state.pending.id)!;
++    for (const option of responsesFor(state,event,content.attributes).filter(opt => opt.cost <= state.core.influence)) {
++      const initial = applyCampaignAction(state,{type:"RESPOND",choice:option.choice},content);
++      for (const response of ["cautious","foresight","heritage"] as const) {
++        const {current} = runCampaign(content,seed,"prudence",25000,"rapid",{route,response,extended:false,initial});
++        appendFileSync(file,JSON.stringify({seed,route,tick:state.core.tick,event:event.id,choice:option.choice,response,
++          ending:current.outcome?.kind ?? "open",population:current.core.population,
++          crisis:current.crises.reduce((sum,c)=>sum+c.severity,0),heritage:current.heritage.length})+"\n");
++      }
++    }
++  }
++}
+--- prima/tools/sim/campaign.ts
++++ adesso/tools/sim/campaign.ts
+@@ -1,3 +1,4 @@
++import { checkCampaignSeed } from "./holdout";
+ import { createRng } from "@engine/core/rng";
+ import { pathToFileURL } from "node:url";
+ import { loadCampaignContent } from "@content/campaign/index";
+@@ -28,13 +29,49 @@
+   "passive",
+ ] as const;
+ type Profile = (typeof profiles)[number];
++export const responseStrategies = ["first", "random", "cautious", "foresight", "wait", "spend", "heritage", "ordinary"] as const;
++export type ResponseStrategy = typeof responseStrategies[number];
++
+ type NarrativeProfile = {
++  initial?: Campaign;
++  rules?: Campaign["rules"];
++  onDecision?: (state: Campaign) => void;
++  onAdvance?: (before: Campaign, after: Campaign) => void;
+   route: 0 | 1;
+   extended: boolean;
+   withoutFutureHeritage?: boolean;
+   withoutDeferredCosts?: boolean;
+-  response?: "first" | "random" | "cautious";
++  response?: ResponseStrategy;
+ };
++
++export function rankResponses(before: Campaign, event: NonNullable<ReturnType<typeof eventsById.get>>,
++  available: ReturnType<typeof responsesFor>, strategy: ResponseStrategy) {
++  const severity = (family: string) => before.crises.find(crisis => crisis.family === family)?.severity ?? 0;
++  const due = (family: string) => before.deferred.filter(entry => entry.family === family)
++    .reduce((total, entry) => total + entry.points, 0);
++  const closeToAdvance = before.core.tick - (before.core.eraOrigin?.tick ?? 0) >= campaignEras[eraNumber(before.core.eraId)]!.minTicks * campaignTiming(before.pace).tickScale * 0.8;
++  const score = (option: typeof available[number]) => {
++    const immediate = (option.strain ? severity(option.strain.family) + option.strain.points : 0)
++      - Math.min(severity(event.family), option.recovery);
++    if (strategy === "foresight") {
++      const debt = option.defer;
++      const fatal = debt && due(debt.family) + debt.points >= 100;
++      return immediate + (debt?.points ?? 0) + (fatal ? 100 : 0)
++        - (option.repay ? Math.min(option.repay.points, due(option.repay.family)) : 0);
++    }
++    if (strategy === "spend" && closeToAdvance) return immediate - 100 * option.cost;
++    if (option.requires && strategy === "heritage") return immediate - 200;
++    if (option.requires && strategy === "ordinary") return immediate + 200;
++    return immediate;
++  };
++  available.sort((a, b) => score(a) - score(b) || a.cost - b.cost);
++}
++
++export function shouldWait(current: Campaign) {
++  return current.deferred.some(entry =>
++      current.crises.some(crisis => crisis.family === entry.family && crisis.severity > 0))
++      && (current.core.tick - (current.core.eraOrigin?.tick ?? 0)) < (campaignEras[eraNumber(current.core.eraId)]!.minTicks + 1500) * campaignTiming(current.pace).tickScale;
++}
+ 
+ type Encounters = {
+   ticks: number[];
+@@ -92,8 +129,10 @@
+   pace: Pace = "rapid",
+   narrative?: NarrativeProfile,
+ ) {
+-  let current = createCampaign(content, {
++  checkCampaignSeed(seed);
++  let current = narrative?.initial ?? createCampaign(content, {
+     id: "sim-" + seed,
++    rules: narrative?.rules ?? "current",
+     seed,
+     choices: [
+       10 + (seed % 81),
+@@ -139,6 +178,7 @@
+   ) {
+     for (const { severity } of current.crises)
+       peakCrisis = Math.max(peakCrisis, severity);
++    if (current.rules === "trial" && current.pending?.id === "ledger") break;
+     if (current.pending) {
+       const before = current;
+       if (narrative) {
+@@ -153,6 +193,7 @@
+           };
+           encounters.set(era, evidence);
+         }
++        narrative.onDecision?.(current);
+         const event = eventsById.get(current.pending.id)!;
+         evidence.ticks.push(current.core.tick);
+         evidence.opened.add(event.id);
+@@ -166,12 +207,8 @@
+         if (!available.length)
+           throw new Error("No available narrative response: " + event.id);
+         if (available[0]!.choice !== 0) firstUnavailable++;
+-        if (narrative.response === "cautious") {
+-          const severity = (family: string) => before.crises.find(crisis => crisis.family === family)?.severity ?? 0;
+-          const impact = (response: typeof available[number]) =>
+-            (response.strain ? severity(response.strain.family) + response.strain.points : 0)
+-            - Math.min(severity(event.family), response.recovery);
+-          available.sort((a, b) => impact(a) - impact(b) || a.cost - b.cost);
++        if (narrative.response && !["first","random"].includes(narrative.response)) {
++          rankResponses(before, event, available, narrative.response);
+         } else if (!narrative.response) {
+           available.sort(
+             (left, right) =>
+@@ -261,9 +298,11 @@
+       ageBeforeAdvance >= minimumStay * timing.tickScale && !stillPromised
+         ? progression(current)
+         : null;
+-    if (progress?.ready) {
++    const waitingForRecovery = narrative?.response === "wait" && shouldWait(current);
++    if (progress?.ready && !waitingForRecovery) {
+       const next = applyCampaignAction(current, { type: "ADVANCE" }, content);
+       if (next.core.eraId !== phase) {
++        narrative?.onAdvance?.(current, next);
+         path.push(next.core.eraId);
+         arrived.push(next);
+         const route = progress.reforms.find((item) =>
+@@ -373,6 +412,7 @@
+   const pace: Pace = process.argv.includes("--standard") ? "standard" : "rapid";
+   const content = loadCampaignContent(pace);
+   const seeds = Number(process.argv[2] ?? 3);
++  checkCampaignSeed(Math.min(seeds,1100));
+   if (!Number.isInteger(seeds) || seeds <= 0)
+     throw new Error("Invalid seed count");
+   const comparison = process.argv.includes("--compare");
+--- prima/tools/sim/compareResponses.ts
++++ adesso/tools/sim/compareResponses.ts
+@@ -1,13 +1,28 @@
++import { claimHoldout } from "./holdout";
+ import { loadCampaignContent } from "@content/campaign/index";
+ import assert from "node:assert/strict";
+-import { runCampaign } from "./campaign";
++import { appendFileSync, writeFileSync } from "node:fs";
++import { responseStrategies, runCampaign, type ResponseStrategy } from "./campaign";
+ 
+ const content = loadCampaignContent("rapid");
+-const strategies = process.argv.includes("--cautious")
++const defaults = process.argv.includes("--cautious")
+   ? (["cautious"] as const)
+   : (["first", "random"] as const);
+-for (let seed = 1; seed <= 25; seed++) {
+-  for (const route of [0, 1] as const) {
++const arg = (name: string) => process.argv.find(value => value.startsWith("--" + name + "="))?.split("=")[1];
++const range = arg("seeds") ?? "1-25";
++if (!/^\d+-\d+$/.test(range)) throw new Error("Expected --seeds=start-end");
++const [start, end] = range.split("-").map(Number) as [number, number];
++if (start < 1 || end < start || end > 4294967295) throw new Error("Invalid or reserved seeds");
++const strategies = (arg("strategies")?.split(",") ?? defaults) as readonly ResponseStrategy[];
++if (!strategies.every(item => responseStrategies.includes(item))) throw new Error("Unknown strategy");
++const routes = (arg("routes") ?? "0,1").split(",");
++if (routes.some(route => route !== "0" && route !== "1")) throw new Error("Expected routes 0,1");
++const file = arg("output");
++claimHoldout(start,end,arg("holdout-manifest"),"artifacts/revisione-gameplay/apertura-1001-1100.json");
++if (file) writeFileSync(file, "", {flag:"wx"});
++for (let seed = start; seed <= end; seed++) {
++  for (const rawRoute of routes) {
++    const route = Number(rawRoute) as 0 | 1;
+     for (const response of strategies) {
+       const run = runCampaign(content, seed, "prudence", 25000, "rapid", {
+         route,
+@@ -29,8 +44,8 @@
+           population: replay.current.core.population,
+         };
+       }
+-      console.log(
+-        JSON.stringify({
++      const row = JSON.stringify({
++          reachedBronze: run.arrived.some(state => state.core.eraId === "bronze" && !state.outcome),
+           seed,
+           route,
+           response,
+@@ -56,8 +71,8 @@
+           setbacks: run.structural,
+           population: run.current.core.population,
+           peakCrisis: run.peakCrisis,
+-        }),
+-      );
++        });
++      if (file) appendFileSync(file, row + "\n"); else console.log(row);
+     }
+   }
+ }
+--- prima/tools/sim/holdout.ts
++++ adesso/tools/sim/holdout.ts
+@@ -0,0 +1,29 @@
++import { createHash } from "node:crypto";
++import { readFileSync, writeFileSync } from "node:fs";
++import { resolve } from "node:path";
++import { z } from "zod";
++
++let opened: readonly [number, number] | undefined;
++export function checkCampaignSeed(seed: number) {
++  if (seed >= 1001 && seed <= 1100 && !(opened && seed >= opened[0] && seed <= opened[1])) {
++    throw new Error("Reserved seeds require a frozen manifest");
++  }
++}
++const manifestSchema = z.object({
++  start: z.number().int(), end: z.number().int(),
++  files: z.record(z.string(), z.string().regex(/^[0-9a-f]{64}$/)),
++});
++export function claimHoldout(start: number, end: number, manifest: string | undefined,
++  receipt: string, reserved: readonly [number, number] = [1001, 1100]) {
++  if (end < reserved[0] || start > reserved[1]) return;
++  if (start !== reserved[0] || end !== reserved[1] || !manifest) throw new Error("Reserved seeds require a frozen manifest");
++  const bytes = readFileSync(manifest);
++  const freeze = manifestSchema.parse(JSON.parse(bytes.toString()));
++  if (freeze.start !== start || freeze.end !== end || !Object.keys(freeze.files).length) throw new Error("Invalid manifest");
++  const hash = (data: Buffer) => createHash("sha256").update(data).digest("hex");
++  for (const [path, expected] of Object.entries(freeze.files)) {
++    if (hash(readFileSync(resolve(path))) !== expected) throw new Error("Changed since freeze: " + path);
++  }
++  writeFileSync(receipt, JSON.stringify({start,end,sha256:hash(bytes)}), {flag:"wx"});
++  opened = [start,end];
++}
+--- prima/tools/sim/measureTransitions.ts
++++ adesso/tools/sim/measureTransitions.ts
+@@ -0,0 +1,14 @@
++import { loadCampaignContent } from "@content/campaign/index";
++import { runCampaign } from "./campaign";
++const content=loadCampaignContent("rapid");
++for(let seed=1;seed<=25;seed++) for(const route of [0,1] as const) {
++  for(const response of ["cautious","wait","spend"] as const) {
++    const winters: number[]=[];
++    const transitions: {era:string;tick:number;before:number;after:number}[]=[];
++    const {current}=runCampaign(content,seed,"prudence",25000,"rapid",{route,response,extended:false,
++      onDecision(state){if(state.pending?.id==="winter") winters.push(state.core.tick);},
++      onAdvance(a,b){transitions.push({era:b.core.eraId,tick:a.core.tick,before:a.core.influence,after:b.core.influence});}
++    });
++    console.log(JSON.stringify({seed,route,response,winters,transitions,outcome:current.outcome?.kind}));
++  }
++}
+--- prima/tools/sim/trialSequence.ts
++++ adesso/tools/sim/trialSequence.ts
+@@ -0,0 +1,17 @@
++import {writeFileSync} from "node:fs";
++import {makeSave} from "../../src/persistence/save";
++import { loadCampaignContent } from "@content/campaign/index";
++import { runCampaign } from "./campaign";
++import assert from "node:assert/strict";
++const content = loadCampaignContent("rapid");
++for (let seed=101;seed<=200;seed++) {
++  const events: string[] = [];
++  const run = runCampaign(content,seed,"prudence",25000,"rapid",{
++    route:0,response:"foresight",extended:false,rules:"trial",
++    onDecision(state) { if(state.core.eraId === "prehistory") events.push(state.pending!.id); }
++  });
++  assert.deepEqual(events,["drought","dryHarvest","winter"].slice(0,events.length));
++  assert.ok(run.current.outcome?.kind === "collapse" || (events.length === 3 && run.current.pending?.id === "ledger"));
++  if (seed === 101 && process.argv[2]) writeFileSync(process.argv[2], JSON.stringify(makeSave(run.current,0,0)));
++  console.log(JSON.stringify({seed,events,ending:run.current.outcome?.kind ?? "ledger"}));
++}
+--- prima/tests/holdout.test.ts
++++ adesso/tests/holdout.test.ts
+@@ -0,0 +1,20 @@
++import { expect, it } from "vitest";
++import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
++import { tmpdir } from "node:os";
++import { join } from "node:path";
++import { createHash } from "node:crypto";
++import { claimHoldout } from "../tools/sim/holdout";
++it("requires matching frozen inputs and claims the interval only once", () => {
++  const temp = mkdtempSync(join(tmpdir(),"epoche-holdout-"));
++  try {
++    const manifest = join(temp,"manifest.json"), mark = join(temp,"used"), rules = join(temp,"rules");
++    const open = (path?: string) => claimHoldout(51,52,path,mark,[51,52]);
++    expect(() => open()).toThrow();
++    writeFileSync(manifest,JSON.stringify({start:51,end:52,files:{[rules]:createHash("sha256").update("rules").digest("hex")}}));
++    writeFileSync(rules,"changed");
++    expect(() => open(manifest)).toThrow();
++    writeFileSync(rules,"rules");
++    open(manifest);
++    expect(() => open(manifest)).toThrow();
++  } finally {rmSync(temp,{recursive:true,force:true});}
++});
+--- prima/tests/strategies.test.ts
++++ adesso/tests/strategies.test.ts
+@@ -0,0 +1,39 @@
++import { describe, expect, it } from "vitest";
++import { createCampaign } from "@engine/campaign/campaign";
++import { responsesFor } from "@engine/campaign/events";
++import { loadCampaignContent } from "@content/campaign/index";
++import { eventsById } from "@content/campaign/definitions";
++import { rankResponses, shouldWait, type ResponseStrategy } from "../tools/sim/campaign";
++const content = loadCampaignContent("rapid");
++const start = createCampaign(content,{seed:23,id:"strategies",inherited:0,choices:[50,50,50,50]});
++const winter = eventsById.get("winter")!;
++const base = responsesFor(start,winter,content.attributes)[0]!;
++const state = {...start, core:{...start.core,tick:350}, deferred:[{family:"food" as const,source:"response.winter.0",points:58,due:1}]};
++function choice(strategy: ResponseStrategy, a: Partial<typeof base>, b: Partial<typeof base>) {
++  const options = [{...base,choice:0,cost:0,...a},{...base,choice:1,cost:0,...b}];
++  rankResponses(state,winter,options,strategy);
++  return options[0]!.choice;
++}
++describe("research profiles",()=>{
++  it("prices the next era",()=>{
++    const other = {defer:{family:"food" as const,points:1},cost:1};
++    expect(choice("cautious",{},other)).toBe(0);
++    expect(choice("foresight",{},other)).toBe(1);
++  });
++  it("waits only if a current crisis can fall before settlement",()=>{
++    expect(shouldWait(state)).toBe(false);
++    expect(shouldWait({...state,crises:[{family:"food",severity:31}]})).toBe(true);
++  });
++  it("spends near the transition",()=>{
++    expect(choice("spend",{},{cost:4})).toBe(1);
++    expect(choice("cautious",{},{cost:4})).toBe(0);
++  });
++  it("uses an affordable legacy",()=>{
++    expect(choice("heritage",{},{cost:2,requires:"wheel"})).toBe(1);
++    expect(choice("cautious",{},{cost:2,requires:"wheel"})).toBe(0);
++  });
++  it("avoids obligated legacies",()=>{
++    expect(choice("ordinary",{requires:"wheel"},{cost:2})).toBe(1);
++    expect(choice("cautious",{requires:"wheel"},{cost:2})).toBe(0);
++  });
++});
+--- prima/tests/trial.test.ts
++++ adesso/tests/trial.test.ts
+@@ -0,0 +1,23 @@
++import { expect, it } from "vitest";
++import { loadCampaignContent } from "@content/campaign/index";
++import { applyCampaignAction, catchUp, createCampaign } from "@engine/campaign/campaign";
++import { urgentDecision } from "@engine/campaign/model";
++import { makeSave, parseSave } from "../src/persistence/save";
++
++const content = loadCampaignContent("rapid");
++const input = {id:"old",seed:42,inherited:0,choices:[50,50,50,50] as [number,number,number,number]};
++it("restores old saves as ordinary and preserves study saves across reload",()=>{
++  const current = createCampaign(content,input);
++  const old = JSON.parse(JSON.stringify(makeSave(current,0,0)));
++  delete old.campaign.rules;
++  expect(parseSave(JSON.stringify(old)).campaign).toEqual(current);
++  const trial = createCampaign(content,{...input,rules:"trial"});
++  expect(parseSave(JSON.stringify(makeSave(trial,0,0))).campaign).toEqual(trial);
++});
++it("stops the study at the ledger even across absence or a repeated response",()=>{
++  const trial = createCampaign(content,{...input,rules:"trial"});
++  const final = {...trial,pending:{id:"ledger",openedAt:trial.core.tick}};
++  expect(urgentDecision(final)).toBe(true);
++  expect(applyCampaignAction(final,{type:"RESPOND",choice:0},content)).toBe(final);
++  expect(catchUp(final,900000,25,content).campaign.core.tick).toBe(final.core.tick);
++});
