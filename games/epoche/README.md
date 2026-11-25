@@ -1,5 +1,10 @@
 # EPOCHE *(titolo provvisorio)*
 
+## Il guado
+
+Dalla lista delle campagne scegli «Gioca Il guado» oppure apri `?valle`. La partita breve dura cinque stagioni. Seleziona un luogo per la prima squadra, assegna la seconda e poi conferma. La cronaca conserva chi ha ricevuto le scorte e che cosa è successo alla promessa fatta a Nara. Il diario e l’elenco delle partite offrono esportazione, importazione e ripetizione del seme in uno slot separato. [Piano della rifondazione](docs/Rifondazione-EPOCHE.md) e [verifiche della candidata](artifacts/rifondazione/Verifica.md).
+
+
 > Non guidi le unità. Guidi una civiltà.
 > Dal Big Bang al futuro, una decisione alla volta: e ogni successo porta con sé il suo problema.
 

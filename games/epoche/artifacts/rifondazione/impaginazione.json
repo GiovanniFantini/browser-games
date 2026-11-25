@@ -1,0 +1,23 @@
+[
+  {
+    "width": 1366,
+    "height": 768,
+    "deltaY": 0,
+    "confirmBottom": 709.625,
+    "reachable": true
+  },
+  {
+    "width": 1093,
+    "height": 614,
+    "deltaY": 0,
+    "confirmBottom": 555.625,
+    "reachable": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "deltaY": 0,
+    "confirmBottom": 1130.453125,
+    "reachable": true
+  }
+]

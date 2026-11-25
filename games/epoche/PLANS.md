@@ -243,3 +243,7 @@ Il 24 novembre 2026 tre dilemmi sono diventati decisioni urgenti con un danno es
 ## Prova dei rimedi dell’inverno
 
 [Prova con i tre agenti](artifacts/revisione-gameplay/inverno/Prova.md). [Confronto delle partite](artifacts/revisione-gameplay/inverno/Confronto.md). La campagna ordinaria e il controllo restano disponibili accanto alle nuove modalità, con salvataggi separati.
+
+## Rifondazione, partita del guado
+
+Primo arco del [piano di rifondazione](docs/Rifondazione-EPOCHE.md). Il Worker risolve comandi di stagione deterministici. La persistenza locale registra seme e azioni con incarichi delle due squadre. Il replay valida le azioni in ordine. Un caricamento riproduce soltanto le stagioni confermate. Il nuovo ingresso è opzionale e usa slot distinti. Le prove e i giudizi di design sono nella cartella [rifondazione](artifacts/rifondazione/Verifica.md). Per il passaggio ai successivi archi resta aperta la prova con Giovanni e cinque esordienti.

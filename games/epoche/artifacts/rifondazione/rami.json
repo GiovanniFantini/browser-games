@@ -1,0 +1,172 @@
+{
+  "pairs": 621,
+  "fixedPlansUnsurpassedInBoth": 0,
+  "objectives": [
+    "guest",
+    "kept promise",
+    "repaired roof only in high flood"
+  ],
+  "evidence": [
+    {
+      "seed": 1,
+      "histories": 193,
+      "openings": {
+        "terrace": {
+          "flood": "high",
+          "wood": 3,
+          "food": 1,
+          "seed": 1,
+          "home": false,
+          "guest": false,
+          "promise": "unknown",
+          "ending": null,
+          "available": [
+            "pledge",
+            "forage"
+          ]
+        },
+        "bank": {
+          "flood": "high",
+          "wood": 1,
+          "food": 3,
+          "seed": 1,
+          "home": false,
+          "guest": false,
+          "promise": "unknown",
+          "ending": null,
+          "available": [
+            "forage"
+          ]
+        },
+        "watch": {
+          "flood": "high",
+          "wood": 2,
+          "food": 2,
+          "seed": 1,
+          "home": false,
+          "guest": false,
+          "promise": "unknown",
+          "ending": null,
+          "available": [
+            "pledge",
+            "forage"
+          ]
+        }
+      },
+      "kept": {
+        "flood": "high",
+        "wood": 0,
+        "food": 1,
+        "seed": 0,
+        "home": false,
+        "guest": true,
+        "promise": "kept",
+        "ending": null,
+        "available": [
+          "cross"
+        ]
+      },
+      "private": {
+        "flood": "high",
+        "wood": 2,
+        "food": 1,
+        "seed": 1,
+        "home": false,
+        "guest": false,
+        "promise": "broken",
+        "ending": null,
+        "available": [
+          "sow"
+        ]
+      },
+      "roofInstead": {
+        "flood": "high",
+        "wood": 1,
+        "food": 0,
+        "seed": 1,
+        "home": true,
+        "guest": true,
+        "promise": "broken",
+        "ending": null,
+        "available": [
+          "sow"
+        ]
+      }
+    },
+    {
+      "seed": 2,
+      "histories": 174,
+      "openings": {
+        "terrace": {
+          "flood": "low",
+          "wood": 3,
+          "food": 1,
+          "seed": 1,
+          "home": false,
+          "guest": false,
+          "promise": "unknown",
+          "ending": null,
+          "available": [
+            "pledge",
+            "forage"
+          ]
+        },
+        "bank": {
+          "flood": "low",
+          "wood": 3,
+          "food": 3,
+          "seed": 1,
+          "home": false,
+          "guest": false,
+          "promise": "unknown",
+          "ending": null,
+          "available": [
+            "pledge",
+            "forage"
+          ]
+        },
+        "watch": {
+          "flood": "low",
+          "wood": 3,
+          "food": 2,
+          "seed": 1,
+          "home": false,
+          "guest": false,
+          "promise": "unknown",
+          "ending": null,
+          "available": [
+            "pledge",
+            "forage"
+          ]
+        }
+      },
+      "kept": {
+        "flood": "low",
+        "wood": 1,
+        "food": 1,
+        "seed": 1,
+        "home": false,
+        "guest": true,
+        "promise": "kept",
+        "ending": null,
+        "available": [
+          "sow",
+          "cross"
+        ]
+      },
+      "private": {
+        "flood": "low",
+        "wood": 3,
+        "food": 1,
+        "seed": 1,
+        "home": false,
+        "guest": false,
+        "promise": "broken",
+        "ending": null,
+        "available": [
+          "sow"
+        ]
+      }
+    }
+  ]
+}

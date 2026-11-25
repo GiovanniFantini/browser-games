@@ -465,6 +465,7 @@ export function CampaignApp() {
         </div>
         <p>{translate(language, "slot.promise")} {translate(language, "spirit.inherited")}</p>
         <nav className="study-links">
+          <a href="?valle">{language === "it" ? "Gioca Il guado · prototipo" : "Play The Ford · prototype"}</a>
           {playMode() !== "winter" && <a href="?rimedi">{translate(language,"hearing.full")}</a>}
           {playMode() !== "winterStudy" && <a href="?studio=inverno">{translate(language,"hearing.study")}</a>}
           {playMode() !== "current" && <a href="?">{translate(language,"hearing.normal")}</a>}

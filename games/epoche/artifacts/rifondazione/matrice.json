@@ -1,0 +1,21 @@
+{
+  "first": {
+    "harvest": 27,
+    "migration": 23
+  },
+  "random": {
+    "harvest": 15,
+    "dispersal": 28,
+    "migration": 7
+  },
+  "cautious": {
+    "harvest": 50
+  },
+  "foresight": {
+    "harvest": 35,
+    "migration": 15
+  },
+  "fixed": {
+    "harvest": 50
+  }
+}

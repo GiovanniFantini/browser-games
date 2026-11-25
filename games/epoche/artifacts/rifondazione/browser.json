@@ -1,0 +1,26 @@
+[
+  {
+    "name": "ospite",
+    "seed": 2,
+    "final": "Il primo raccolto",
+    "errors": []
+  },
+  {
+    "name": "barca",
+    "seed": 1,
+    "final": "A new shore",
+    "errors": []
+  },
+  {
+    "name": "rottura",
+    "seed": 1,
+    "final": "Il primo raccolto",
+    "errors": []
+  },
+  {
+    "name": "dispersione",
+    "seed": 1,
+    "final": "I fuochi si dividono",
+    "errors": []
+  }
+]

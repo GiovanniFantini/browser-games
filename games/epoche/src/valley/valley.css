@@ -1,0 +1,534 @@
+body:has(.valley) {
+  margin: 0;
+  background: #efe9da;
+  color: #273b33;
+}
+.valley {
+  --ink: #213c31;
+  --light: #fbf7ed;
+  --line: #d2c8b4;
+  max-width: 1800px;
+  margin: auto;
+  font:
+    16px/1.44 "Source Sans 3",
+    Segoe UI,
+    sans-serif;
+  color: var(--ink);
+  background: var(--light);
+  min-height: 100vh;
+}
+.valley * {
+  box-sizing: border-box;
+}
+.valley button,
+.valley select {
+  font: inherit;
+  color: inherit;
+  background: #fffbf3;
+  border: 1px solid var(--line);
+  padding: 0.48em 0.8em;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.valley button:focus-visible,
+.valley a:focus-visible {
+  outline: 3px solid #b65220;
+  outline-offset: 3px;
+}
+.valley button:disabled {
+  cursor: default;
+}
+.v-head,
+.v-tools,
+.v-stock,
+.valley footer,
+.v-mapfoot {
+  display: flex;
+  align-items: center;
+}
+.v-head {
+  padding: 12px clamp(16px, 3vw, 50px);
+  gap: 22px;
+  background: #20382e;
+  color: #f7efda;
+}
+.v-brand {
+  color: inherit;
+  text-decoration: none;
+  font:
+    600 22px Georgia,
+    serif;
+  letter-spacing: 0.18em;
+}
+.v-place {
+  padding-left: 20px;
+  border-left: 1px solid #758276;
+}
+.v-tools {
+  gap: 7px;
+  margin-left: auto;
+}
+.v-tools button,
+.v-tools select {
+  background: #294438;
+  color: #f2eddf;
+  border-color: #66766a;
+  font-size: 14px;
+}
+.v-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(320px, 1fr);
+  min-height: calc(100vh - 120px);
+}
+.v-map {
+  position: relative;
+  background: #393f2c;
+  display: grid;
+  align-content: center;
+  overflow: hidden;
+}
+.v-atlas {
+  width: 100%;
+  aspect-ratio: 3/2;
+  position: relative;
+  isolation: isolate;
+}
+.v-terrain,
+.v-wash,
+.v-trails {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.v-terrain {
+  background: url("/art/valle-terreno.jpg") center/100% 100% no-repeat;
+}
+.v-map:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #293127, #435243);
+}
+.v-mapfoot {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  justify-content: space-between;
+  color: #f7efd6;
+  background: #213426ed;
+  padding: 8px 18px;
+}
+.v-mapfoot span {
+  font:
+    italic 18px Georgia,
+    serif;
+}
+.v-wash {
+  transition: background 0.5s;
+}
+.season-3 .v-wash {
+  background: #acd4d044;
+}
+.season-4 .v-wash {
+  background: #c2e8ff66;
+}
+.v-route {
+  fill: none;
+  stroke: #fff3a8;
+  stroke-width: 0.75;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  filter: drop-shadow(0 1px 1px #47371d);
+}
+.moving .v-route {
+  animation: v-travel var(--travel) linear infinite;
+}
+@keyframes v-travel {
+  to {
+    stroke-dashoffset: -6;
+  }
+}
+.v-inundation {
+  fill: url(#overflow-fade);
+  stroke: none;
+  stroke-width: 0.32;
+}
+.valley .v-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 5px;
+  border: 1px solid #efe1b2;
+  color: #f7f1d9;
+  background: #283f33eb;
+  font-size: clamp(12px, 1vw, 16px);
+  box-shadow: 0 2px 5px #192c2488;
+}
+.v-pin b {
+  font-size: 1.25em;
+}
+.valley .v-pin.active,
+.valley .v-pin.selected {
+  background: #fff1c9;
+  color: #362f20;
+  border: 2px solid #815821;
+}
+.valley .v-pin.selected {
+  outline: 3px solid #fff2ae;
+}
+.v-token,
+.v-depot {
+  position: absolute;
+  background: #422f19e8;
+  border-radius: 3px;
+  color: #fff2c8;
+  padding: 2px 7px;
+  font-size: 13px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.v-depot {
+  left: 25%;
+  top: 62%;
+}
+.v-story {
+  padding: clamp(17px, 2.2vw, 38px);
+  align-self: start;
+}
+.v-stock {
+  gap: 6px;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+.v-stock div {
+  display: grid;
+  gap: 0;
+}
+.v-stock span,
+.v-kicker,
+.v-report > small {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #55604f;
+}
+.v-stock b {
+  font:
+    600 24px Georgia,
+    serif;
+}
+.valley h1 {
+  font:
+    500 clamp(31px, 3.2vw, 52px)/1 Georgia,
+    serif;
+  letter-spacing: -0.04em;
+  margin: 7px 0 12px;
+  color: #243d30;
+}
+.v-intro {
+  font-size: 17px;
+  margin: 0 0 12px;
+}
+.v-signal,
+.v-preview {
+  background: #e5ecde;
+  border-left: 3px solid #718a66;
+  padding: 9px 12px;
+  margin: 12px 0;
+}
+.v-choices {
+  display: grid;
+  gap: 5px;
+}
+.valley .v-choices button {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.v-choices span {
+  width: 1.2em;
+  text-align: center;
+}
+.valley .v-choices .chosen {
+  border-color: #315c47;
+  background: #dce8d9;
+}
+.v-preview h3 {
+  font-size: 13px;
+  margin: 0;
+}
+.v-preview p {
+  margin: 5px 0;
+}
+.valley .v-undo {
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  padding: 3px 0;
+  font-size: 13px;
+}
+.v-hint {
+  font-size: 14px;
+  color: #606559;
+}
+.valley .v-go {
+  display: block;
+  margin-top: 10px;
+  background: #264b39;
+  color: #fff9ec;
+  width: 100%;
+  font-weight: 600;
+  padding: 10px;
+}
+.valley .v-go:disabled {
+  background: #dedcd1;
+  color: #686c61;
+}
+.valley footer {
+  padding: 10px clamp(16px, 3vw, 50px);
+  justify-content: space-between;
+  gap: 15px;
+  background: #e6e1d4;
+}
+.valley footer small {
+  max-width: 72ch;
+}
+.valley footer label {
+  white-space: nowrap;
+  font-size: 13px;
+}
+.v-drawer {
+  padding: 18px max(18px, 5vw);
+  background: #f3efdf;
+  border-bottom: 2px solid #a7ae9c;
+}
+.v-drawer > button:first-child {
+  float: right;
+}
+.v-log,
+.v-slots {
+  max-height: 42vh;
+  overflow: auto;
+}
+.v-slots {
+  display: grid;
+  gap: 6px;
+}
+.v-log li {
+  margin-bottom: 0.7em;
+}
+.v-log h3,
+.v-log p {
+  margin: 2px 0;
+}
+.v-report button {
+  margin: 6px 4px 0 0;
+}
+@media (max-width: 800px) {
+  .v-layout {
+    grid-template-columns: 1fr;
+  }
+  .v-head {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .v-place {
+    display: none;
+  }
+  .v-tools {
+    gap: 4px;
+  }
+  .v-mapfoot {
+    position: relative;
+  }
+  .v-story {
+    padding: 16px;
+  }
+  .v-stock {
+    margin-bottom: 12px;
+  }
+  .valley footer {
+    flex-wrap: wrap;
+  }
+  .v-stock div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .valley * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.v-atlas {
+  container-type: inline-size;
+}
+.v-assign button,
+.v-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+.v-assign button {
+  border: 2px solid #473c23;
+  background: #e8dfc8;
+}
+.v-assign button[aria-pressed="true"] {
+  background: #ffe6a1;
+  outline: 2px solid #563d16;
+}
+.v-marker {
+  border-radius: 3px;
+  color: #fff8db;
+  background: #324a3b;
+  padding: 2px 6px;
+  pointer-events: none;
+}
+.v-boatnote {
+  left: 83%;
+  top: 32%;
+}
+.v-field {
+  left: 24%;
+  top: 29%;
+}
+.v-crew-choice {
+  border: 0;
+  padding: 0;
+  margin: 8px 0;
+}
+.v-crew-choice label {
+  display: block;
+  font-size: 14px;
+}
+.v-crew-choice legend {
+  font-weight: 600;
+}
+.v-workers {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  font-size: 22px;
+  color: #ffebad;
+  filter: drop-shadow(0 1px 2px #28210a);
+  animation: v-workers var(--travel) ease-in-out forwards;
+}
+@keyframes v-workers {
+  to {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+.valley {
+  color-scheme: light;
+}
+
+.v-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.v-people {
+  transition: transform var(--travel) ease-in-out;
+}
+.v-pin {
+  margin-top: -2.3%;
+}
+.v-crewhead {
+  font: 600 12px/1.4 sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 12px 0 5px;
+}
+.v-jobs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.v-jobs button {
+  padding: 3px 7px;
+  font-size: 14px;
+}
+.v-jobs button[aria-pressed="true"] {
+  background: #355340;
+  color: white;
+}
+.v-memories {
+  border-left: 3px solid #849570;
+  padding-left: 12px;
+  font-size: 14px;
+}
+.v-memories p {
+  margin: 5px 0;
+}
+.v-preview .v-crewhead {
+  margin: 7px 0 3px;
+}
+
+.v-depot.private {
+  left: 24%;
+  top: 25%;
+}
+.v-depot.common {
+  left: 29%;
+  top: 57%;
+}
+@media (min-width: 801px) {
+  .valley {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100dvh;
+    min-height: 0;
+  }
+  .valley:has(.v-drawer),
+  .valley:has(> p[role="alert"]) {
+    height: auto;
+    min-height: 100dvh;
+    display: block;
+  }
+  .v-layout {
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  .v-map {
+    min-height: 0;
+    align-content: start;
+  }
+  .v-story {
+    height: 100%;
+    align-self: stretch;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 0;
+    scroll-padding-bottom: 64px;
+  }
+  .v-story > .v-go {
+    position: sticky;
+    bottom: 0;
+    box-shadow: 0 -7px 0 5px var(--light);
+    margin-bottom: 4px;
+  }
+  .v-atlas {
+    max-height: 100%;
+  }
+}
+@media (max-width: 800px) {
+  .v-head .v-place {
+    display: inline;
+    font-size: 12px;
+    padding: 0;
+    border: 0;
+  }
+}
