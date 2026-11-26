@@ -1,11 +1,21 @@
-import type { Village, Site } from "./game";
+import type { Village, Site, Turn } from "./game";
 const points: Record<Site, [number, number]> = {
   terrace: [320, 185],
   camp: [386, 506],
   boat: [1230, 260],
   bank: [745, 742],
 };
-export function ValleyArt({ v, crews }: { v: Village; crews: [Site, Site] }) {
+export function ValleyArt({
+  v,
+  crews,
+  hauling,
+  floodTurn,
+}: {
+  v: Village;
+  crews: [Site, Site];
+  hauling: boolean;
+  floodTurn: Turn | undefined;
+}) {
   const timber = v.season > 0 ? v.timberSite : "bank";
   const [tx, ty] = points[timber];
   const afloat = v.season >= 1 && (v.trust === "unknown" || v.trust === "kept");
@@ -44,11 +54,71 @@ export function ValleyArt({ v, crews }: { v: Village; crews: [Site, Site] }) {
           />
         </g>
       </defs>
-      {v.wood > 0 && (
+      {v.season < 2 && (
         <g
-          transform={`translate(${tx} ${ty}) scale(${0.55 + 0.14 * Math.min(4, v.wood)}) translate(-735 -738)`}
+          className="v-current"
+          fill="none"
+          stroke="#e2f3dc"
+          strokeWidth="4"
+          strokeLinecap="round"
         >
-          <use href="#guado-props" clipPath="url(#guado-wood)" />
+          <path d="M767 147q37 4 73 30m23 30q21 3 42 21" />
+          <path d="M910 358q63 24 91 59m-34 19q48 18 89 60" />
+          <path d="M1177 602q45 26 60 61" />
+        </g>
+      )}
+      {v.wood > 0 && (
+        <g className={hauling ? "v-hauling" : undefined}>
+          <g
+            transform={`translate(${tx} ${ty}) scale(${0.55 + 0.14 * Math.min(4, v.wood)}) translate(-735 -738)`}
+          >
+            <use href="#guado-props" clipPath="url(#guado-wood)" />
+          </g>
+        </g>
+      )}
+      {floodTurn && (
+        <g className="v-flood-events">
+          {v.flood === "high" &&
+            floodTurn.order === "shelter" &&
+            Array.from({ length: 3 - v.wood }, (_, i) => (
+              <g
+                key={i}
+                className="v-drifting-log"
+                style={{ translate: i * 23 + "px " + i * 18 + "px" }}
+              >
+                <path
+                  d="M714 745l71 -24"
+                  stroke="#594025"
+                  strokeWidth="13"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M714 742l68 -23"
+                  stroke="#c39961"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                />
+              </g>
+            ))}
+          {floodTurn.order === "shelter" && (
+            <g
+              className={
+                floodTurn.job === "guard"
+                  ? "v-basket from-bank"
+                  : "v-basket from-terrace"
+              }
+            >
+              <path
+                d="M-18 -8Q0 -39 18 -8M-22 -9h44l-7 22h-28Z"
+                stroke="#513821"
+                fill="#cb9b53"
+                strokeWidth="4"
+              />
+              <circle cy="-9" r="6" fill="#a95131" />
+              <circle cx="-9" cy="-7" r="5" fill="#976932" />
+              <circle cx="9" cy="-7" r="6" fill="#a95131" />
+            </g>
+          )}
         </g>
       )}
       {afloat && <use href="#guado-props" clipPath="url(#guado-canoe)" />}
@@ -106,11 +176,13 @@ export function ValleyArt({ v, crews }: { v: Village; crews: [Site, Site] }) {
               }}
               color={i ? "#ddd1a6" : "#a24e32"}
             >
-              <use href="#guado-family" />
-              <use
-                href="#guado-family"
-                transform="translate(13 5) scale(.86)"
-              />
+              <g className={hauling ? "v-carrier" : undefined}>
+                <use href="#guado-family" />
+                <use
+                  href="#guado-family"
+                  transform="translate(13 5) scale(.86)"
+                />
+              </g>
             </g>
           );
         })}

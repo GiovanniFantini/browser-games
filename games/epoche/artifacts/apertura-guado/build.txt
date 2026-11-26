@@ -1,0 +1,29 @@
+
+> epoche@0.2.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.8 building client environment for production...
+transforming...
+✓ 956 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                               0.48 kB │ gzip:   0.30 kB
+dist/assets/worker-BdWgds7P.js                4.56 kB
+dist/assets/simulation.worker-CLs3PPhz.js   355.70 kB
+dist/assets/Valley-BIH8ZAs0.css              10.39 kB │ gzip:   3.57 kB
+dist/assets/index-EYtCocJq.css               30.42 kB │ gzip:   8.03 kB
+dist/assets/Filter-BzXZ0UnI.js                0.91 kB │ gzip:   0.48 kB
+dist/assets/CanvasPool-C9e410C6.js            1.89 kB │ gzip:   0.84 kB
+dist/assets/canvasUtils-mQnXv8B0.js           6.06 kB │ gzip:   1.90 kB
+dist/assets/getTexelRangeRects-BJy74xCc.js   11.50 kB │ gzip:   3.02 kB
+dist/assets/webworkerAll-4U1A7xbQ.js         16.10 kB │ gzip:   5.04 kB
+dist/assets/CanvasRenderer-CbGlWRjy.js       17.99 kB │ gzip:   6.04 kB
+dist/assets/BitmapFont-gLVD4Jf1.js           33.85 kB │ gzip:  11.46 kB
+dist/assets/Valley-DKiGW995.js               38.25 kB │ gzip:  14.54 kB
+dist/assets/browserAll-CpFVz3WT.js           44.12 kB │ gzip:  11.48 kB
+dist/assets/RenderTargetSystem-5Q34QASq.js   54.99 kB │ gzip:  15.15 kB
+dist/assets/WebGPURenderer-DA2E2Z6f.js       61.57 kB │ gzip:  17.64 kB
+dist/assets/WebGLRenderer-CVkHLMey.js        76.93 kB │ gzip:  21.09 kB
+dist/assets/diorama-BNX1OoH8.js             291.52 kB │ gzip:  93.95 kB
+dist/assets/index-C7vxrFx_.js               719.47 kB │ gzip: 219.89 kB
+✓ built in 6.97s

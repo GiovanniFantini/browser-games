@@ -1,0 +1,42 @@
+[
+  {
+    "order": "haul",
+    "job": "together",
+    "seed": 1,
+    "width": 1366,
+    "reduced": false,
+    "words": 48,
+    "result": "Esito della stagione · I\nPiena alta\nRazioni\n2 → 1\n\nLe tre cataste sono asciutte sulla terrazza.\n\nPrepara la prossima stagione",
+    "errors": []
+  },
+  {
+    "order": "shelter",
+    "job": "gather",
+    "seed": 1,
+    "width": 1366,
+    "reduced": false,
+    "words": 48,
+    "result": "Esito della stagione · I\nPiena alta\nLegna\n3 → 1\nRazioni\n2 → 3\n\nL’acqua ha strappato due cataste dal riparo basso. I raccoglitori hanno portato due razioni.\n\nPrepara la prossima stagione",
+    "errors": []
+  },
+  {
+    "order": "shelter",
+    "job": "guard",
+    "seed": 1,
+    "width": 1093,
+    "reduced": false,
+    "words": 48,
+    "result": "Esito della stagione · I\nPiena alta\nLegna\n3 → 2\nRazioni\n2 → 2\n\nI sorveglianti recuperano una catasta dalla corrente. Ne restano due, insieme a una razione raccolta sulla riva.\n\nPrepara la prossima stagione",
+    "errors": []
+  },
+  {
+    "order": "shelter",
+    "job": "gather",
+    "seed": 2,
+    "width": 390,
+    "reduced": true,
+    "words": 48,
+    "result": "Esito della stagione · I\nPiena ordinaria\nRazioni\n2 → 3\n\nIl riparo basso ha tenuto. Tornano anche i raccoglitori con due razioni.\n\nPrepara la prossima stagione",
+    "errors": []
+  }
+]

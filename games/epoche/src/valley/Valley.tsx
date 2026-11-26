@@ -54,6 +54,8 @@ function replaceSlot(id: string) {
 }
 function start() {
   const requested = new URLSearchParams(location.search).get("valle");
+  if (requested === "nuova")
+    return { id: newSlot(), book: fresh(), error: false };
   const id = requested || getSlots()[0] || newSlot();
   try {
     const raw = localStorage.getItem(prefix + id);
@@ -137,7 +139,7 @@ export default function Valley() {
     };
   }, []);
   useEffect(() => {
-    if (showReport) reportHeading.current?.focus();
+    if (showReport) reportHeading.current?.focus({ preventScroll: true });
   }, [showReport]);
   function openBook(b: Book, id = newSlot()) {
     if (lock.current) return;
@@ -155,7 +157,7 @@ export default function Valley() {
     select(o);
     setInspect(destination[o]);
     const available = jobs(v, o);
-    setJob(available.length === 1 ? available[0]! : null);
+    setJob(v.season === 0 || available.length === 1 ? available[0]! : null);
   }
   function place(s: Site) {
     if (busy || v.ending || showReport) return;
@@ -178,13 +180,19 @@ export default function Valley() {
   }
   function commit() {
     if (!selected || !job || lock.current) return;
+    if (v.season === 0 && matchMedia("(max-width:800px)").matches)
+      document
+        .querySelector(".v-map")
+        ?.scrollIntoView({ block: "start", behavior: "instant" });
     lock.current = true;
     setBusy(true);
     setError(false);
     const turn: Turn = { order: selected, job, deliver: job === "trade" };
     timer.current = window.setTimeout(
       () => wk.current?.postMessage({ book, turn }),
-      matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 950 / speed,
+      matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 0
+        : (v.season === 0 ? 1500 : 950) / speed,
     );
   }
   function exportBook() {
@@ -205,6 +213,7 @@ export default function Valley() {
       : t(j === "mend" && v.season === 1 ? "hjsalvage" : "hj" + j);
   const selectedJobs = selected ? jobs(v, selected) : [];
   const last = book.turns.at(-1);
+  const opening = v.season === 0;
   const primarySite = selected
     ? destination[selected]
     : last
@@ -336,12 +345,29 @@ export default function Valley() {
         <section
           aria-label={t("valley")}
           className={"v-map season-" + v.season + (busy ? " moving" : "")}
-          style={{ "--travel": 950 / speed + "ms" } as CSSProperties}
+          style={
+            {
+              "--travel": (opening ? 1500 : 950) / speed + "ms",
+              "--flood-time": 1800 / speed + "ms",
+            } as CSSProperties
+          }
         >
-          <div className="v-atlas">
+          <div
+            className={
+              "v-atlas" +
+              ((opening && selected) || (showReport && v.season === 1)
+                ? " v-closeup " + (selected ?? last?.order)
+                : "")
+            }
+          >
             <div className="v-terrain" />
             <div className="v-wash" />
-            <ValleyArt v={v} crews={[primarySite, secondSite]} />
+            <ValleyArt
+              v={v}
+              crews={[primarySite, secondSite]}
+              hauling={opening && busy && selected === "haul"}
+              floodTurn={showReport && v.season === 1 ? last : undefined}
+            />
             <svg
               className="v-trails"
               viewBox="0 0 100 100"
@@ -374,6 +400,9 @@ export default function Valley() {
                 type="button"
                 className={
                   "v-pin " +
+                  (opening && (s === "camp" || s === "boat")
+                    ? "v-dormant "
+                    : "") +
                   ((
                     selected && selectedJobs.length > 1
                       ? selectedJobs.some((j) => jobSite[j] === s)
@@ -392,7 +421,7 @@ export default function Valley() {
                 <span>{t(s)}</span>
               </button>
             ))}
-            {v.season > 0 && (
+            {v.wood > 0 && (
               <span
                 className="v-token"
                 style={{
@@ -425,7 +454,7 @@ export default function Valley() {
             </small>
           </div>
         </section>
-        <aside className="v-story">
+        <aside className={"v-story" + (opening && selected ? " v-ready" : "")}>
           <div className="v-stock">
             {(["wood", "food", "grain"] as const).map((k) => (
               <div key={k}>
@@ -442,8 +471,26 @@ export default function Valley() {
                 {t(v.ending ? "outcome" : "result")} · {seasons[v.season - 1]}
               </small>
               <h1 ref={reportHeading} tabIndex={-1}>
-                {t(v.ending ?? "s" + (v.season - 1))}
+                {t(
+                  v.ending ?? (v.season === 1 ? v.flood : "s" + (v.season - 1)),
+                )}
               </h1>
+              <dl className="v-delta" aria-label={t("changeStock")}>
+                {(["wood", "food", "grain"] as const)
+                  .filter(
+                    (k) =>
+                      history[v.season - 1]?.[k] !== v[k] ||
+                      (k === "food" && v.season === 1),
+                  )
+                  .map((k) => (
+                    <div key={k}>
+                      <dt>{t(k)}</dt>
+                      <dd>
+                        {history[v.season - 1]?.[k]} → {v[k]}
+                      </dd>
+                    </div>
+                  ))}
+              </dl>
               {v.events.map((k) => (
                 <p key={k}>{t(note(k))}</p>
               ))}
@@ -484,7 +531,7 @@ export default function Valley() {
                   )}
                 </div>
               )}
-              {v.season === 1 && <p>{t(v.flood)}</p>}
+
               {v.ending ? (
                 <>
                   <button
@@ -510,9 +557,21 @@ export default function Valley() {
                 {t("season")} {seasons[v.season]} / V
               </small>
               <h1>{t("s" + v.season)}</h1>
-              <p className="v-intro">{t("q" + v.season)}</p>
+              {v.season === 0 && <p className="v-goal">{t("valleyGoal")}</p>}
+              {!opening && <p className="v-intro">{t("q" + v.season)}</p>}
               {v.season === 0 && (
-                <p className="v-signal">{t(v.cloudy ? "cloudy" : "clear")}</p>
+                <div className="v-forecast">
+                  <span>{t("floodChance")}</span>
+                  <span aria-hidden="true" className="v-drops">
+                    {[0, 1, 2, 3].map((i) => (
+                      <i
+                        key={i}
+                        className={i < (v.cloudy ? 3 : 1) ? "wet" : ""}
+                      />
+                    ))}
+                  </span>
+                  <span>{v.cloudy ? "75%" : "25%"}</span>
+                </div>
               )}
               {v.flood === "high" &&
                 (v.season === 1 ||
@@ -532,8 +591,13 @@ export default function Valley() {
               {inspect && !choices.some((o) => destination[o] === inspect) && (
                 <p role="status">{t("inspect")}</p>
               )}
-              <h3 className="v-crewhead">{t("ordersOne")}</h3>
-              <div className="v-choices" aria-label={t("plan")}>
+              <h3 className="v-crewhead">
+                {t(v.season === 0 ? "floodChoice" : "ordersOne")}
+              </h3>
+              <div
+                className={"v-choices" + (opening ? " v-opening-choices" : "")}
+                aria-label={t("plan")}
+              >
                 {choices.map((o) => (
                   <button
                     key={o}
@@ -543,29 +607,83 @@ export default function Valley() {
                     aria-pressed={selected === o}
                     onClick={() => choose(o)}
                   >
-                    <span>{ico[destination[o]]}</span>
-                    {t(o)}
+                    {opening ? (
+                      <span
+                        aria-hidden="true"
+                        className={"v-place-picture " + o}
+                      />
+                    ) : (
+                      <span>{ico[destination[o]]}</span>
+                    )}
+                    <div>
+                      {t(o)}
+                      {v.season === 0 && (
+                        <small className="v-order-effect">
+                          {t(o === "haul" ? "safeWood" : "nearWood")}
+                        </small>
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
               {selected ? (
                 <div className="v-preview">
-                  <p>{t("d" + selected)}</p>
-                  <h3 className="v-crewhead">{t("ordersTwo")}</h3>
-                  <div className="v-jobs">
-                    {selectedJobs.map((j) => (
-                      <button
-                        key={j}
-                        data-job={j}
-                        disabled={busy}
-                        aria-pressed={job === j}
-                        onClick={() => setJob(j)}
-                      >
-                        {jobLabel(j)}
-                      </button>
-                    ))}
-                  </div>
-                  <p>{job ? jobHint(job) : t("pendingCrew")}</p>
+                  {!opening && <p>{t("d" + selected)}</p>}
+                  {(!opening || selected !== "haul") && (
+                    <h3 className="v-crewhead">{t("ordersTwo")}</h3>
+                  )}
+                  {(!opening || selected !== "haul") && (
+                    <div
+                      className={"v-jobs" + (opening ? " v-job-pictures" : "")}
+                    >
+                      {selectedJobs.map((j) => (
+                        <button
+                          key={j}
+                          data-job={j}
+                          disabled={busy}
+                          aria-pressed={job === j}
+                          onClick={() => setJob(j)}
+                        >
+                          {opening && (
+                            <svg viewBox="0 0 30 26" aria-hidden="true">
+                              {j === "guard" ? (
+                                <path
+                                  fill="#789282"
+                                  stroke="#3c5849"
+                                  d="M15 2L26 6V13Q24 21 15 25Q5 20 4 13V6Z"
+                                />
+                              ) : (
+                                <>
+                                  <path
+                                    fill="none"
+                                    stroke="#764d2d"
+                                    strokeWidth="2"
+                                    d="M7 13Q15 -5 23 13"
+                                  />
+                                  <path
+                                    d="M2 11H28L23 24H7Z"
+                                    fill="#cf9a58"
+                                    stroke="#764d2d"
+                                  />
+                                </>
+                              )}
+                            </svg>
+                          )}
+                          <span>{jobLabel(j)}</span>
+                          {opening && (
+                            <small>
+                              {j === "guard" ? "−1" : "−2"} {t("wood")} ·{" "}
+                              {j === "guard" ? "+1" : "+2"} {t("food")}
+                            </small>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {opening && selected === "shelter" && (
+                    <small className="v-risk-key">{t("highWaterCosts")}</small>
+                  )}
+                  {!opening && <p>{job ? jobHint(job) : t("pendingCrew")}</p>}
                   {v.pledged && job && job !== "trade" && <p>{t("refuse")}</p>}
                   <button
                     className="v-undo"
@@ -580,21 +698,21 @@ export default function Valley() {
                   </button>
                 </div>
               ) : (
-                <p className="v-hint">{t("pick")}</p>
+                !opening && <p className="v-hint">{t("pick")}</p>
               )}
               <button
                 className="v-go"
                 disabled={!selected || !job || busy}
                 onClick={commit}
               >
-                {t("go")} →
+                {t(v.season === 0 ? "startFlood" : "go")} →
               </button>
             </>
           )}
         </aside>
       </div>
       <footer>
-        <small>{t("upkeep")}</small>
+        {v.hungry > 0 && !v.ending && <small>{t("upkeep")}</small>}
         <label>
           {t("speed")}{" "}
           <select
